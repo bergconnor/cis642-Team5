@@ -13,7 +13,7 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int CAMERA_REQUEST = 1571;
+    private static final int IMAGE_REQUEST = 1571;
     private static final int LOCATION_REQUEST = 1995;
 
     @Override
@@ -31,11 +31,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onPictureButtonClicked(View v) {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = new File(Environment.getExternalStorageDirectory()
-                + File.separator + "image.jpg");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-        startActivityForResult(intent, CAMERA_REQUEST);
+        Intent intent = new Intent(this, ImageActivity.class);
+        startActivityForResult(intent, IMAGE_REQUEST);
     }
 
     public void onHistoryButtonClicked(View v) {
@@ -49,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case CAMERA_REQUEST:
+                case IMAGE_REQUEST:
+                    String test = data.getStringExtra("TEST");
+                    String serial = data.getStringExtra("SERIAL");
                     break;
                 case LOCATION_REQUEST:
                     break;
