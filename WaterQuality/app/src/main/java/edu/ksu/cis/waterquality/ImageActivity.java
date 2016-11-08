@@ -261,8 +261,8 @@ public class ImageActivity extends AppCompatActivity {
 
     private void sendResults(String test, String serial) {
         Intent intent = new Intent();
-        intent.putExtra("TEST", test);
-        intent.putExtra("SERIAL", serial);
+        intent.putExtra("EXTRA_TEST", test);
+        intent.putExtra("EXTRA_SERIAL", serial);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

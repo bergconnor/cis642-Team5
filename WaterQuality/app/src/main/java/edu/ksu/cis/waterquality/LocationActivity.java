@@ -112,19 +112,15 @@ public class LocationActivity extends FragmentActivity implements
 
     public void handleNewLocation(Location location) {
         Log.d(TAG, location.toString());
-        Intent resultIntent = new Intent();
-        Intent oldIntent = getIntent();
+        Intent intent = new Intent();
 
-        Bundle data = oldIntent.getExtras();
-        String testInfo = data.getString("QRCODE");
 
         Double lat = location.getLatitude();
         Double lon = location.getLongitude();
 
-        resultIntent.putExtra("LATITUDE", Double.toString(lat));
-        resultIntent.putExtra("LONGITUDE", Double.toString(lon));
-        resultIntent.putExtra("QRCODE", testInfo);
-        setResult(Activity.RESULT_OK, resultIntent);
+        intent.putExtra("EXTRA_LATITUDE", Double.toString(lat));
+        intent.putExtra("EXTRA_LONGITUDE", Double.toString(lon));
+        setResult(Activity.RESULT_OK, intent);
         finish();
     }
 }

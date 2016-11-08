@@ -25,7 +25,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".LocationActivity" />
-        <activity android:name=".ImageActivity"></activity>
+        <activity android:name=".ImageActivity" />
+        <activity android:name=".AboutActivity" />
+        <activity android:name=".HelpActivity" />
+        <activity android:name=".HistoryActivity" />
+        <activity android:name=".SpreadsheetActivity"></activity>
     </application>
 
 </manifest>
