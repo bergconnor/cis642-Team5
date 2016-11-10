@@ -1,8 +1,6 @@
 package edu.ksu.cis.waterquality;
 
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -16,17 +14,15 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
 
 public class Weather extends AsyncTask<String, String, String> {
 
-    private static final String mTemperature      = "temperature";
-    private static final String mPrecipitation    = "precipitation";
+    private static final String mTemperature   = "temperature";
+    private static final String mPrecipitation = "precipitation";
 
-    private static final int mMonthIndex   = 0;
-    private static final int mDayIndex     = 1;
-    private static final int mYearIndex    = 2;
+    private static final int mMonthIndex = 0;
+    private static final int mDayIndex   = 1;
+    private static final int mYearIndex  = 2;
 
     private Context mContext;
     private String mLatitude;
@@ -73,19 +69,17 @@ public class Weather extends AsyncTask<String, String, String> {
 
     private String getData(String unit) {
         String data = "";
-        HttpURLConnection connection = null;
-        BufferedReader reader = null;
 
         try {
             String query = constructTempQuery(unit);
             URL url = new URL(query);
-            connection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.connect();
             InputStream stream = connection.getInputStream();
-            reader = new BufferedReader(new InputStreamReader(stream));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
             StringBuffer buffer = new StringBuffer();
-            String line = "";
+            String line;
             while ((line = reader.readLine()) != null) {
                 buffer.append(line);
             }

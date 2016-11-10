@@ -29,7 +29,6 @@ public class LocationActivity extends FragmentActivity implements
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

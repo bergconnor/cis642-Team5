@@ -222,14 +222,15 @@ public class ImageActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         String name = spinner.getSelectedItem().toString();
                         String serial = textBox.getText().toString();
+                        String message;
                         if (serial.length() < 1) {
-                            String message = "You must enter a serial number";
+                            message = "You must enter a serial number";
                             Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
                         } else if(!isInteger(serial, 10)) {
-                            String message = "Invalid serial number";
+                            message = "Invalid serial number";
                             Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
                         } else if(Integer.parseInt(serial) > MAX_SERIAL_NUMBER ) {
-                            String message = "Serial numbers must be below "
+                            message = "Serial numbers must be below "
                                     + String.valueOf(MAX_SERIAL_NUMBER);
                             Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
                         }

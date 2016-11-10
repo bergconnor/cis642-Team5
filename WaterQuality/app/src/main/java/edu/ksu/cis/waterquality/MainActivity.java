@@ -8,19 +8,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int IMAGE_REQUEST = 1571;
+    private static final int IMAGE_REQUEST    = 1571;
     private static final int LOCATION_REQUEST = 1995;
-    private static final int TEMP_INDEX = 0;
-    private static final int PRECIP_INDEX = 1;
+    private static final int TEMP   = 0;
+    private static final int PRECIP = 1;
 
     private String mTest;
     private String mSerial;
@@ -93,9 +91,20 @@ public class MainActivity extends AppCompatActivity {
         String city = address.get(0).getLocality();
         String state = address.get(0).getAdminArea();
 
+        String location = "(" + mLatitude + ", " + mLongitude + ")";
+
         String[] weatherData = getWeatherData(city, state);
-        String temperature = weatherData[TEMP_INDEX];
-        String precipitation = weatherData[PRECIP_INDEX];
+        String temperature = weatherData[TEMP];
+        String precipitation = weatherData[PRECIP];
+
+        intent.putExtra("EXTRA_DATE", date);
+        intent.putExtra("EXTRA_CITY", city);
+        intent.putExtra("EXTRA_STATE", state);
+        intent.putExtra("EXTRA_LOCATION", location);
+        intent.putExtra("EXTRA_TEST", mTest);
+        intent.putExtra("EXTRA_SERIAL", mSerial);
+        intent.putExtra("EXTRA_TEMPERATURE", temperature);
+        intent.putExtra("EXTRA_PRECIPITATION", precipitation);
 
         startActivity(intent);
     }

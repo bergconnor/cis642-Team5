@@ -19,9 +19,11 @@ import com.google.api.services.sheets.v4.model.*;
 import android.Manifest;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -29,13 +31,18 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,14 +59,29 @@ public class SpreadsheetActivity extends Activity
     private Button mCallApiButton;
     ProgressDialog mProgress;
 
-    static final int REQUEST_ACCOUNT_PICKER = 1000;
-    static final int REQUEST_AUTHORIZATION = 1001;
-    static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
+    static final int REQUEST_ACCOUNT_PICKER          = 1000;
+    static final int REQUEST_AUTHORIZATION           = 1001;
+    static final int REQUEST_GOOGLE_PLAY_SERVICES    = 1002;
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
-    private static final String BUTTON_TEXT = "Call Google Sheets API";
+    static final int DATE          = 0;
+    static final int CITY          = 1;
+    static final int STATE         = 2;
+    static final int LOCATION      = 3;
+    static final int TEST          = 4;
+    static final int SERIAL        = 5;
+    static final int TEMPERATURE   = 6;
+    static final int PRECIPITATION = 7;
+    static final int NAME          = 8;
+    static final int ORGANIZATION  = 9;
+    static final int COMMENT       = 10;
+    static final int DATA_SIZE     = 11;
+
+    private String[] mData = new String[DATA_SIZE];
+
+    private static final String BUTTON_TEXT       = "Upload Data";
     private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS };
+    private static final String[] SCOPES          = { SheetsScopes.SPREADSHEETS };
 
     /**
      * Create the main activity.
@@ -111,9 +133,95 @@ public class SpreadsheetActivity extends Activity
         mCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+
+        promptUser();
     }
 
+    private void promptUser() {
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
 
+        final TextView nameLabel = new TextView(this);
+        nameLabel.setText("Name:");
+        layout.addView(nameLabel);
+
+        final EditText nameBox = new EditText(this);
+        nameBox.setInputType(InputType.TYPE_CLASS_TEXT);
+        layout.addView(nameBox);
+
+        final TextView orgLabel = new TextView(this);
+        orgLabel.setText("Organization:");
+        layout.addView(orgLabel);
+
+        final EditText orgBox = new EditText(this);
+        orgBox.setInputType(InputType.TYPE_CLASS_TEXT);
+        layout.addView(orgBox);
+
+        final TextView commentLabel = new TextView(this);
+        commentLabel.setText("Comment (optional):");
+        layout.addView(commentLabel);
+
+        final EditText commentBox = new EditText(this);
+        commentBox.setInputType(InputType.TYPE_CLASS_TEXT);
+        layout.addView(commentBox);
+
+
+        final AlertDialog alert = new AlertDialog.Builder(this)
+                .setView(layout)
+                .setTitle("Test Information")
+                .setPositiveButton(android.R.string.ok, null)
+                .create();
+
+        alert.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button button = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        String name = nameBox.getText().toString();
+                        String organization = orgBox.getText().toString();
+                        String comment = commentBox.getText().toString();
+                        String message;
+                        if (name.length() < 1) {
+                            message = "Name is required!";
+                            Toast.makeText(SpreadsheetActivity.this, message,
+                                    Toast.LENGTH_LONG).show();
+                        } else if (organization.length() < 1) {
+                            message = "Organization is required!";
+                            Toast.makeText(SpreadsheetActivity.this, message,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            alert.dismiss();
+                            compileData(name, organization, comment);
+                        }
+                    }
+                });
+            }
+        });
+
+        alert.show();
+    }
+
+    private void compileData(String name, String organization, String comment) {
+        Intent intent = getIntent();
+        Bundle data = intent.getExtras();
+
+        mData[DATE]          = data.getString("EXTRA_DATE");
+        mData[CITY]          = data.getString("EXTRA_CITY");
+        mData[STATE]         = data.getString("EXTRA_STATE");
+        mData[LOCATION]      = data.getString("EXTRA_LOCATION");
+        mData[TEST]          = data.getString("EXTRA_TEST");
+        mData[SERIAL]        = data.getString("EXTRA_SERIAL");
+        mData[TEMPERATURE]   = data.getString("EXTRA_TEMPERATURE");
+        mData[PRECIPITATION] = data.getString("EXTRA_PRECIPITATION");
+        mData[NAME]          = name;
+        mData[ORGANIZATION]  = organization;
+        mData[COMMENT]       = comment;
+    }
 
     /**
      * Attempt to call the API, after verifying that all the preconditions are
@@ -359,8 +467,15 @@ public class SpreadsheetActivity extends Activity
             List<List<Object>> data = new ArrayList<List<Object>>();
             List<Object> row = new ArrayList<Object>();
 
-            row.add("Connor");
-            row.add("Berg");
+            String temp;
+            String entry;
+            for (int i = 0; i < DATA_SIZE; i++) {
+                entry = mData[i];
+                if (entry.length() > 0) {
+                    temp = String.format("=\"%s\"", entry);
+                    row.add(temp);
+                }
+            }
 
             data.add(row);
             content.setMajorDimension("ROWS");
@@ -371,7 +486,7 @@ public class SpreadsheetActivity extends Activity
                     .setValueInputOption("USER_ENTERED")
                     .execute();
 
-            List<String> results = new ArrayList<String>();
+            /*List<String> results = new ArrayList<String>();
             ValueRange response = this.mService.spreadsheets().values()
                     .get(spreadsheetId, range)
                     .execute();
@@ -382,10 +497,9 @@ public class SpreadsheetActivity extends Activity
                     results.add(x.get(0) + ", " + x.get(1));
                 }
             }
-            return results;
+            return results;*/
+            return null;
         }
-
-
 
         @Override
         protected void onPreExecute() {
