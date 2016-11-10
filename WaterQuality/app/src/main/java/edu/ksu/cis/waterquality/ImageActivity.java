@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -63,6 +64,7 @@ public class ImageActivity extends AppCompatActivity {
                     + File.separator + "water_quality.jpg");
             String path = file.getAbsolutePath();
             Bitmap bitmap = decodeBitmapFromFile(path, 1000, 700);
+
             bitmap = rotateImage(bitmap, path);
             Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
                     (bitmap.getWidth()/2), bitmap.getHeight());

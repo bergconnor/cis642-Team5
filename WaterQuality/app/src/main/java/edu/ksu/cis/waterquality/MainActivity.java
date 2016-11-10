@@ -2,20 +2,28 @@ package edu.ksu.cis.waterquality;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int IMAGE_REQUEST = 1571;
     private static final int LOCATION_REQUEST = 1995;
+    private static final int TEMP_INDEX = 0;
+    private static final int PRECIP_INDEX = 1;
 
-    private String mDate;
     private String mTest;
     private String mSerial;
-    private String mTemperature;
-    private String mPrecipitation;
     private String mLatitude;
     private String mLongitude;
 
@@ -46,7 +54,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSpreadsheetButtonClicked(View v) {
+
+    }
+
+    private List<Address> getAddress() {
+        List<Address> address = null;
+        try {
+            Double latitude = Double.parseDouble(mLatitude);
+            Double longitude = Double.parseDouble(mLongitude);
+            Geocoder gcd = new Geocoder(this, Locale.getDefault());
+            address = gcd.getFromLocation(latitude, longitude, 1);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return address;
+    }
+
+    private String[] getWeatherData(String city, String state) {
+        String weather = "";
+        try {
+            weather = new Weather(this, mLatitude, mLongitude, city, state)
+                    .execute()
+                    .get();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return weather.split(", ");
+    }
+
+    private void sendData() {
         Intent intent = new Intent(this, SpreadsheetActivity.class);
+
+        String date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
+
+        List<Address> address = getAddress();
+        String city = address.get(0).getLocality();
+        String state = address.get(0).getAdminArea();
+
+        String[] weatherData = getWeatherData(city, state);
+        String temperature = weatherData[TEMP_INDEX];
+        String precipitation = weatherData[PRECIP_INDEX];
+
         startActivity(intent);
     }
 
@@ -63,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 case LOCATION_REQUEST:
                     mLatitude = data.getStringExtra("EXTRA_LATITUDE");
                     mLongitude = data.getStringExtra("EXTRA_LONGITUDE");
+                    sendData();
                     break;
             }
         }
