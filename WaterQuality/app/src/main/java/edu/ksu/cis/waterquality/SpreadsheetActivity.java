@@ -67,7 +67,7 @@ public class SpreadsheetActivity extends Activity
     static final int DATE          = 0;
     static final int CITY          = 1;
     static final int STATE         = 2;
-    static final int LOCATION      = 3;
+    static final int COORDINATES   = 3;
     static final int TEST          = 4;
     static final int SERIAL        = 5;
     static final int TEMPERATURE   = 6;
@@ -79,7 +79,6 @@ public class SpreadsheetActivity extends Activity
 
     private String[] mData = new String[DATA_SIZE];
 
-    private static final String BUTTON_TEXT       = "Upload Data";
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES          = { SheetsScopes.SPREADSHEETS };
 
@@ -90,7 +89,23 @@ public class SpreadsheetActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LinearLayout activityLayout = new LinearLayout(this);
+        setContentView(R.layout.activity_spreadsheet);
+
+        mOutputText = (TextView) this.findViewById(R.id.resultsText);
+        mCallApiButton = (Button) this.findViewById(R.id.uploadButton);
+        mCallApiButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallApiButton.setEnabled(false);
+                mOutputText.setText("");
+                getResultsFromApi();
+                mCallApiButton.setEnabled(true);
+            }
+        });
+
+        mProgress = new ProgressDialog(this);
+        mProgress.setMessage("Uploading data to spreadsheet...");
+        /*LinearLayout activityLayout = new LinearLayout(this);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
@@ -127,7 +142,7 @@ public class SpreadsheetActivity extends Activity
         mProgress = new ProgressDialog(this);
         mProgress.setMessage("Calling Google Sheets API ...");
 
-        setContentView(activityLayout);
+        setContentView(activityLayout);*/
 
         // Initialize credentials and service object.
         mCredential = GoogleAccountCredential.usingOAuth2(
@@ -185,11 +200,16 @@ public class SpreadsheetActivity extends Activity
                         String organization = orgBox.getText().toString();
                         String comment = commentBox.getText().toString();
                         String message;
-                        if (name.length() < 1) {
+                        if (name.length() < 1 && organization.length() < 1) {
+                            message = "Name and organization are required!";
+                            Toast.makeText(SpreadsheetActivity.this, message,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        else if (name.length() < 1 && organization.length() > 0) {
                             message = "Name is required!";
                             Toast.makeText(SpreadsheetActivity.this, message,
                                     Toast.LENGTH_LONG).show();
-                        } else if (organization.length() < 1) {
+                        } else if (organization.length() < 1 && name.length() > 0) {
                             message = "Organization is required!";
                             Toast.makeText(SpreadsheetActivity.this, message,
                                     Toast.LENGTH_LONG).show();
@@ -206,6 +226,32 @@ public class SpreadsheetActivity extends Activity
         alert.show();
     }
 
+    private EditText[] getData() {
+        EditText[] editTexts = new EditText[DATA_SIZE];
+
+        editTexts[DATE]          = (EditText) this.findViewById(R.id.dateEdit);
+        editTexts[CITY]          = (EditText) this.findViewById(R.id.cityEdit);
+        editTexts[STATE]         = (EditText) this.findViewById(R.id.stateEdit);
+        editTexts[COORDINATES]   = (EditText) this.findViewById(R.id.coordinatesEdit);
+        editTexts[TEST]          = (EditText) this.findViewById(R.id.testEdit);
+        editTexts[SERIAL]        = (EditText) this.findViewById(R.id.serialEdit);
+        editTexts[TEMPERATURE]   = (EditText) this.findViewById(R.id.temperatureEdit);
+        editTexts[PRECIPITATION] = (EditText) this.findViewById(R.id.precipitationEdit);
+        editTexts[NAME]          = (EditText) this.findViewById(R.id.nameEdit);
+        editTexts[ORGANIZATION]  = (EditText) this.findViewById(R.id.organizationEdit);
+        editTexts[COMMENT]       = (EditText) this.findViewById(R.id.commentEdit);
+
+        return editTexts;
+    }
+
+    private void setText() {
+        EditText[] editTexts = getData();
+
+        for (int i = 0; i < DATA_SIZE; i++) {
+            editTexts[i].setText(mData[i]);
+        }
+    }
+
     private void compileData(String name, String organization, String comment) {
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
@@ -213,7 +259,7 @@ public class SpreadsheetActivity extends Activity
         mData[DATE]          = data.getString("EXTRA_DATE");
         mData[CITY]          = data.getString("EXTRA_CITY");
         mData[STATE]         = data.getString("EXTRA_STATE");
-        mData[LOCATION]      = data.getString("EXTRA_LOCATION");
+        mData[COORDINATES]   = data.getString("EXTRA_COORDINATES");
         mData[TEST]          = data.getString("EXTRA_TEST");
         mData[SERIAL]        = data.getString("EXTRA_SERIAL");
         mData[TEMPERATURE]   = data.getString("EXTRA_TEMPERATURE");
@@ -221,6 +267,16 @@ public class SpreadsheetActivity extends Activity
         mData[NAME]          = name;
         mData[ORGANIZATION]  = organization;
         mData[COMMENT]       = comment;
+
+        setText();
+    }
+
+    private void recompileData() {
+        EditText[] editTexts = getData();
+
+        for (int i = 0; i < DATA_SIZE; i++) {
+            mData[i] = editTexts[i].getText().toString();
+        }
     }
 
     /**
@@ -445,7 +501,7 @@ public class SpreadsheetActivity extends Activity
         @Override
         protected List<String> doInBackground(Void... params) {
             try {
-                return getDataFromApi();
+                return uploadData();
             } catch (Exception e) {
                 mLastError = e;
                 cancel(true);
@@ -454,18 +510,27 @@ public class SpreadsheetActivity extends Activity
         }
 
         /**
-         * Fetch a list of names and majors of students in a sample spreadsheet:
+         * Upload data from list to desired spreadsheet:
          * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-         * @return List of names and majors
          * @throws IOException
          */
-        private List<String> getDataFromApi() throws IOException {
+        private List<String> uploadData() throws IOException {
             String spreadsheetId = "17ytlyRWtIMX0z0OvPe5aI2m6CQKCDLyD2rtqpy3jwpA";
-            String range = "Sheet1!A1:B";
+            String range = "Sheet1!A1:K";
+            recompileData();
+
+            ValueRange response = this.mService.spreadsheets().values()
+                    .get(spreadsheetId, range)
+                    .execute();
+            int before = 0;
+            List<List<Object>> values = response.getValues();
+            if (values != null) {
+                before = values.size();
+            }
 
             ValueRange content = new ValueRange();
-            List<List<Object>> data = new ArrayList<List<Object>>();
-            List<Object> row = new ArrayList<Object>();
+            List<List<Object>> data = new ArrayList<>();
+            List<Object> row = new ArrayList<>();
 
             String temp;
             String entry;
@@ -486,19 +551,29 @@ public class SpreadsheetActivity extends Activity
                     .setValueInputOption("USER_ENTERED")
                     .execute();
 
-            /*List<String> results = new ArrayList<String>();
-            ValueRange response = this.mService.spreadsheets().values()
+            List<String> results = new ArrayList<>();
+            response = this.mService.spreadsheets().values()
                     .get(spreadsheetId, range)
                     .execute();
-            List<List<Object>> values = response.getValues();
+            int after = 0;
+            values = response.getValues();
             if (values != null) {
-                results.add("Name, Major");
+                after = values.size();
+            }
+
+            if (after > before) {
+                int count = 1;
                 for (List x : values) {
-                    results.add(x.get(0) + ", " + x.get(1));
+                    if (count == after) {
+                        for (int i = 0; i < DATA_SIZE; i++) {
+                            results.add(x.get(i).toString());
+                        }
+                    }
+                    count++;
                 }
             }
-            return results;*/
-            return null;
+
+            return results;
         }
 
         @Override
@@ -511,10 +586,9 @@ public class SpreadsheetActivity extends Activity
         protected void onPostExecute(List<String> output) {
             mProgress.hide();
             if (output == null || output.size() == 0) {
-                mOutputText.setText("No results returned.");
+                mOutputText.setText("Failed to upload data.");
             } else {
-                output.add(0, "Data retrieved using the Google Sheets API:");
-                mOutputText.setText(TextUtils.join("\n", output));
+                mOutputText.setText("Successfully uploaded data.");
             }
         }
 
