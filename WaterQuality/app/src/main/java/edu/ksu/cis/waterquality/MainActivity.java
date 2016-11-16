@@ -91,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
         String city = address.get(0).getLocality();
         String state = address.get(0).getAdminArea();
 
-        String coordinates = "(" + mLatitude + ", " + mLongitude + ")";
-
         String[] weatherData = getWeatherData(city, state);
         String temperature = weatherData[TEMP];
         String precipitation = weatherData[PRECIP];
@@ -100,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("EXTRA_DATE", date);
         intent.putExtra("EXTRA_CITY", city);
         intent.putExtra("EXTRA_STATE", state);
-        intent.putExtra("EXTRA_COORDINATES", coordinates);
+        intent.putExtra("EXTRA_LATITUDE", mLatitude);
+        intent.putExtra("EXTRA_LONGITUDE", mLongitude);
         intent.putExtra("EXTRA_TEST", mTest);
         intent.putExtra("EXTRA_SERIAL", mSerial);
         intent.putExtra("EXTRA_TEMPERATURE", temperature);

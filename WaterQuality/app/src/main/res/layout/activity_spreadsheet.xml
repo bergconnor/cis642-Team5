@@ -8,7 +8,6 @@
     android:orientation="vertical"
     android:padding="16dp"
     tools:context="edu.ksu.cis.waterquality.SpreadsheetActivity">
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,8 +15,8 @@
         android:textSize="30dp"
         android:textStyle="bold"
         android:gravity="center"
-        android:text="Data To Upload"/>
-    
+        android:text="Data To Upload"
+        android:textColor="@color/black"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,186 +25,276 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
-
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:orientation="vertical" >
-
             <TextView
                 android:id="@+id/dateText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="18dp"
                 android:background="@drawable/border"
-                android:text="Date:"/>
+                android:text="Date"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/cityText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="18dp"
                 android:background="@drawable/border"
-                android:text="City:"/>
+                android:text="City"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/stateText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="18dp"
                 android:background="@drawable/border"
-                android:text="State:"/>
+                android:text="State"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
             <TextView
-                android:id="@+id/coordiantesText"
+                android:id="@+id/latitudeText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="18dp"
                 android:background="@drawable/border"
-                android:text="Coordinates:"/>
-
+                android:text="Latitude"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
+            <TextView
+                android:id="@+id/longitudeText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="18dp"
+                android:background="@drawable/border"
+                android:text="Longitude"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/testText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="18dp"
                 android:background="@drawable/border"
-                android:text="Test type:"/>
-
+                android:text="Test type"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/serialText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="18dp"
                 android:background="@drawable/border"
-                android:text="Serial number:"/>
+                android:text="Serial number"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/temperatureText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="18dp"
                 android:background="@drawable/border"
-                android:text="Temperature:"/>
+                android:text="Temperature"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/precipitationText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="18dp"
                 android:background="@drawable/border"
-                android:text="Precipitation:"/>
+                android:text="Precipitation"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/nameText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="18dp"
                 android:background="@drawable/border"
-                android:text="Name:"/>
+                android:text="Name"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/organizationText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="18dp"
                 android:background="@drawable/border"
-                android:text="Organization:"/>
+                android:text="Organization"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/commentText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="18dp"
                 android:background="@drawable/border"
-                android:text="Comment:"/>
+                android:text="Comment"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
         </LinearLayout>
-
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:orientation="vertical" >
-            <EditText
-                android:id="@+id/dateEdit"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="1"
-                android:textSize="18dp"
-                android:background="@drawable/border"/>
-            <EditText
-                android:id="@+id/cityEdit"
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/dateEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textSize="18dp"
+                    android:background="@drawable/border"/>
+            </HorizontalScrollView>
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="1"
-                android:textSize="18dp"
-                android:background="@drawable/border"/>
-            <EditText
-                android:id="@+id/stateEdit"
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/cityEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textSize="18dp"
+                    android:background="@drawable/border"/>
+            </HorizontalScrollView>
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="1"
-                android:textSize="18dp"
-                android:background="@drawable/border"/>
-            <EditText
-                android:id="@+id/coordinatesEdit"
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/stateEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textSize="18dp"
+                    android:background="@drawable/border"/>
+            </HorizontalScrollView>
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="1"
-                android:scrollbars="horizontal"
-                android:textSize="18dp"
-                android:background="@drawable/border"/>
-
-            <EditText
-                android:id="@+id/testEdit"
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/latitudeEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollHorizontally="true"
+                    android:textSize="18dp"
+                    android:background="@drawable/border"/>
+            </HorizontalScrollView>
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="1"
-                android:textSize="18dp"
-                android:background="@drawable/border"/>
-
-            <EditText
-                android:id="@+id/serialEdit"
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/longitudeEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollHorizontally="true"
+                    android:textSize="18dp"
+                    android:background="@drawable/border"/>
+            </HorizontalScrollView>
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="1"
-                android:textSize="18dp"
-                android:background="@drawable/border"/>
-
-            <EditText
-                android:id="@+id/temperatureEdit"
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/testEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:background="@drawable/border"/>
+            </HorizontalScrollView>
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="1"
-                android:textSize="18dp"
-                android:background="@drawable/border"/>
-
-            <EditText
-                android:id="@+id/precipitationEdit"
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/serialEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:background="@drawable/border"/>
+            </HorizontalScrollView>
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="1"
-                android:textSize="18dp"
-                android:background="@drawable/border"/>
-
-            <EditText
-                android:id="@+id/nameEdit"
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/temperatureEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:background="@drawable/border"/>
+            </HorizontalScrollView>
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="1"
-                android:textSize="18dp"
-                android:background="@drawable/border"/>
-
-            <EditText
-                android:id="@+id/organizationEdit"
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/precipitationEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:background="@drawable/border"/>
+            </HorizontalScrollView>
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="1"
-                android:textSize="18dp"
-                android:background="@drawable/border"/>
-            <EditText
-                android:id="@+id/commentEdit"
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/nameEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:background="@drawable/border"/>
+            </HorizontalScrollView>
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLines="1"
-                android:textSize="18dp"
-                android:background="@drawable/border"/>
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/organizationEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:background="@drawable/border"/>
+            </HorizontalScrollView>
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/commentEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:background="@drawable/border"/>
+            </HorizontalScrollView>
         </LinearLayout>
     </LinearLayout>
-
     <TextView
         android:id="@+id/resultsText"
         android:layout_width="match_parent"
@@ -215,7 +304,6 @@
         android:background="@drawable/border"
         android:textSize="20dp"
         android:text="Make sure all data is accurate before pressing 'Upload Data'." />
-
     <Button
         android:id="@+id/uploadButton"
         android:layout_width="match_parent"

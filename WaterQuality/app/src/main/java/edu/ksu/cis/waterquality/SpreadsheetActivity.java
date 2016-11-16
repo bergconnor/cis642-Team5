@@ -67,15 +67,16 @@ public class SpreadsheetActivity extends Activity
     static final int DATE          = 0;
     static final int CITY          = 1;
     static final int STATE         = 2;
-    static final int COORDINATES   = 3;
-    static final int TEST          = 4;
-    static final int SERIAL        = 5;
-    static final int TEMPERATURE   = 6;
-    static final int PRECIPITATION = 7;
-    static final int NAME          = 8;
-    static final int ORGANIZATION  = 9;
-    static final int COMMENT       = 10;
-    static final int DATA_SIZE     = 11;
+    static final int LATITUDE      = 3;
+    static final int LONGITUDE     = 4;
+    static final int TEST          = 5;
+    static final int SERIAL        = 6;
+    static final int TEMPERATURE   = 7;
+    static final int PRECIPITATION = 8;
+    static final int NAME          = 9;
+    static final int ORGANIZATION  = 10;
+    static final int COMMENT       = 11;
+    static final int DATA_SIZE     = 12;
 
     private String[] mData = new String[DATA_SIZE];
 
@@ -232,7 +233,8 @@ public class SpreadsheetActivity extends Activity
         editTexts[DATE]          = (EditText) this.findViewById(R.id.dateEdit);
         editTexts[CITY]          = (EditText) this.findViewById(R.id.cityEdit);
         editTexts[STATE]         = (EditText) this.findViewById(R.id.stateEdit);
-        editTexts[COORDINATES]   = (EditText) this.findViewById(R.id.coordinatesEdit);
+        editTexts[LATITUDE]      = (EditText) this.findViewById(R.id.latitudeEdit);
+        editTexts[LONGITUDE]     = (EditText) this.findViewById(R.id.longitudeEdit);
         editTexts[TEST]          = (EditText) this.findViewById(R.id.testEdit);
         editTexts[SERIAL]        = (EditText) this.findViewById(R.id.serialEdit);
         editTexts[TEMPERATURE]   = (EditText) this.findViewById(R.id.temperatureEdit);
@@ -259,7 +261,8 @@ public class SpreadsheetActivity extends Activity
         mData[DATE]          = data.getString("EXTRA_DATE");
         mData[CITY]          = data.getString("EXTRA_CITY");
         mData[STATE]         = data.getString("EXTRA_STATE");
-        mData[COORDINATES]   = data.getString("EXTRA_COORDINATES");
+        mData[LATITUDE]      = data.getString("EXTRA_LATITUDE");
+        mData[LONGITUDE]     = data.getString("EXTRA_LONGITUDE");
         mData[TEST]          = data.getString("EXTRA_TEST");
         mData[SERIAL]        = data.getString("EXTRA_SERIAL");
         mData[TEMPERATURE]   = data.getString("EXTRA_TEMPERATURE");
