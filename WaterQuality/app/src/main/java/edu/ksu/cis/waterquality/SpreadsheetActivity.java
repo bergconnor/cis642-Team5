@@ -32,15 +32,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.InputType;
-import android.text.TextUtils;
-import android.text.method.ScrollingMovementMethod;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +50,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class SpreadsheetActivity extends Activity
         implements EasyPermissions.PermissionCallbacks {
     GoogleAccountCredential mCredential;
-    private TextView mOutputText;
+    private String mOutputText;
     private Button mCallApiButton;
     ProgressDialog mProgress;
 
@@ -92,13 +87,13 @@ public class SpreadsheetActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spreadsheet);
 
-        mOutputText = (TextView) this.findViewById(R.id.resultsText);
+        mOutputText = "";
         mCallApiButton = (Button) this.findViewById(R.id.uploadButton);
         mCallApiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCallApiButton.setEnabled(false);
-                mOutputText.setText("");
+                mOutputText = "";
                 getResultsFromApi();
                 mCallApiButton.setEnabled(true);
             }
@@ -106,44 +101,6 @@ public class SpreadsheetActivity extends Activity
 
         mProgress = new ProgressDialog(this);
         mProgress.setMessage("Uploading data to spreadsheet...");
-        /*LinearLayout activityLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        activityLayout.setLayoutParams(lp);
-        activityLayout.setOrientation(LinearLayout.VERTICAL);
-        activityLayout.setPadding(16, 16, 16, 16);
-
-        ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        mCallApiButton = new Button(this);
-        mCallApiButton.setText(BUTTON_TEXT);
-        mCallApiButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCallApiButton.setEnabled(false);
-                mOutputText.setText("");
-                getResultsFromApi();
-                mCallApiButton.setEnabled(true);
-            }
-        });
-        activityLayout.addView(mCallApiButton);
-
-        mOutputText = new TextView(this);
-        mOutputText.setLayoutParams(tlp);
-        mOutputText.setPadding(16, 16, 16, 16);
-        mOutputText.setVerticalScrollBarEnabled(true);
-        mOutputText.setMovementMethod(new ScrollingMovementMethod());
-        mOutputText.setText(
-                "Click the \'" + BUTTON_TEXT +"\' button to test the API.");
-        activityLayout.addView(mOutputText);
-
-        mProgress = new ProgressDialog(this);
-        mProgress.setMessage("Calling Google Sheets API ...");
-
-        setContentView(activityLayout);*/
 
         // Initialize credentials and service object.
         mCredential = GoogleAccountCredential.usingOAuth2(
@@ -295,7 +252,9 @@ public class SpreadsheetActivity extends Activity
         } else if (mCredential.getSelectedAccountName() == null) {
             chooseAccount();
         } else if (! isDeviceOnline()) {
-            mOutputText.setText("No network connection available.");
+            mOutputText = "No network connection available.";
+            Toast.makeText(SpreadsheetActivity.this, mOutputText,
+                    Toast.LENGTH_LONG).show();
         } else {
             new MakeRequestTask(mCredential).execute();
         }
@@ -353,9 +312,10 @@ public class SpreadsheetActivity extends Activity
         switch(requestCode) {
             case REQUEST_GOOGLE_PLAY_SERVICES:
                 if (resultCode != RESULT_OK) {
-                    mOutputText.setText(
-                            "This app requires Google Play Services. Please install " +
-                                    "Google Play Services on your device and relaunch this app.");
+                    mOutputText = "This app requires Google Play Services. Please install " +
+                                    "Google Play Services on your device and relaunch this app.";
+                    Toast.makeText(SpreadsheetActivity.this, mOutputText,
+                            Toast.LENGTH_LONG).show();
                 } else {
                     getResultsFromApi();
                 }
@@ -581,7 +541,7 @@ public class SpreadsheetActivity extends Activity
 
         @Override
         protected void onPreExecute() {
-            mOutputText.setText("");
+            mOutputText = "";
             mProgress.show();
         }
 
@@ -589,9 +549,13 @@ public class SpreadsheetActivity extends Activity
         protected void onPostExecute(List<String> output) {
             mProgress.hide();
             if (output == null || output.size() == 0) {
-                mOutputText.setText("Failed to upload data.");
+                mOutputText = "Failed to upload data.";
+                Toast.makeText(SpreadsheetActivity.this, mOutputText,
+                        Toast.LENGTH_LONG).show();
             } else {
-                mOutputText.setText("Successfully uploaded data.");
+                mOutputText = "Successfully uploaded data.";
+                Toast.makeText(SpreadsheetActivity.this, mOutputText,
+                        Toast.LENGTH_LONG).show();
             }
         }
 
@@ -608,11 +572,15 @@ public class SpreadsheetActivity extends Activity
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
                             SpreadsheetActivity.REQUEST_AUTHORIZATION);
                 } else {
-                    mOutputText.setText("The following error occurred:\n"
-                            + mLastError.getMessage());
+                    mOutputText = "The following error occurred:\n"
+                            + mLastError.getMessage();
+                    Toast.makeText(SpreadsheetActivity.this, mOutputText,
+                            Toast.LENGTH_LONG).show();
                 }
             } else {
-                mOutputText.setText("Request cancelled.");
+                mOutputText = "Request cancelled.";
+                Toast.makeText(SpreadsheetActivity.this, mOutputText,
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
