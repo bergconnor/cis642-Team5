@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onHelpButtonClicked(View v) {
-        Intent intent = new Intent(this, HelpActivity.class);
+        Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
     }
 
