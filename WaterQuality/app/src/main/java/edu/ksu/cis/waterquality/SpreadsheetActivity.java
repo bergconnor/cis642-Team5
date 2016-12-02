@@ -479,7 +479,7 @@ public class SpreadsheetActivity extends Activity
          */
         private List<String> uploadData() throws IOException {
             String spreadsheetId = "17ytlyRWtIMX0z0OvPe5aI2m6CQKCDLyD2rtqpy3jwpA";
-            String range = "Sheet1!A1:K";
+            String range = "Sheet1!A1:" + Character.toString((char)('A' + DATA_SIZE - 1));
             recompileData();
 
             ValueRange response = this.mService.spreadsheets().values()
@@ -528,7 +528,7 @@ public class SpreadsheetActivity extends Activity
                 int count = 1;
                 for (List x : values) {
                     if (count == after) {
-                        for (int i = 0; i < DATA_SIZE; i++) {
+                        for (int i = 0; i < x.size(); i++) {
                             results.add(x.get(i).toString());
                         }
                     }
