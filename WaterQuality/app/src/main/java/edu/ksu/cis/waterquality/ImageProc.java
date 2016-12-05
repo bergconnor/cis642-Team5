@@ -47,7 +47,7 @@ public class ImageProc {
         List<Rect> squares = findTestSquares(imageA);
         squares = sortTestSquares(squares);
         List<Scalar> colors = findColor(image, squares);
-        int result = linearRegression(testColors);
+        int result = linearRegression(colors);
 
         return result;
     }

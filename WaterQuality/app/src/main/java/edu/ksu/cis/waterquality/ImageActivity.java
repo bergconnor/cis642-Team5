@@ -104,6 +104,7 @@ public class ImageActivity extends AppCompatActivity {
             Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
                     (bitmap.getWidth()/2), bitmap.getHeight());
             String results = scanQRCode(croppedBitmap);
+            ImageProc.readImage(croppedBitmap);
             processResults(results);
         }
     }
