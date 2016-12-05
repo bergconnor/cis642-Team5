@@ -527,6 +527,8 @@ public class SpreadsheetActivity extends Activity
             if (after > before) {
                 int count = 1;
                 for (List x : values) {
+                    String lat = x.get(LATITUDE).toString();
+                    String lon = x.get(LONGITUDE).toString();
                     if (count == after) {
                         for (int i = 0; i < x.size(); i++) {
                             results.add(x.get(i).toString());

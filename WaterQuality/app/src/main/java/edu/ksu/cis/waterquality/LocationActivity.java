@@ -1,8 +1,11 @@
 package edu.ksu.cis.waterquality;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -24,7 +27,12 @@ public class LocationActivity extends FragmentActivity implements
         OnConnectionFailedListener,
         LocationListener {
 
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    private static final int PERMISSION_REQUEST = 7352;
+    private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
+    private long UPDATE_INTERVAL  = 10 * 1000; // 10 secs
+    private long FASTEST_INTERVAL = 2000; // 2 sec
+
     public static final String TAG = LocationActivity.class.getSimpleName();
 
     private GoogleApiClient mGoogleApiClient;
@@ -41,8 +49,8 @@ public class LocationActivity extends FragmentActivity implements
 
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+                .setInterval(UPDATE_INTERVAL)
+                .setFastestInterval(FASTEST_INTERVAL);
     }
 
     @Override
@@ -82,11 +90,15 @@ public class LocationActivity extends FragmentActivity implements
     public void onConnected(Bundle bundle) {
         Log.i(TAG, "Location services connected.");
 
-        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+        if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions( this, new String[] {
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
-            }, 123 );
+                ActivityCompat.requestPermissions(this, new String[]{
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSION_REQUEST);
         }
 
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);

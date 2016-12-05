@@ -1,16 +1,21 @@
 package edu.ksu.cis.waterquality;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -40,6 +45,7 @@ public class ImageActivity extends AppCompatActivity {
 
     private static final String[] mTestTypes = new String[]{"Nitrate", "Phosphate"};
 
+    private static final int PERMISSION_REQUEST = 1441;
     private static final int CAMERA_REQUEST = 1772;
     private static final int MAX_SERIAL_NUMBER = 99999;
 
@@ -51,11 +57,49 @@ public class ImageActivity extends AppCompatActivity {
     }
 
     private void takePicture() {
+        int sdk = Build.VERSION.SDK_INT;
+        if (sdk >= 23) {
+            startPermissions();
+        }
+        else {
+            startCamera();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void startPermissions() {
+//        if (checkSelfPermission(Manifest.permission.CAMERA)
+//                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_NETWORK_STATE,
+                    Manifest.permission.INTERNET,
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST);
+//        }
+    }
+
+    private void startCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File file = new File(Environment.getExternalStorageDirectory()
                 + File.separator + "water_quality.jpg");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(intent, CAMERA_REQUEST);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCamera();
+            }
+            else {
+                // Your app will not have this permission. Turn off all functions
+                // that require this permission or it will force close like your
+                // original question
+            }
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
