@@ -58,26 +58,17 @@ public class ImageActivity extends AppCompatActivity {
 
     private void takePicture() {
         int sdk = Build.VERSION.SDK_INT;
-        if (sdk >= 23) {
-            startPermissions();
-        }
-        else {
-            startCamera();
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private void startPermissions() {
-//        if (checkSelfPermission(Manifest.permission.CAMERA)
-//                != PackageManager.PERMISSION_GRANTED) {
-
+        if (sdk >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.ACCESS_NETWORK_STATE,
                     Manifest.permission.INTERNET,
                     Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PERMISSION_REQUEST);
-//        }
+        }
+        else {
+            startCamera();
+        }
     }
 
     private void startCamera() {
@@ -95,9 +86,9 @@ public class ImageActivity extends AppCompatActivity {
                 startCamera();
             }
             else {
-                // Your app will not have this permission. Turn off all functions
-                // that require this permission or it will force close like your
-                // original question
+                String message = "Camera use is required for this application.";
+                Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
+                takePicture();
             }
         }
     }
