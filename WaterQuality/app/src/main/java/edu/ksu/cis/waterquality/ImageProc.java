@@ -2,6 +2,7 @@ package edu.ksu.cis.waterquality;
 
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +27,7 @@ public class ImageProc {
      * Parameters:
      *      String fileName: name of the picture file to perform the processing on.
      */
-    public static Bitmap readImage(Bitmap bitmap) {
+    public static int readImage(Bitmap bitmap) {
         System.loadLibrary("opencv_java3");
 
         Mat image = new Mat();
@@ -43,31 +44,12 @@ public class ImageProc {
         Imgproc.GaussianBlur(imageHSV, imageBlurr, new Size(5,5), 0);
         Imgproc.adaptiveThreshold(imageBlurr, imageA, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY,7, 5);
 
-        List<MatOfPoint> contours = findTestSquares(imageA);
+        List<Rect> squares = findTestSquares(imageA);
+        squares = sortTestSquares(squares);
+        List<Scalar> colors = findColor(image, squares);
+        int result = linearRegression(testColors);
 
-        MatOfPoint2f approxCurve = new MatOfPoint2f();
-
-        //For each contour found
-        for (int i=0; i<contours.size(); i++)
-        {
-            //Convert contours(i) from MatOfPoint to MatOfPoint2f
-            MatOfPoint2f contour2f = new MatOfPoint2f( contours.get(i).toArray() );
-            //Processing on mMOP2f1 which is in type MatOfPoint2f
-            double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
-            Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
-
-            //Convert back to MatOfPoint
-            MatOfPoint points = new MatOfPoint( approxCurve.toArray() );
-
-            // Get bounding rect of contour
-            Rect rect = Imgproc.boundingRect(points);
-
-            // draw enclosing rectangle (all same color, but you could use variable i to make them unique)
-            rectangle(image, new Point(rect.x,rect.y), new Point(rect.x+rect.width,rect.y+rect.height), new Scalar(0, 255, 0, 255), 2);
-        }
-
-        Utils.matToBitmap(image, bitmap);
-        return bitmap;
+        return result;
     }
 
     /* Finds all the contours in the image, then removes any non-square contours and contours that
@@ -78,7 +60,7 @@ public class ImageProc {
      * Returns:
      *      List<Rect>: holds the 12 test rectangles that need further processing.
      */
-    private static List<MatOfPoint> findTestSquares(Mat img) {
+    private static List<Rect> findTestSquares(Mat img) {
         /* Uses findContours to find all contours, or closed shapes, in the image. */
         List<MatOfPoint> contours = new ArrayList<>();
         List<MatOfPoint> squares = new ArrayList<>();
@@ -129,14 +111,32 @@ public class ImageProc {
             }
         }
 
-        return samples;
+        List<Rect> rectangles = new ArrayList<>();
+        MatOfPoint2f approxCurve = new MatOfPoint2f();
+        for (int i=0; i<samples.size(); i++)
+        {
+            //Convert contours(i) from MatOfPoint to MatOfPoint2f
+            MatOfPoint2f contour2f = new MatOfPoint2f( samples.get(i).toArray() );
+            //Processing on mMOP2f1 which is in type MatOfPoint2f
+            double approxDistance = Imgproc.arcLength(contour2f, true)*0.02;
+            Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
+
+            //Convert back to MatOfPoint
+            MatOfPoint points = new MatOfPoint( approxCurve.toArray() );
+
+            // Get bounding rect of contour
+            Rect rect = Imgproc.boundingRect(points);
+
+            rectangles.add(rect);
+        }
+
+        return rectangles;
     }
 
-    /* Sorts the list of rectangles in order from upper left to bottom right.
-     * Parameters:
-     *      List<Rect> squares: The list of Rects to sort, should only contain 12 squares
-     * Returns:
-     *      List<Rect>: holds the sorted squares.
+    /** Sorts the list of rectangles in order from upper left to bottom right.
+     *
+     * @param squares The list of Rects to sort, should only contain 12 squares
+     * @return        holds the sorted squares.
      */
     private static List<Rect> sortTestSquares(List<Rect> squares) {
         List<Rect> initSort = new ArrayList<Rect>();
@@ -175,16 +175,15 @@ public class ImageProc {
         return initSort;
     }
 
-    /* Finds the colors inside each square by first shrinking the Rect object for the square to be
-     * inside the square on the test card. It then finds the average color in each square and stores
+    /** Finds the colors inside each square by first shrinking the Rect object for the square to be
+     * inside the square on the test card, then finds the average color in each square and stores
      * it as a Scalar in BGR colorspace.
-     * Parameters:
-     *      Mat img: the original, color image that was grabbed initially
-     *      List<Rect> squares: the sorted list of the test squares
-     * Returns:
-     *      List<Scalar>: holds the average color of each square in the same sort as the squares in
-     *                    the list. It is stored in the BGRA colorspace (A will sometimes be 0
-     *                    depending on if the initial image has an alpha)
+     *
+     * @param img     the original, color image that was grabbed initially
+     * @param squares the sorted list of the test squares
+     * @return        holds the average color of each square in the same sort as the squares in the
+     *                list. It is stored in the BGRA colorspace ('A' will sometimes be 0 depending
+     *                on if the initial image has an alpha)
      */
     private static List<Scalar> findColor(Mat img, List<Rect> squares) {
         List<Scalar> colors = new ArrayList<Scalar>();
@@ -215,5 +214,32 @@ public class ImageProc {
             colors.add(mean(img, mask));
         }
         return colors;
+    }
+
+    /** Performs simple linear regression on the color values of the squares and their corresponding
+     * strength values. It will then find the strength of the test squares. Currently uses just
+     * saturation to perform the linear regression.
+     *
+     * @param colorVals: the color values of the test squares.
+     */
+    private static int linearRegression(List<Scalar> colorVals) {
+        double[] colorArr = new double[colorVals.size() - 4];
+        double[] percVals = { 90, 85, 80, 75, 70, 65, 60, 55 };
+        for(int i = 2; i < colorVals.size() - 2; i++) {
+            float[] tempHSV = new float[3];
+            Color.RGBToHSV((int)colorVals.get(i).val[2], (int)colorVals.get(i).val[1], (int)colorVals.get(i).val[0], tempHSV);
+            colorArr[i-2] = tempHSV[1];
+        }
+        LinearRegression test = new LinearRegression(colorArr, percVals);
+        float[] temp = new float[3];
+        Color.RGBToHSV((int)colorVals.get(10).val[2], (int)colorVals.get(10).val[1], (int)colorVals.get(10).val[0], temp);
+        double testVal1 = temp[1];
+        Color.RGBToHSV((int)colorVals.get(11).val[2], (int)colorVals.get(11).val[1], (int)colorVals.get(11).val[0], temp);
+        double testVal2 = temp[1];
+        double predictPerc1 = test.predict(testVal1);
+        double predictPerc2 = test.predict(testVal2);
+        double avg = (predictPerc1 + predictPerc2) / 2;
+        System.out.print(avg);
+        return (int)avg;
     }
 }
