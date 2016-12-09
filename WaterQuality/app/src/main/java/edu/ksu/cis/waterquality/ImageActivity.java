@@ -104,7 +104,7 @@ public class ImageActivity extends AppCompatActivity {
             Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
                     (bitmap.getWidth()/2), bitmap.getHeight());
             String code = scanQRCode(croppedBitmap);
-            int value = ImageProc.readImage(bitmap);
+            double value = ImageProc.readImage(bitmap);
             processResults(code, value);
         }
     }
@@ -185,8 +185,8 @@ public class ImageActivity extends AppCompatActivity {
         return contents;
     }
 
-    private void processResults(String code, int value) {
-        if (code.length() > 0 && value > 0) {
+    private void processResults(String code, double value) {
+        if (code.length() > 0 && value > 0.0) {
             String message = "Value = " + value;
             Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
             String[] information = code.split("\n");

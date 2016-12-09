@@ -28,7 +28,7 @@ public class ImageProc {
      * Parameters:
      *      String fileName: name of the picture file to perform the processing on.
      */
-    public static int readImage(Bitmap bitmap) {
+    public static double readImage(Bitmap bitmap) {
         try {
             System.loadLibrary("opencv_java3");
 
@@ -228,7 +228,7 @@ public class ImageProc {
      *
      * @param colorVals: the color values of the test squares.
      */
-    private static int linearRegression(List<Scalar> colorVals) {
+    private static double linearRegression(List<Scalar> colorVals) {
         double[] colorArr = new double[colorVals.size() - 4];
         double[] percVals = { 90, 85, 80, 75, 70, 65, 60, 55 };
         for(int i = 2; i < colorVals.size() - 2; i++) {
@@ -246,6 +246,6 @@ public class ImageProc {
         double predictPerc2 = test.predict(testVal2);
         double avg = (predictPerc1 + predictPerc2) / 2;
         System.out.print(avg);
-        return (int)avg;
+        return avg;
     }
 }
