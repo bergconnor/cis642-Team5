@@ -13,6 +13,7 @@ import org.opencv.android.Utils;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
+import static java.lang.Math.abs;
 import static org.opencv.core.Core.*;
 import static org.opencv.imgproc.Imgproc.*;
 
@@ -28,28 +29,35 @@ public class ImageProc {
      *      String fileName: name of the picture file to perform the processing on.
      */
     public static int readImage(Bitmap bitmap) {
-        System.loadLibrary("opencv_java3");
+        try {
+            System.loadLibrary("opencv_java3");
 
-        Mat image = new Mat();
-        Utils.bitmapToMat(bitmap, image);
+            Mat image = new Mat();
+            Utils.bitmapToMat(bitmap, image);
 
-        Mat imageGray = new Mat();
-        cvtColor(image, imageGray, COLOR_BGR2GRAY);
+            Mat imageGray = new Mat();
+            cvtColor(image, imageGray, COLOR_BGR2GRAY);
 
-        Mat imageHSV = new Mat(imageGray.size(), CvType.CV_8UC4);
-        Mat imageBlurr = new Mat(imageGray.size(), CvType.CV_8UC4);
-        Mat imageA = new Mat(imageGray.size(), CvType.CV_32F);
+            Mat imageHSV = new Mat(imageGray.size(), CvType.CV_8UC4);
+            Mat imageBlurr = new Mat(imageGray.size(), CvType.CV_8UC4);
+            Mat imageA = new Mat(imageGray.size(), CvType.CV_32F);
 
-        Imgproc.cvtColor(image, imageHSV, Imgproc.COLOR_BGR2GRAY);
-        Imgproc.GaussianBlur(imageHSV, imageBlurr, new Size(5,5), 0);
-        Imgproc.adaptiveThreshold(imageBlurr, imageA, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY,7, 5);
+            Imgproc.cvtColor(image, imageHSV, Imgproc.COLOR_BGR2GRAY);
+            Imgproc.GaussianBlur(imageHSV, imageBlurr, new Size(5, 5), 0);
+            Imgproc.adaptiveThreshold(imageBlurr, imageA, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 7, 5);
 
-        List<Rect> squares = findTestSquares(imageA);
-        squares = sortTestSquares(squares);
-        List<Scalar> colors = findColor(image, squares);
-        int result = linearRegression(colors);
-
-        return result;
+            List<Rect> squares = findTestSquares(imageA);
+            squares = sortTestSquares(squares);
+            if (squares.size() != 12)
+            {
+                return -1;
+            }
+            List<Scalar> colors = findColor(image, squares);
+            return linearRegression(colors);
+        } catch (Exception ex)
+        {
+            return -1;
+        }
     }
 
     /* Finds all the contours in the image, then removes any non-square contours and contours that
@@ -139,40 +147,38 @@ public class ImageProc {
      * @return        holds the sorted squares.
      */
     private static List<Rect> sortTestSquares(List<Rect> squares) {
-        List<Rect> initSort = new ArrayList<Rect>();
-        Rect next = new Rect();
-        int size = squares.size();
+        Collections.sort(squares, new Comparator<Rect>() {
+            @Override
+            public int compare(Rect o1, Rect o2) {
+                Double diffX = o1.tl().x - o2.tl().x;
+                Double diffY = o1.tl().y - o2.tl().y;
 
-        /* Runs through the list of squares and pulls the highest square (lowest y value) out from
-         * the current list and puts it in a new list. This sorts all of the squares by y, but will
-         * still need sorted by x. Overall, this puts the first column as the first 3, second column
-         * as the second three and so forth. */
-        for(int i = 0; i < size; i++) {
-            for (int j = 0; j < squares.size(); j++) {
-                if (next.y > squares.get(j).y || j == 0) {
-                    next = squares.get(j);
-                }
-            }
-            initSort.add(next);
-            squares.remove(next);
-            next = new Rect();
-        }
-        /* This will sort each set of three by their x value (lowest to the left, highest on right).
-         * This will complete the overall sort, giving us a top-to-bottom, left-to-right sort. */
-        int moves = 0;
-        for(int i = 0; i < 4; i++) {
-            do {
-                for(int j = i*3; j < (i+1)*3; j++) {
-                    if(j+1 < (i+1)*3 && initSort.get(j).x > initSort.get(j+1).x) {
-                        next = initSort.get(j);
-                        initSort.set(j, initSort.get(j+1));
-                        initSort.set(j+1, next);
-                        moves++;
+                if (abs(diffY) < 10.0)
+                {
+                    if (abs(diffX) < 10.0)
+                    {
+                        return 0;
+                    }
+                    else if (diffX < 0)
+                    {
+                        return -1;
+                    }
+                    else
+                    {
+                        return 1;
                     }
                 }
-            } while(moves > 0);
-        }
-        return initSort;
+                else if (diffY < 0)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+        });
+        return squares;
     }
 
     /** Finds the colors inside each square by first shrinking the Rect object for the square to be

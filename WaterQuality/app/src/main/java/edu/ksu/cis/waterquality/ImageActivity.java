@@ -103,9 +103,9 @@ public class ImageActivity extends AppCompatActivity {
             bitmap = rotateImage(bitmap, path);
             Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
                     (bitmap.getWidth()/2), bitmap.getHeight());
-            String results = scanQRCode(croppedBitmap);
-            ImageProc.readImage(bitmap);
-            processResults(results);
+            String code = scanQRCode(croppedBitmap);
+            int value = ImageProc.readImage(bitmap);
+            processResults(code, value);
         }
     }
 
@@ -185,37 +185,66 @@ public class ImageActivity extends AppCompatActivity {
         return contents;
     }
 
-    private void processResults(String results) {
-        if (results.length() > 0) {
-            String[] information = results.split("\n");
+    private void processResults(String code, int value) {
+        if (code.length() > 0 && value > 0) {
+            String message = "Value = " + value;
+            Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
+            String[] information = code.split("\n");
             String test = information[0].split(" ")[0];
             String serial = information[1].replaceAll("[^0-9]","");
             sendResults(test, serial);
         } else {
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which){
-                        case DialogInterface.BUTTON_POSITIVE:
-                            takePicture();
-                            break;
-
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            manualEntry();
-                            break;
-                    }
-                }
-            };
-
-            final AlertDialog alert = new AlertDialog.Builder(this)
-                    .setTitle("Test Information")
-                    .setMessage("Would you like to take a new picture or manually enter the information?")
-                    .setPositiveButton("New Picture", dialogClickListener)
-                    .setNegativeButton("Manual Entry", dialogClickListener)
-                    .create();
-
-            alert.show();
+            imageException();
+//            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    switch (which){
+//                        case DialogInterface.BUTTON_POSITIVE:
+//                            takePicture();
+//                            break;
+//
+//                        case DialogInterface.BUTTON_NEGATIVE:
+//                            manualEntry();
+//                            break;
+//                    }
+//                }
+//            };
+//
+//            final AlertDialog alert = new AlertDialog.Builder(this)
+//                    .setTitle("Test Information")
+//                    .setMessage("Would you like to take a new picture or manually enter the information?")
+//                    .setPositiveButton("New Picture", dialogClickListener)
+//                    .setNegativeButton("Manual Entry", dialogClickListener)
+//                    .create();
+//
+//            alert.show();
         }
+    }
+
+    private void imageException() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        takePicture();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        System.exit(0);
+                        break;
+                }
+            }
+        };
+
+        final AlertDialog alert = new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage("Failed to detect sample. Would you like to try again?")
+                .setPositiveButton("Retake", dialogClickListener)
+                .setNegativeButton("Exit", dialogClickListener)
+                .create();
+
+        alert.show();
     }
 
     private void manualEntry() {
