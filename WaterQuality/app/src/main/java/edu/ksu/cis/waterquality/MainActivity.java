@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String mTest;
     private String mSerial;
+    private String mColor;
     private String mLatitude;
     private String mLongitude;
 
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         String temperature = weatherData[TEMP];
         String precipitation = weatherData[PRECIP];
 
+        intent.putExtra("EXTRA_COLOR", mColor);
         intent.putExtra("EXTRA_DATE", date);
         intent.putExtra("EXTRA_CITY", city);
         intent.putExtra("EXTRA_STATE", state);
@@ -115,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                 case IMAGE_REQUEST:
                     mTest = data.getStringExtra("EXTRA_TEST");
                     mSerial = data.getStringExtra("EXTRA_SERIAL");
+                    mColor = data.getStringExtra("EXTRA_COLOR");
                     Intent intent = new Intent(this, LocationActivity.class);
                     startActivityForResult(intent, LOCATION_REQUEST);
                     break;

@@ -187,12 +187,13 @@ public class ImageActivity extends AppCompatActivity {
 
     private void processResults(String code, double value) {
         if (code.length() > 0 && value > 0.0) {
-            String message = "Value = " + value;
-            Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
+            value = (double) Math.round(value * 100.0) / 100.0;
+            String color = Double.toString(value);
+            //Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
             String[] information = code.split("\n");
             String test = information[0].split(" ")[0];
             String serial = information[1].replaceAll("[^0-9]","");
-            sendResults(test, serial);
+            sendResults(test, serial, color);
         } else {
             imageException();
 //            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -247,7 +248,7 @@ public class ImageActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void manualEntry() {
+    /*private void manualEntry() {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
 
@@ -313,7 +314,7 @@ public class ImageActivity extends AppCompatActivity {
         });
 
         alert.show();
-    }
+    }*/
 
     private boolean isInteger(String s, int radix) {
         if(s.isEmpty()) return false;
@@ -327,10 +328,11 @@ public class ImageActivity extends AppCompatActivity {
         return true;
     }
 
-    private void sendResults(String test, String serial) {
+    private void sendResults(String test, String serial, String color) {
         Intent intent = new Intent();
         intent.putExtra("EXTRA_TEST", test);
         intent.putExtra("EXTRA_SERIAL", serial);
+        intent.putExtra("EXTRA_COLOR", color);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

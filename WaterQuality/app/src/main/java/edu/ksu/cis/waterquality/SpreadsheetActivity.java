@@ -59,19 +59,20 @@ public class SpreadsheetActivity extends Activity
     static final int REQUEST_GOOGLE_PLAY_SERVICES    = 1002;
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
-    static final int DATE          = 0;
-    static final int CITY          = 1;
-    static final int STATE         = 2;
-    static final int LATITUDE      = 3;
-    static final int LONGITUDE     = 4;
-    static final int TEST          = 5;
-    static final int SERIAL        = 6;
-    static final int TEMPERATURE   = 7;
-    static final int PRECIPITATION = 8;
-    static final int NAME          = 9;
-    static final int ORGANIZATION  = 10;
-    static final int COMMENT       = 11;
-    static final int DATA_SIZE     = 12;
+    static final int COLOR          = 0;
+    static final int DATE          = 1;
+    static final int CITY          = 2;
+    static final int STATE         = 3;
+    static final int LATITUDE      = 4;
+    static final int LONGITUDE     = 5;
+    static final int TEST          = 6;
+    static final int SERIAL        = 7;
+    static final int TEMPERATURE   = 8;
+    static final int PRECIPITATION = 9;
+    static final int NAME          = 10;
+    static final int ORGANIZATION  = 11;
+    static final int COMMENT       = 12;
+    static final int DATA_SIZE     = 13;
 
     private String[] mData = new String[DATA_SIZE];
 
@@ -187,6 +188,7 @@ public class SpreadsheetActivity extends Activity
     private EditText[] getData() {
         EditText[] editTexts = new EditText[DATA_SIZE];
 
+        editTexts[COLOR]          = (EditText) this.findViewById(R.id.colorEdit);
         editTexts[DATE]          = (EditText) this.findViewById(R.id.dateEdit);
         editTexts[CITY]          = (EditText) this.findViewById(R.id.cityEdit);
         editTexts[STATE]         = (EditText) this.findViewById(R.id.stateEdit);
@@ -215,6 +217,7 @@ public class SpreadsheetActivity extends Activity
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
 
+        mData[COLOR]         = data.getString("EXTRA_COLOR");
         mData[DATE]          = data.getString("EXTRA_DATE");
         mData[CITY]          = data.getString("EXTRA_CITY");
         mData[STATE]         = data.getString("EXTRA_STATE");

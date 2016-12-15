@@ -22,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:weightSum="2"
         android:orientation="horizontal"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -31,6 +32,17 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:orientation="vertical" >
+            <TextView
+                android:id="@+id/colorText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:textSize="18dp"
+                android:background="@drawable/border"
+                android:text="Color"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/dateText"
                 android:layout_width="match_parent"
@@ -170,8 +182,27 @@
             android:layout_weight="1"
             android:orientation="vertical" >
             <HorizontalScrollView
+                android:id="@+id/colorScroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:scrollbars="none"
+                android:background="@drawable/border">
+                <EditText
+                    android:id="@+id/colorEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:maxLines="1"
+                    android:inputType="textNoSuggestions"
+                    android:background="@android:color/transparent"/>
+            </HorizontalScrollView>
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:scrollbars="none"
@@ -188,9 +219,9 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fillViewport="true"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
-                android:fillViewport="true"
                 android:background="@drawable/border">
                 <EditText
                     android:id="@+id/cityEdit"
@@ -204,6 +235,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fillViewport="true"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:scrollbars="none"
@@ -220,6 +252,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fillViewport="true"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:scrollbars="none"
@@ -236,6 +269,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fillViewport="true"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:scrollbars="none"
@@ -252,6 +286,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fillViewport="true"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:scrollbars="none"
@@ -268,6 +303,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fillViewport="true"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:scrollbars="none"
@@ -284,6 +320,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fillViewport="true"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:scrollbars="none"
@@ -300,6 +337,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fillViewport="true"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:scrollbars="none"
@@ -316,6 +354,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fillViewport="true"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:scrollbars="none"
@@ -332,6 +371,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fillViewport="true"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:scrollbars="none"
@@ -348,6 +388,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fillViewport="true"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:scrollbars="none"
