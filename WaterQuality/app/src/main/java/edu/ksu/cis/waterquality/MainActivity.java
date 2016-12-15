@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private String mLatitude;
     private String mLongitude;
 
-    private List<LatLng> mCoordinates = new ArrayList<>();
+    private ArrayList<String> mLatitudes = new ArrayList<>();
+    private ArrayList<String> mLongitudes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void onMapButtonClicked(View v) {
         Intent intent = new Intent(this, MapsActivity.class);
+        intent.putStringArrayListExtra("EXTRA_LATITUDES", mLatitudes);
+        intent.putStringArrayListExtra("EXTRA_LONGITUDES", mLongitudes);
         startActivity(intent);
     }
 
@@ -141,14 +144,8 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case SPREADSHEET_REQUEST:
-                    List<String> latitudes = data.getStringArrayListExtra("EXTRA_LATITUDES");
-                    List<String> longitudes = data.getStringArrayListExtra("EXTRA_LONGITUDES");
-                    for (int i = 1; i < latitudes.size(); i++)
-                    {
-                        double lat = Double.parseDouble(latitudes.get(i));
-                        double lon = Double.parseDouble(longitudes.get(i));
-                        mCoordinates.add(new LatLng(lat, lon));
-                    }
+                    mLatitudes = data.getStringArrayListExtra("EXTRA_LATITUDES");
+                    mLongitudes = data.getStringArrayListExtra("EXTRA_LONGITUDES");
                     break;
             }
         }

@@ -1,6 +1,7 @@
 package edu.ksu.cis.waterquality;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -185,33 +186,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mCurrLocationMarker.remove();
         }
 
+        Intent intent = getIntent();
+        Bundle data = intent.getExtras();
+        List<String> latitudes = data.getStringArrayList("EXTRA_LATITUDES");
+        List<String> longitudes = data.getStringArrayList("EXTRA_LONGITUDES");
+        List<LatLng> coordinates = new ArrayList<>();
+
+        for (int i = 1; i < latitudes.size(); i++)
+        {
+            double lat = Double.parseDouble(latitudes.get(i));
+            double lon = Double.parseDouble(longitudes.get(i));
+            coordinates.add(new LatLng(lat, lon));
+        }
+
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
+        //mCurrLocationMarker = mMap.addMarker(markerOptions);
 
-        LatLng latLng2 = new LatLng(50,50);
-        LatLng  myLocations [] = new LatLng[5];
-        myLocations[0] = new LatLng(80,-50);
-        myLocations[1] = new LatLng(50,120);
-        myLocations[2] = new LatLng(120,50);
-        myLocations[3] = new LatLng(-50,-50);
-        myLocations[4] = new LatLng(50,50);
-    
-        List<LatLng> myLocations2 = new ArrayList<LatLng>();
-        myLocations2.add(new LatLng(80,-50));
-        myLocations2.add(new LatLng(50,120));
-        myLocations2.add(new LatLng(120,50));
-        myLocations2.add(new LatLng(-50,-50));
-        myLocations2.add(new LatLng(50,50));
 
-        for (int i = 0 ; i < myLocations2.size() ; i++)
+        for (int i = 0 ; i < coordinates.size() ; i++)
         {
 
-            markerOptions.position(myLocations[i]);
+            markerOptions.position(coordinates.get(i));
             int x = i+1;
             markerOptions.title("test"+x);
 
