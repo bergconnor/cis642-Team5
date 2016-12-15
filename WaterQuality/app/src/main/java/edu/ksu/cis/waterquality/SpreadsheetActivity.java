@@ -560,15 +560,9 @@ public class SpreadsheetActivity extends Activity
         @Override
         protected void onPostExecute(List<String> output) {
             mProgress.hide();
-            if (output == null || output.size() == 0) {
-                mOutputText = "Failed to upload data.";
-                Toast.makeText(SpreadsheetActivity.this, mOutputText,
-                        Toast.LENGTH_LONG).show();
-            } else {
                 mOutputText = "Successfully uploaded data.";
                 Toast.makeText(SpreadsheetActivity.this, mOutputText,
                         Toast.LENGTH_LONG).show();
-            }
         }
 
         @Override
