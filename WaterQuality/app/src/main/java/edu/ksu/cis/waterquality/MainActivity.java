@@ -42,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onMapButtonClicked(View v) {
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
+    }
+
     public void onPictureButtonClicked(View v) {
         Intent intent = new Intent(this, ImageActivity.class);
         startActivityForResult(intent, IMAGE_REQUEST);
