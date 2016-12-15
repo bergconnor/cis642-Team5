@@ -26,6 +26,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -190,9 +193,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
 
+        LatLng latLng2 = new LatLng(50,50);
+        LatLng  myLocations [] = new LatLng[5];
+        myLocations[0] = new LatLng(80,-50);
+        myLocations[1] = new LatLng(50,120);
+        myLocations[2] = new LatLng(120,50);
+        myLocations[3] = new LatLng(-50,-50);
+        myLocations[4] = new LatLng(50,50);
+    
+        List<LatLng> myLocations2 = new ArrayList<LatLng>();
+        myLocations2.add(new LatLng(80,-50));
+        myLocations2.add(new LatLng(50,120));
+        myLocations2.add(new LatLng(120,50));
+        myLocations2.add(new LatLng(-50,-50));
+        myLocations2.add(new LatLng(50,50));
+
+        for (int i = 0 ; i < myLocations2.size() ; i++)
+        {
+
+            markerOptions.position(myLocations[i]);
+            int x = i+1;
+            markerOptions.title("test"+x);
+
+            mMap.addMarker(markerOptions);
+        }
+
+
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(2));
 
         //stop location updates
         if (mGoogleApiClient != null) {
