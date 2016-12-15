@@ -467,7 +467,8 @@ public class SpreadsheetActivity extends Activity
         @Override
         protected List<String> doInBackground(Void... params) {
             try {
-                return uploadData();
+                uploadData();
+                return new ArrayList<>();
             } catch (Exception e) {
                 mLastError = e;
                 cancel(true);
@@ -480,9 +481,9 @@ public class SpreadsheetActivity extends Activity
          * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
          * @throws IOException
          */
-        private List<String> uploadData() throws IOException {
+        private void uploadData() throws IOException {
             String spreadsheetId = "17ytlyRWtIMX0z0OvPe5aI2m6CQKCDLyD2rtqpy3jwpA";
-            String range = "Sheet1!A1:" + Character.toString((char)('A' + DATA_SIZE - 1));
+            String range = "Sheet1!A1:" + Character.toString((char) ('A' + DATA_SIZE - 1));
             recompileData();
 
             ValueRange response = this.mService.spreadsheets().values()
@@ -517,7 +518,9 @@ public class SpreadsheetActivity extends Activity
                     .setValueInputOption("USER_ENTERED")
                     .execute();
 
-            List<String> results = new ArrayList<>();
+            List<String> results = new ArrayList<String>();
+            ArrayList<String> latitudes = new ArrayList<String>();
+            ArrayList<String> longitudes = new ArrayList<String>();
             response = this.mService.spreadsheets().values()
                     .get(spreadsheetId, range)
                     .execute();
@@ -530,8 +533,8 @@ public class SpreadsheetActivity extends Activity
             if (after > before) {
                 int count = 1;
                 for (List x : values) {
-                    String lat = x.get(LATITUDE).toString();
-                    String lon = x.get(LONGITUDE).toString();
+                    latitudes.add(x.get(LATITUDE).toString());
+                    longitudes.add(x.get(LONGITUDE).toString());
                     if (count == after) {
                         for (int i = 0; i < x.size(); i++) {
                             results.add(x.get(i).toString());
@@ -539,9 +542,13 @@ public class SpreadsheetActivity extends Activity
                     }
                     count++;
                 }
-            }
 
-            return results;
+                Intent intent = new Intent();
+                intent.putStringArrayListExtra("EXTRA_LATITUDES", latitudes);
+                intent.putStringArrayListExtra("EXTRA_LONGITUDES", longitudes);
+                setResult(Activity.RESULT_OK, intent);
+                finish();
+            }
         }
 
         @Override

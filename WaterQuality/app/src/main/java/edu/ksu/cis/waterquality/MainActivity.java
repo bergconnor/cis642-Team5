@@ -8,7 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int IMAGE_REQUEST    = 1571;
     private static final int LOCATION_REQUEST = 1995;
+    private static final int SPREADSHEET_REQUEST = 6638;
     private static final int TEMP   = 0;
     private static final int PRECIP = 1;
 
@@ -25,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private String mColor;
     private String mLatitude;
     private String mLongitude;
+
+    private List<LatLng> mCoordinates = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +113,8 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("EXTRA_TEMPERATURE", temperature);
         intent.putExtra("EXTRA_PRECIPITATION", precipitation);
 
-        startActivity(intent);
+        //startActivity(intent);
+        startActivityForResult(intent, SPREADSHEET_REQUEST);
     }
 
 
@@ -126,6 +133,17 @@ public class MainActivity extends AppCompatActivity {
                     mLatitude = data.getStringExtra("EXTRA_LATITUDE");
                     mLongitude = data.getStringExtra("EXTRA_LONGITUDE");
                     sendData();
+                    break;
+
+                case SPREADSHEET_REQUEST:
+                    List<String> latitudes = data.getStringArrayListExtra("EXTRA_LATITUDES");
+                    List<String> longitudes = data.getStringArrayListExtra("EXTRA_LONGITUDES");
+                    for (int i = 1; i < latitudes.size(); i++)
+                    {
+                        double lat = Double.parseDouble(latitudes.get(i));
+                        double lon = Double.parseDouble(longitudes.get(i));
+                        mCoordinates.add(new LatLng(lat, lon));
+                    }
                     break;
             }
         }

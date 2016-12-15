@@ -45,4 +45,8 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     compile 'pub.devrel:easypermissions:0.1.5'
     compile project(':libraries:opencv')
+
+    // Required -- JUnit 4 framework
+    testCompile 'junit:junit:4.12'
+    // Optional -- Mockito framework
 }
