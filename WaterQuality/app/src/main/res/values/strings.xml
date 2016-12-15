@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Water Quality</string>
+    <string name="google_api_key"
+            templateMergeStrategy="preserve"
+            translatable="false">
+        AIzaSyApGIJ4-QSBjB6szyMEiJB0ZbpFp7fVqCo</string>
+</resources>
