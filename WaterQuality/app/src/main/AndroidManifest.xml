@@ -37,7 +37,7 @@
         <activity android:name=".AboutActivity" />
         <activity android:name=".HelpActivity" />
         <activity android:name=".HistoryActivity" />
-        <activity android:name=".SpreadsheetActivity" />
+        <activity android:name=".UploadActivity" />
         <activity android:name=".MapsActivity" />
     </application>
 

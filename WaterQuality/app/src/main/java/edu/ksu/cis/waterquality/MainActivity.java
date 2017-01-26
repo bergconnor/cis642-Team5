@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendData() {
-        Intent intent = new Intent(this, SpreadsheetActivity.class);
+        Intent intent = new Intent(this, UploadActivity.class);
 
         String date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
 
