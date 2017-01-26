@@ -37,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onHelpButtonClicked(View v) {
-        Intent intent = new Intent(this, MapsActivity.class);
-        startActivity(intent);
+
     }
 
     public void onPictureButtonClicked(View v) {
@@ -46,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, IMAGE_REQUEST);
     }
 
-    public void onHistoryButtonClicked(View v) {
-        Intent intent = new Intent(this, HistoryActivity.class);
+    public void onMapButtonClicked(View v) {
+        Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
     }
 

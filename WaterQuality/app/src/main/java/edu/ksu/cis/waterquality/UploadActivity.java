@@ -35,8 +35,8 @@ public class UploadActivity extends AppCompatActivity {
     ProgressDialog mProgress;
 
     // CONNECTION_TIMEOUT and READ_TIMEOUT are in milliseconds
-    public static final int CONNECTION_TIMEOUT=10000;
-    public static final int READ_TIMEOUT=15000;
+    public static final int CONNECTION_TIMEOUT = 10000;
+    public static final int READ_TIMEOUT = 15000;
 
     static final int DATE          = 0;
     static final int CITY          = 1;
@@ -202,7 +202,7 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     // Triggers when LOGIN Button clicked
-    public void uploadClick(View arg0) {
+    public void onUploadClick(View arg0) {
         // Initialize  AsyncLogin() class
         new AsyncUpload().execute();
     }

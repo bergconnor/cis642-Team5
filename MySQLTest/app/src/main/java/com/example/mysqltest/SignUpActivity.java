@@ -90,7 +90,7 @@ public class SignUpActivity extends AppCompatActivity {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://people.cs.ksu.edu/~cberg1/sign_up.php");
+                url = new URL("http://people.cs.ksu.edu/~cberg1/create_xml.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
