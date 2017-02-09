@@ -4,11 +4,17 @@ package edu.ksu.cis.waterquality;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.opencv.android.Utils;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
@@ -53,6 +59,7 @@ public class ImageProc {
                 return -1;
             }
             List<Scalar> colors = findColor(image, squares);
+            createGraph(colors);
             return linearRegression(colors);
         } catch (Exception ex)
         {
@@ -229,8 +236,8 @@ public class ImageProc {
      * @param colorVals: the color values of the test squares.
      */
     private static double linearRegression(List<Scalar> colorVals) {
-        double[] colorArr = new double[colorVals.size() - 4];
-        double[] percVals = { 90, 85, 80, 75, 70, 65, 60, 55 };
+        double[] colorArr = new double[colorVals.size() - 4]; //minus 4 as we take off the two test squares and the positve and negative squares
+        double[] percVals = { 90, 85, 80, 75, 70, 65, 60, 55 }; //these percvals are preset for now, but will eventually be loaded by the app.
         for(int i = 2; i < colorVals.size() - 2; i++) {
             float[] tempHSV = new float[3];
             Color.RGBToHSV((int)colorVals.get(i).val[2], (int)colorVals.get(i).val[1], (int)colorVals.get(i).val[0], tempHSV);
@@ -247,5 +254,29 @@ public class ImageProc {
         double avg = (predictPerc1 + predictPerc2) / 2;
         System.out.print(avg);
         return avg;
+    }
+
+    private static void createGraph(List<Scalar> colorVals) throws Exception {
+        if(colorVals.size() != 12) {
+            throw new IllegalArgumentException();
+        }
+
+        float[][] hsvColors = new float[colorVals.size()][3];
+        for(int i = 0; i < colorVals.size(); i++) {
+            Color.RGBToHSV((int)colorVals.get(i).val[2], (int)colorVals.get(i).val[1], (int)colorVals.get(i).val[0], hsvColors[i]);
+        }
+
+        double[] percVals = { 90, 85, 80, 75, 70, 65, 60, 55 };
+
+        DefaultCategoryDataset lineGraphSet = new DefaultCategoryDataset();
+        for(int i = 0; i < percVals.length; i++) {
+            lineGraphSet.addValue((Number)hsvColors[i][1],"Concentration",percVals[0]);
+        }
+
+        JFreeChart lineChart = ChartFactory.createLineChart("Concentration Values", "Percentages", "Concentrations", lineGraphSet, PlotOrientation.VERTICAL, false, false, false);
+        int imgWidth = 1024;
+        int imgHeight = 768;
+        File LineChartSave = new File("LineChart.jpg");
+        ChartUtilities.saveChartAsJPEG(LineChartSave, lineChart,imgWidth, imgHeight);
     }
 }

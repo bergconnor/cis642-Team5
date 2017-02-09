@@ -45,4 +45,6 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     compile 'pub.devrel:easypermissions:0.1.5'
     compile project(':libraries:opencv')
+    compile project(':jfreechart-1.0.19')
+    compile project(':jcommon-1.0.23')
 }
