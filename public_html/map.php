@@ -33,8 +33,8 @@
 
         function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
-          center: new google.maps.LatLng(39.8333333, -98.585522),
-          zoom: 5
+          center: new google.maps.LatLng(39.196175, -96.590141),
+          zoom: 12
         });
         var infoWindow = new google.maps.InfoWindow;
 

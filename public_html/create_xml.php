@@ -1,44 +1,32 @@
 <?php
-require("db_info.php");
+require_once 'config.php';
 
 // Start XML file, create parent node
-$doc = new DOMDocument("1.0");
-$node = $doc->createElement("markers");
+$doc = new DOMDocument('1.0');
+$node = $doc->createElement('markers');
 $parnode = $doc->appendChild($node);
 
-// Opens a connection to a MySQL server
-$connection=mysql_connect ($hostname, $username, $password);
-if (!$connection) {
-  die('Not connected : ' . mysql_error());
+// select all the rows in the markers table
+$stmt = $conn->stmt_init();
+if($stmt->prepare('SELECT name, organization, latitude, longitude
+                   FROM markers WHERE 1')) {
+  $stmt->execute();
+  $stmt->bind_result($name, $organization, $latitude, $longitude);
+
+  header('Content-type: text/xml');
+
+  // iterate through the rows, adding XML nodes for each
+  while($stmt->fetch()) {
+    $node = $doc->createElement('marker');
+    $newnode = $parnode->appendChild($node);
+
+    $newnode->setAttribute('name', $name);
+    $newnode->setAttribute('organization', $organization);
+    $newnode->setAttribute('latitude', $latitude);
+    $newnode->setAttribute('longitude', $longitude);
+  }
+
+  $xmlfile = $doc->saveXML();
+  echo $xmlfile;
 }
-
-// Set the active MySQL database
-$db_selected = mysql_select_db($database, $connection);
-if (!$db_selected) {
-  die ('Can\'t use db : ' . mysql_error());
-}
-
-// Select all the rows in the markers table
-$query = "SELECT * FROM markers WHERE 1";
-$result = mysql_query($query);
-if (!$result) {
-  die('Invalid query: ' . mysql_error());
-}
-
-header("Content-type: text/xml");
-
-// Iterate through the rows, adding XML nodes for each
-while ($row = @mysql_fetch_assoc($result)){
-  // Add to XML document node
-  $node = $doc->createElement("marker");
-  $newnode = $parnode->appendChild($node);
-
-  $newnode->setAttribute("name", $row['name']);
-  $newnode->setAttribute("organization", $row['organization']);
-  $newnode->setAttribute("latitude", $row['latitude']);
-  $newnode->setAttribute("longitude", $row['longitude']);
-}
-
-$xmlfile = $doc->saveXML();
-echo $xmlfile;
 ?>

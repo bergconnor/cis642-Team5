@@ -100,16 +100,15 @@ if(isset($_POST['sign_up'])) {
   <body>
     <div class="container">
       <div class="form">
-        <h1>Sign Up</h1>
-        <form action="" method="post">
-          <p><input type="text" name="first" placeholder="First Name"></p>
-          <p><input type="text" name="last" placeholder="Last Name"></p>
+        <h1>Reset Password</h1>
+        <form action="sign_up.php" method="post">
           <p><input type="email" name="email" placeholder="Email"></p>
-          <p><input type="password" name="pass1" placeholder="Password"></p>
-          <p><input type="password" name="pass2" placeholder="Verify Password"></p>
+          <p><input type="password" name="temp_pass" placeholder="Temporary Password"></p>
+          <p><input type="password" name="new_pass1" placeholder="New Password"></p>
+          <p><input type="password" name="new_pass2" placeholder="Verify New Password"></p>
           <p class="submit">
             <input type="submit" name="return" value="Return" align="left">
-            <input type="submit" name="sign_up" value="Sign Up" align="left">
+            <input type="submit" name="submit" value="Submit" align="left">
           </p>
         </form>
       </div>
