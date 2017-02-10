@@ -1,4 +1,6 @@
 <?php
+// start session
+session_start();
 
 $hostname = 'mysql.cis.ksu.edu';
 $username = 'cberg1';

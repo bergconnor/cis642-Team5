@@ -1,18 +1,28 @@
 <?php
 require_once 'config.php';
 
-if (isset($_POST["sign_up"])) {
+// initially hide the confirmation message
+$show_confirm_msg = false;
+
+if(isset($_GET['reset_flag'])) {
+  // reset password clicked
+  header('location: reset.php');
+  exit();
+}
+
+if(isset($_POST["sign_up"])) {
+  // sign up button pressed
   header('location: sign_up.php');
   exit();
 }
 
-if (isset($_POST['login'])) {
+if(isset($_POST['login'])) {
   // process data if the login button is pressed
-  if (empty($_POST['email']) || empty($_POST['pass'])) {
+  if(empty($_POST['email']) || empty($_POST['pass'])) {
     $msg = 'Please provide your email address and password.';
     echo '<div class="statusmsg">'.$msg.'</div>';
   }
-  elseif (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+  elseif(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
     $msg = 'Invalid email.';
     echo '<div class="statusmsg">'.$msg.'</div>';
   }
@@ -78,7 +88,12 @@ if (isset($_POST['login'])) {
       </div>
 
       <div class="login-help">
-        <p>Forgot your password? <a class="reset" href="reset.php">Click here to reset it</a>.</p>
+        <p>Forgot your password? <a class="reset" href="?reset_flag=true">Click here to reset it</a>.</p>
+        <?php if($show_confirm_msg) : ?>
+          <p>Are you sure you want to reset your password?
+            <a class="reset" href="?confirm_flag=true">Click here to confirm</a>.
+          </p>
+        <?php endif; ?>
       </div>
     </div>
   </body>

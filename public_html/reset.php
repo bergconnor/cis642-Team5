@@ -102,14 +102,16 @@ if(isset($_POST['sign_up'])) {
       <div class="form">
         <h1>Reset Password</h1>
         <form action="sign_up.php" method="post">
-          <p><input type="email" name="email" placeholder="Email"></p>
-          <p><input type="password" name="temp_pass" placeholder="Temporary Password"></p>
-          <p><input type="password" name="new_pass1" placeholder="New Password"></p>
-          <p><input type="password" name="new_pass2" placeholder="Verify New Password"></p>
-          <p class="submit">
-            <input type="submit" name="return" value="Return" align="left">
-            <input type="submit" name="submit" value="Submit" align="left">
-          </p>
+          <p><input type="email" name="email" placeholder="Confirm email"></p>
+          <?php if($email_sent) : ?>
+            <p><input type="password" name="temp_pass" placeholder="Temporary password"></p>
+            <p><input type="password" name="new_pass1" placeholder="New password"></p>
+            <p><input type="password" name="new_pass2" placeholder="Verify new password"></p>
+            <p class="submit">
+              <input type="submit" name="return" value="Return" align="left">
+              <input type="submit" name="submit" value="Submit" align="left">
+            </p>
+            <?php endif; ?>
         </form>
       </div>
     </div>

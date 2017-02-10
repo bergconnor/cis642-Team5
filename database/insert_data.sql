@@ -1,2 +1,0 @@
-INSERT INTO `markers` (`name`, `address`, `lat`, `lng`) VALUES ('Home', '1536 Harry Road, Manhattan, KS', '39.196155', '-96.58983699999999');
-INSERT INTO `markers` (`name`, `address`, `lat`, `lng`) VALUES ('Engineering', '1701 Platt St, Manhattan, KS', '39.1905952', '-96.5841203');
