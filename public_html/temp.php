@@ -1,10 +1,4 @@
 <?php
-session_start();
-require_once 'config.php';
-
-$_SESSION['email_sent'] = false;
-
-
 if(isset($_GET['reset_flag'])) {
   // reset password clicked
   header('location: reset.php');
@@ -26,22 +20,17 @@ if(isset($_POST['login'])) {
     $msg = 'Invalid email.';
   }
   else {
-    $msg = login($conn);
-  }
-
-  if(isset($msg)) {
-    echo '<div class="statusmsg">'.$msg.'</div>';
+    $msg = login();
   }
 }
 
-function login($conn) {
+function login() {
   $email = mysqli_real_escape_string($conn, $_POST['email']);
   $pass = mysqli_real_escape_string($conn, $_POST['pass']);
 
   $stmt = $conn->stmt_init();
   if($stmt->prepare('SELECT email, password, active FROM users
                      WHERE email=? AND password=?')) {
-
     // bind parameters and execute
     $stmt->bind_param('ss', $email, $pass);
     $stmt->execute();
@@ -65,8 +54,8 @@ function login($conn) {
         return 'Invalid email address or password.';
     }
   } else {
-    return 'Error';
-  }
+      return 'Error';
+    }
 }
 ?>
 

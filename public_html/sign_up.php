@@ -12,15 +12,12 @@ if(isset($_POST['sign_up'])) {
      empty($_POST['pass1']) || empty($_POST['pass2'])) {
      // one of the fields is empty
     $msg = 'Please fill out all fields.';
-    echo '<div class="statusmsg">'.$msg.'</div>';
   } elseif(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
       // invalid email
       $msg = 'Please enter a valid email.';
-      echo '<div class="statusmsg">'.$msg.'</div>';
   } elseif(strcmp($_POST['pass1'], $_POST['pass2']) != 0) {
       // passwords do not match
       $msg = 'Passwords do not match.';
-      echo '<div class="statusmsg">'.$msg.'</div>';
   } else {
       // prepare sql variables
       $first = mysqli_real_escape_string($conn, $_POST['first']);
@@ -41,7 +38,6 @@ if(isset($_POST['sign_up'])) {
 
         if ($stmt->fetch() > 0) {
           $msg = 'Email address already in use.';
-          echo '<div class="statusmsg">'.$msg.'</div>';
         } else {
             // information is valid
             $stmt->close();

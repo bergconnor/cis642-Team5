@@ -172,7 +172,7 @@ body {
   background: #0ca3d2;
 }
 
-.statusmsg{
+.statusmsg {
     font-size: 12px; /* Set message font size  */
     padding: 3px; /* Some padding to make some more space for our text  */
     background: white; /* Add a background color to our status message   */

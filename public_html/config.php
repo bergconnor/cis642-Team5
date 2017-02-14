@@ -1,11 +1,11 @@
 <?php
-// start session
-session_start();
 
 $hostname = 'mysql.cis.ksu.edu';
 $username = 'cberg1';
 $password = '3c340d';
 $database = 'cberg1';
+
+
 
 // set up database connection
 $conn = mysqli_connect($hostname, $username, $password, $database)
