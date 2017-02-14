@@ -1,39 +1,55 @@
 <?php
+/**
+ * Login page to process user's login information
+ * and allow access to website based on information
+ * stored in MySQL database.
+ */
 session_start();
-require_once 'config.php';
+require_once 'config.php'; /* database connection */
 
-$_SESSION['email_sent'] = false;
+$_SESSION['email_sent'] = false; /* password reset flag */
 
-
-if(isset($_GET['reset_flag'])) {
-  // reset password clicked
-  header('location: reset.php');
-  exit();
-}
-
+/**
+ * Direct user to the sign up page
+ * if the sign up button is pressed.
+ */
 if(isset($_POST["sign_up"])) {
-  // sign up button pressed
+  /* sign up button pressed */
   header('location: sign_up.php');
   exit();
 }
 
+/**
+ * Handle event when the login button
+ * is pressed.
+ */
 if(isset($_POST['login'])) {
-  // process data if the login button is pressed
   if(empty($_POST['email']) || empty($_POST['pass'])) {
+    /* empty email or password field */
     $msg = 'Please provide your email address and password.';
   }
   elseif(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+    /* invalid email format */
     $msg = 'Invalid email.';
   }
   else {
+    /* check database for information */
     $msg = login($conn);
+    header('location: map.php');
+    exit();
   }
 
   if(isset($msg)) {
+    /* show error message if set */
     echo '<div class="statusmsg">'.$msg.'</div>';
   }
 }
 
+/**
+ * Verify user's login information with the database.
+ * @param object $conn A MySQL connection object.
+ * @return string A success or error message.
+ */
 function login($conn) {
   $email = mysqli_real_escape_string($conn, $_POST['email']);
   $pass = mysqli_real_escape_string($conn, $_POST['pass']);
@@ -42,29 +58,27 @@ function login($conn) {
   if($stmt->prepare('SELECT email, password, active FROM users
                      WHERE email=? AND password=?')) {
 
-    // bind parameters and execute
     $stmt->bind_param('ss', $email, $pass);
     $stmt->execute();
 
-    // bind result variables
     $stmt->bind_result($email, $password, $active);
 
     if($stmt->fetch() > 0) {
-      // email and password match
       if($active == 0) {
-        // account not activated
+        /* account not activated */
         return 'Please check your email to activate your account.';
       } else {
-          // valid information
+          /* valid account */
           return 'Success.';
           header('location: map.php');
           exit();
         }
     } else {
-        // invalid information
+        /* invalid account */
         return 'Invalid email address or password.';
     }
   } else {
+    // TO DO: handle error if $stmt->prepare() fails
     return 'Error';
   }
 }
@@ -91,7 +105,7 @@ function login($conn) {
       </div>
 
       <div class="login-help">
-        <p>Forgot your password? <a class="reset" href="?reset_flag=true">Click here to reset it</a>.</p>
+        <p>Forgot your password? <a class="reset" href="reset.php">Click here to reset it</a>.</p>
       </div>
     </div>
   </body>

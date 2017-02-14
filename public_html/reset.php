@@ -1,12 +1,23 @@
 <?php
+/**
+ * A page allowing the user to reset
+ * their password.
+ */
 session_start();
 require_once 'config.php';
 
+/**
+ * Direct user to the login page if
+ * the user presses the return button.
+ */
 if(isset($_POST['return'])) {
   header('location: index.php');
   exit();
 }
 
+/**
+ * 
+ */
 if(isset($_POST['submit'])) {
   if($_SESSION['email_sent']) {
     if(empty($_POST['temp']) || empty($_POST['pass1']) ||
