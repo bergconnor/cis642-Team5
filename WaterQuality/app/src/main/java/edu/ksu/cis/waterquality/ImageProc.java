@@ -10,11 +10,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.opencv.android.Utils;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
@@ -276,16 +271,6 @@ public class ImageProc {
         double[] percVals = { 90, 85, 80, 75, 70, 65, 60, 55 }; //defaulted to this, will implement variable values
 
         //Creating the data set for the line graph here.
-        DefaultCategoryDataset lineGraphSet = new DefaultCategoryDataset();
-        for(int i = 0; i < percVals.length; i++) {
-            lineGraphSet.addValue(hsvColors[i][1],"Concentration",Double.toString(percVals[0]));
-        }
 
-        JFreeChart lineChart = ChartFactory.createLineChart("Concentration Values", "Percentages", "Concentrations", lineGraphSet, PlotOrientation.VERTICAL, false, false, false);
-        int imgWidth = 1024;
-        int imgHeight = 768;
-        //saving the LineChart as an image file for exporting and uploading to server.
-        File LineChartSave = new File("LineChart.jpg");
-        ChartUtilities.saveChartAsJPEG(LineChartSave, lineChart,imgWidth, imgHeight);
     }
 }
