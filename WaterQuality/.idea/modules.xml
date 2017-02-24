@@ -5,8 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/MPChartLib/MPChartLib.iml" filepath="$PROJECT_DIR$/MPChartLib/MPChartLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/WaterQuality.iml" filepath="$PROJECT_DIR$/WaterQuality.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jcommon-1.0.23/jcommon-1.0.23.iml" filepath="$PROJECT_DIR$/jcommon-1.0.23/jcommon-1.0.23.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jfreechart-1.0.19/jfreechart-1.0.19.iml" filepath="$PROJECT_DIR$/jfreechart-1.0.19/jfreechart-1.0.19.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/libraries.iml" filepath="$PROJECT_DIR$/libraries/libraries.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/opencv/opencv.iml" filepath="$PROJECT_DIR$/libraries/opencv/opencv.iml" />
     </modules>

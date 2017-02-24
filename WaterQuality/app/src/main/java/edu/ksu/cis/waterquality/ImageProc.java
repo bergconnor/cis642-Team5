@@ -1,6 +1,7 @@
 package edu.ksu.cis.waterquality;
 
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
@@ -9,6 +10,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.LineChart.*;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.Entry.*;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 
 import org.opencv.android.Utils;
 import org.opencv.core.*;
@@ -29,7 +38,7 @@ public class ImageProc {
      * Parameters:
      *      String fileName: name of the picture file to perform the processing on.
      */
-    public static double readImage(Bitmap bitmap) {
+    public static double readImage(Bitmap bitmap, Context context) {
         try {
             System.loadLibrary("opencv_java3");
 
@@ -54,7 +63,7 @@ public class ImageProc {
                 return -1;
             }
             List<Scalar> colors = findColor(image, squares);
-            createGraph(colors);
+            boolean chartCreated = createGraph(colors, context);
             return linearRegression(colors);
         } catch (Exception ex)
         {
@@ -258,7 +267,7 @@ public class ImageProc {
      * @throws Exception Throws IllegalArgumentException if there is not the correct number of
      *                   colors.
      */
-    private static void createGraph(List<Scalar> colorVals) throws Exception {
+    private static boolean createGraph(List<Scalar> colorVals, Context context) throws Exception {
         if(colorVals.size() != 12) {
             throw new IllegalArgumentException();
         }
@@ -271,6 +280,18 @@ public class ImageProc {
         double[] percVals = { 90, 85, 80, 75, 70, 65, 60, 55 }; //defaulted to this, will implement variable values
 
         //Creating the data set for the line graph here.
+        ArrayList<Entry> lineGraphEntries = new ArrayList<Entry>();
+        ArrayList<String> labels = new ArrayList<String>();
+        for (int i = 2; i < colorVals.size() - 2; i++) {
+            lineGraphEntries.add(i - 2, new Entry(hsvColors[i][1], i - 2));
+            labels.add(i - 2, Double.toString(percVals[i - 2]));
+        }
 
+        LineDataSet dataset = new LineDataSet(lineGraphEntries, "Values");
+        LineChart chart = new LineChart(context);
+        LineData data = new LineData(dataset);
+        chart.setData(data);
+        boolean chartSaved = chart.saveToGallery("chart1.jpg", 85);
+        return chartSaved;
     }
 }
