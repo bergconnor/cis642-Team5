@@ -5,17 +5,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.charts.LineChart.*;
-import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.Entry.*;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
@@ -38,7 +34,7 @@ public class ImageProc {
      * Parameters:
      *      String fileName: name of the picture file to perform the processing on.
      */
-    public static double readImage(Bitmap bitmap, Context context) {
+    public static List<Scalar> readImage(Bitmap bitmap) {
         try {
             System.loadLibrary("opencv_java3");
 
@@ -60,18 +56,18 @@ public class ImageProc {
             squares = sortTestSquares(squares);
             if (squares.size() != 12)
             {
-                return -1;
+                throw new IllegalArgumentException("Did not find all squares.");
             }
-            List<Scalar> colors = findColor(image, squares);
-            boolean chartCreated = createGraph(colors, context);
-            return linearRegression(colors);
+
+            return findColor(image, squares);
+
         } catch (Exception ex)
         {
-            return -1;
+            return new ArrayList<Scalar>();
         }
     }
 
-    /* Finds all the contours in the image, then removes any non-square contours and contours that
+    /** Finds all the contours in the image, then removes any non-square contours and contours that
      * are the incorrect size range.
      * Parameters:
      *      Mat img: the grayscale Mat of an image, allowing us to find the contours and narrow them
@@ -239,7 +235,7 @@ public class ImageProc {
      *
      * @param colorVals: the color values of the test squares.
      */
-    private static double linearRegression(List<Scalar> colorVals) {
+    public static double linearRegression(List<Scalar> colorVals) {
         double[] colorArr = new double[colorVals.size() - 4]; //minus 4 as we take off the two test squares and the positve and negative squares
         double[] percVals = { 90, 85, 80, 75, 70, 65, 60, 55 }; //these percvals are preset for now, but will eventually be loaded by the app.
         for(int i = 2; i < colorVals.size() - 2; i++) {
@@ -260,14 +256,14 @@ public class ImageProc {
         return avg;
     }
 
-    /** Will create a line graph giving the linear curve of the test results, showing concentration
+    /** Creates a line graph giving the linear curve of the test results, showing concentration
      * on the Y-axis and the squares the test was taken from on the X-axis.
      *
      * @param colorVals the Scalar values of the colors from each square in the RGB colorspace.
      * @throws Exception Throws IllegalArgumentException if there is not the correct number of
      *                   colors.
      */
-    private static boolean createGraph(List<Scalar> colorVals, Context context) throws Exception {
+    public static LineChart createGraph(List<Scalar> colorVals, Context context) throws Exception {
         if(colorVals.size() != 12) {
             throw new IllegalArgumentException();
         }
@@ -291,7 +287,6 @@ public class ImageProc {
         LineChart chart = new LineChart(context);
         LineData data = new LineData(dataset);
         chart.setData(data);
-        boolean chartSaved = chart.saveToGallery("chart1.jpg", 85);
-        return chartSaved;
+        return chart;
     }
 }

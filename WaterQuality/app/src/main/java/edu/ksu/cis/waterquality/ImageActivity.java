@@ -39,7 +39,13 @@ import com.google.zxing.Reader;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 
+import com.github.mikephil.charting.charts.LineChart;
+
+import org.opencv.core.Scalar;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ImageActivity extends AppCompatActivity {
 
@@ -48,6 +54,7 @@ public class ImageActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST = 1441;
     private static final int CAMERA_REQUEST = 1772;
     private static final int MAX_SERIAL_NUMBER = 99999;
+    private static final int CHART_REQUEST = 12345;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,10 +109,35 @@ public class ImageActivity extends AppCompatActivity {
 
             bitmap = rotateImage(bitmap, path);
             Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
-                    (bitmap.getWidth()/2), bitmap.getHeight());
+                    (bitmap.getWidth() / 2), bitmap.getHeight());
             String code = scanQRCode(croppedBitmap);
-            double value = ImageProc.readImage(bitmap, getApplicationContext());
-            processResults(code, value);
+            Intent intent = new Intent(this, ChartActivity.class);
+            startActivityForResult(intent, CHART_REQUEST);
+            /*List<Scalar> colors = ImageProc.readImage(bitmap);
+            try {
+                LineChart chart = ImageProc.createGraph(colors, getApplicationContext());
+                chart.invalidate();
+                DialogInterface.OnClickListener ocl = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch(which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                break;
+                        }
+                    }
+                };
+                final AlertDialog alert = new AlertDialog.Builder(this)
+                        .setTitle("Rendering")
+                        .setMessage("Chart for this test is being rendered. Press OK once complete.")
+                        .setPositiveButton("OK", ocl)
+                        .create();
+                alert.show();
+                setContentView(chart);
+                chart.saveToGallery("chart.jpg", 75);
+            } catch (Exception e) {
+                Toast.makeText(ImageActivity.this, "Unable to create chart.", Toast.LENGTH_LONG).show();
+            }*/
+            processResults(code, colors);
         }
     }
 
@@ -185,9 +217,9 @@ public class ImageActivity extends AppCompatActivity {
         return contents;
     }
 
-    private void processResults(String code, double value) {
-        if (code.length() > 0 && value > 0.0) {
-            String message = "Value = " + value;
+    private void processResults(String code, List<Scalar> colors) {
+        if (code.length() > 0 && colors.size() > 0) {
+            String message = "Value = " + ImageProc.linearRegression(colors);
             Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
             String[] information = code.split("\n");
             String test = information[0].split(" ")[0];
