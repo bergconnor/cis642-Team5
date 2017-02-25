@@ -43,6 +43,7 @@ import com.github.mikephil.charting.charts.LineChart;
 
 import org.opencv.core.Scalar;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,33 +112,17 @@ public class ImageActivity extends AppCompatActivity {
             Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
                     (bitmap.getWidth() / 2), bitmap.getHeight());
             String code = scanQRCode(croppedBitmap);
-            Intent intent = new Intent(this, ChartActivity.class);
+
+            //Creating byte array from bitmap in order to transport bitmap to ChartActivity through Intent
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+
+            Intent intent = new Intent(ImageActivity.this, ChartActivity.class);
+            intent.putExtra("image", byteArray);
             startActivityForResult(intent, CHART_REQUEST);
-            /*List<Scalar> colors = ImageProc.readImage(bitmap);
-            try {
-                LineChart chart = ImageProc.createGraph(colors, getApplicationContext());
-                chart.invalidate();
-                DialogInterface.OnClickListener ocl = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch(which) {
-                            case DialogInterface.BUTTON_POSITIVE:
-                                break;
-                        }
-                    }
-                };
-                final AlertDialog alert = new AlertDialog.Builder(this)
-                        .setTitle("Rendering")
-                        .setMessage("Chart for this test is being rendered. Press OK once complete.")
-                        .setPositiveButton("OK", ocl)
-                        .create();
-                alert.show();
-                setContentView(chart);
-                chart.saveToGallery("chart.jpg", 75);
-            } catch (Exception e) {
-                Toast.makeText(ImageActivity.this, "Unable to create chart.", Toast.LENGTH_LONG).show();
-            }*/
-            processResults(code, colors);
+
+            //processResults(code, colors);
         }
     }
 

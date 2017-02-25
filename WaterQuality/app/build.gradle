@@ -47,5 +47,5 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     compile 'pub.devrel:easypermissions:0.1.5'
     compile project(':libraries:opencv')
-    compile project(':MPChartLib')
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
 }
