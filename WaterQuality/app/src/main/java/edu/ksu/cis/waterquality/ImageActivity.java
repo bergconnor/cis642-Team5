@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -55,13 +56,21 @@ public class ImageActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST = 1441;
     private static final int CAMERA_REQUEST = 1772;
     private static final int MAX_SERIAL_NUMBER = 99999;
-    private static final int CHART_REQUEST = 12345;
+
+    private static final boolean IN_CHART = false;
+    private View chartView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image);
-        takePicture();
+        if(IN_CHART) {
+            setContentView(chartView);
+            //exitChartWait();
+        } else {
+            setContentView(R.layout.activity_image);
+            takePicture();
+        }
+
     }
 
     private void takePicture() {
@@ -113,15 +122,16 @@ public class ImageActivity extends AppCompatActivity {
                     (bitmap.getWidth() / 2), bitmap.getHeight());
             String code = scanQRCode(croppedBitmap);
 
-            //Creating byte array from bitmap in order to transport bitmap to ChartActivity through Intent
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-
-            Intent intent = new Intent(ImageActivity.this, ChartActivity.class);
-            intent.putExtra("image", byteArray);
-            startActivityForResult(intent, CHART_REQUEST);
-
+            List<Scalar> colors = ImageProc.readImage(bitmap);
+            try {
+                LineChart chart = ImageProc.createGraph(colors, getApplicationContext());
+                chart.setContentDescription("Test Results");
+                chartView = chart;
+                setContentView(chart);
+                //chart.saveToGallery("chart.jpg", 75);
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), "Unable to create chart.", Toast.LENGTH_LONG).show();
+            }
             //processResults(code, colors);
         }
     }

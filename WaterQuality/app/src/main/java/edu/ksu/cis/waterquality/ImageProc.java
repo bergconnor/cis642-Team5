@@ -279,7 +279,7 @@ public class ImageProc {
         ArrayList<Entry> lineGraphEntries = new ArrayList<Entry>();
         ArrayList<String> labels = new ArrayList<String>();
         for (int i = 2; i < colorVals.size() - 2; i++) {
-            lineGraphEntries.add(i - 2, new Entry(hsvColors[i][1], i - 2));
+            lineGraphEntries.add(i - 2, new Entry(i-2, hsvColors[i][1]));
             labels.add(i - 2, Double.toString(percVals[i - 2]));
         }
 
