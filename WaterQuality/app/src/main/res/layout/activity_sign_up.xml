@@ -31,10 +31,20 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="textCapWords"
+        android:ems="10"
+        android:id="@+id/organization"
+        android:layout_below="@+id/last"
+        android:hint="Organization"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/email"
-        android:layout_below="@+id/last"
+        android:layout_below="@+id/organization"
         android:hint="Email"
         android:layout_marginTop="10dp"/>
 

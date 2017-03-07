@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -29,8 +31,8 @@ public class SignUpActivity extends AppCompatActivity {
 
     private EditText firstText;
     private EditText lastText;
+    private EditText organizationText;
     private EditText emailText;
-    private EditText usernameText;
     private EditText password1Text;
     private EditText password2Text;
 
@@ -43,6 +45,7 @@ public class SignUpActivity extends AppCompatActivity {
         firstText = (EditText) findViewById(R.id.first);
         lastText = (EditText) findViewById(R.id.last);
         emailText = (EditText) findViewById(R.id.email);
+        organizationText = (EditText) findViewById(R.id.organization);
         password1Text = (EditText) findViewById(R.id.password1);
         password2Text = (EditText) findViewById(R.id.password2);
     }
@@ -51,17 +54,18 @@ public class SignUpActivity extends AppCompatActivity {
     public void signUpClick(View arg0) {
 
         // Get text from fields
-        final String first = firstText.getText().toString();
-        final String last = lastText.getText().toString();
-        final String email = emailText.getText().toString();
-        final String password1 = password1Text.getText().toString();
-        final String password2 = password2Text.getText().toString();
+        final String first          = firstText.getText().toString();
+        final String last           = lastText.getText().toString();
+        final String organization   = organizationText.getText().toString();
+        final String email          = emailText.getText().toString();
+        final String password1      = password1Text.getText().toString();
+        final String password2      = password2Text.getText().toString();
 
         // Check that the passwords are the same
         if (password1.equals(password2))
         {
             // Initialize  AsyncSignUp() class with email, username and password
-            new SignUpActivity.AsyncSignUp().execute(first, last, email, password1);
+            new SignUpActivity.AsyncSignUp().execute(first, last, organization, email, password1);
         }
         else {
             // If both passwords do not match display a error message
@@ -90,7 +94,7 @@ public class SignUpActivity extends AppCompatActivity {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://people.cs.ksu.edu/~cberg1/android_sign_up.php");
+                url = new URL("http://people.cs.ksu.edu/~cberg1/android/sign_up.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
@@ -112,8 +116,9 @@ public class SignUpActivity extends AppCompatActivity {
                 Uri.Builder builder = new Uri.Builder()
                         .appendQueryParameter("first", params[0])
                         .appendQueryParameter("last", params[1])
-                        .appendQueryParameter("email", params[2])
-                        .appendQueryParameter("pass", params[3]);
+                        .appendQueryParameter("organization", params[2])
+                        .appendQueryParameter("email", params[3])
+                        .appendQueryParameter("pass", params[4]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -169,27 +174,29 @@ public class SignUpActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-
-            //this method will be running on UI thread
-
             pdLoading.dismiss();
+            String success = "false";
+            String message = "";
 
-            if(result.equalsIgnoreCase("true"))
+            try {
+                JSONObject reader = new JSONObject(result);
+                success = reader.getString("success");
+                message = reader.getString("message");
+            }  catch(Exception ex) {
+                // TO DO: handle error
+                ex.printStackTrace();
+            }
+
+            if(success.equalsIgnoreCase("true"))
             {
-                /* Here launching another activity when login successful. If you persist login state
-                use sharedPreferences of Android. and logout button to clear sharedPreferences.
-                 */
                 SignUpActivity.this.finish();
-
-            }else if (result.equalsIgnoreCase("false")){
-
-                // If username and password does not match display a error message
+            } else if (result.equalsIgnoreCase("false")){
+                // if username and password does not match display a error message
                 Toast.makeText(SignUpActivity.this, "Invalid email or password", Toast.LENGTH_LONG).show();
-
             } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
-                Toast.makeText(SignUpActivity.this, result.toString(), Toast.LENGTH_LONG).show();
-//                Toast.makeText(SignUpActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-
+                Toast.makeText(SignUpActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(SignUpActivity.this, message, Toast.LENGTH_LONG).show();
             }
         }
 

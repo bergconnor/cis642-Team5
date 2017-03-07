@@ -26,19 +26,20 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_api_key"/>
 
-        <activity android:name=".AboutActivity" />
-        <activity android:name=".HelpActivity" />
-        <activity android:name=".HistoryActivity" />
-        <activity android:name=".ImageActivity" />
-        <activity android:name=".LocationActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+
+        <activity android:name=".AboutActivity" />
+        <activity android:name=".HelpActivity" />
+        <activity android:name=".HistoryActivity" />
+        <activity android:name=".ImageActivity" />
+        <activity android:name=".LocationActivity" />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".MapsActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".UploadActivity" />

@@ -22,6 +22,9 @@ import android.support.v4.content.ContextCompat;
 import android.location.*;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LocationActivity extends FragmentActivity implements
         ConnectionCallbacks,
         OnConnectionFailedListener,
@@ -37,10 +40,16 @@ public class LocationActivity extends FragmentActivity implements
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private SessionManager  _session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // check login status
+        _session = new SessionManager(getApplicationContext());
+        _session.checkLogin();
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -129,8 +138,16 @@ public class LocationActivity extends FragmentActivity implements
         Double lat = location.getLatitude();
         Double lon = location.getLongitude();
 
-        intent.putExtra("EXTRA_LATITUDE", Double.toString(lat));
-        intent.putExtra("EXTRA_LONGITUDE", Double.toString(lon));
+        List<String> keys   = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
+
+        keys.add(SessionManager.KEY_LAT);
+        values.add(lat.toString());
+        keys.add(SessionManager.KEY_LON);
+        values.add(lon.toString());
+
+        _session.addSessionVariables(keys, values);
+
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

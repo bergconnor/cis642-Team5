@@ -15,29 +15,18 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class Weather extends AsyncTask<String, String, String> {
+public class AsyncGetWeatherData extends AsyncTask<String, String, String> {
 
-    private static final String mTemperature   = "temperature";
-    private static final String mPrecipitation = "precipitation";
+    public AsyncResponse delegate = null;
+    public String latitude = null;
+    public String longitude = null;
+    public String city = null;
+    public String state = null;
+
 
     private static final int mMonthIndex = 0;
     private static final int mDayIndex   = 1;
     private static final int mYearIndex  = 2;
-
-    private Context mContext;
-    private String mLatitude;
-    private String mLongitude;
-    private String mCity;
-    private String mState;
-
-    public Weather(Context context, String latitude, String longitude,
-                   String city, String state) {
-        mContext = context;
-        mLatitude = latitude;
-        mLongitude = longitude;
-        mCity = city;
-        mState = state;
-    }
 
     private String[] getYesterday() {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -52,17 +41,17 @@ public class Weather extends AsyncTask<String, String, String> {
         String start = "http://api.wunderground.com/api/0375e5a05ebf577c/";
         String end = ".json";
         String data = "";
-        if (unit.equals(mTemperature)) {
+        if (unit.equals(SessionManager.KEY_TEMP)) {
             data = "conditions/q/";
-            query = start + data + mLatitude + "," + mLongitude + end;
-        } else if (unit.equals(mPrecipitation)) {
+            query = start + data + latitude + "," + longitude + end;
+        } else if (unit.equals(SessionManager.KEY_PRECIP)) {
             String[] yesterday = getYesterday();
             String year = yesterday[mYearIndex];
             String month = yesterday[mMonthIndex];
             String day = yesterday[mDayIndex];
 
             data = "history_" + year + month + day + "/q/";
-            query = start + data + mState + "/" + mCity + end;
+            query = start + data + state + "/" + city + end;
         }
         return query;
     }
@@ -87,10 +76,10 @@ public class Weather extends AsyncTask<String, String, String> {
             String json = buffer.toString();
             JSONObject parent = new JSONObject(json);
 
-            if (unit.equals(mTemperature)) {
+            if (unit.equals(SessionManager.KEY_TEMP)) {
                 JSONObject child = parent.getJSONObject("current_observation");
                 data = child.getString("temp_f");
-            } else if (unit.equals(mPrecipitation)) {
+            } else if (unit.equals(SessionManager.KEY_PRECIP)) {
                 JSONObject child = parent.getJSONObject("history");
                 JSONArray array = child.getJSONArray("dailysummary");
                 JSONObject object = array.getJSONObject(0);
@@ -104,14 +93,24 @@ public class Weather extends AsyncTask<String, String, String> {
 
     @Override
     protected String doInBackground(String... params) {
-        String temperature = getData(mTemperature);
-        String precipitation = getData(mPrecipitation);
+        String temperature      = getData(SessionManager.KEY_TEMP);
+        String precipitation    = getData(SessionManager.KEY_PRECIP);
+        JSONObject json = new JSONObject();
 
-        return temperature + ", " + precipitation;
+        try {
+            json.put(SessionManager.FLAG_WEATHER, true);
+            json.put(SessionManager.KEY_TEMP, temperature);
+            json.put(SessionManager.KEY_PRECIP, precipitation);
+
+        } catch(Exception ex) {
+            // TO DO: handle exception
+            ex.printStackTrace();
+        }
+        return json.toString();
     }
 
     @Override
     protected void onPostExecute(String result) {
-        super.onPostExecute(result);
+        delegate.processFinish(result);
     }
 }

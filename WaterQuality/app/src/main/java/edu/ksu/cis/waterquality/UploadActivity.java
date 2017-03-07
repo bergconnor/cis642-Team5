@@ -3,7 +3,6 @@ package edu.ksu.cis.waterquality;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,7 +11,9 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,33 +27,23 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class UploadActivity extends AppCompatActivity {
-
-    private String mOutputText;
-    private Button mCallApiButton;
-    ProgressDialog mProgress;
 
     // CONNECTION_TIMEOUT and READ_TIMEOUT are in milliseconds
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
 
-    static final int DATE          = 0;
-    static final int CITY          = 1;
-    static final int STATE         = 2;
-    static final int LATITUDE      = 3;
-    static final int LONGITUDE     = 4;
-    static final int TEST          = 5;
-    static final int SERIAL        = 6;
-    static final int TEMPERATURE   = 7;
-    static final int PRECIPITATION = 8;
-    static final int NAME          = 9;
-    static final int ORGANIZATION  = 10;
-    static final int COMMENT       = 11;
-    static final int DATA_SIZE     = 12;
-
-    private String[] mData = new String[DATA_SIZE];
+    private SessionManager _session;
+    private ProgressDialog _dialog;
+    private LinkedHashMap<String, String> _map;
+    private LinkedHashMap<String, EditText> _data = new LinkedHashMap<String, EditText>();
 
 
     /**
@@ -64,36 +55,52 @@ public class UploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-        mOutputText = "";
+        // check login status
+        _session = new SessionManager(getApplicationContext());
+        _session.checkLogin();
 
-        mProgress = new ProgressDialog(this);
-        mProgress.setMessage("Uploading data to spreadsheet...");
+        // set up progress dialog
+        _dialog = new ProgressDialog(this);
+        _dialog.setMessage("Uploading data to database...");
 
+        // prompt user to enter a comment
         promptUser();
+    }
+
+    private void createView() {
+        // get data and layouts
+        _map = _session.getDetails();
+        LinearLayout textViewLayout = (LinearLayout) findViewById(R.id.textViewLayout);
+        LinearLayout editTextLayout = (LinearLayout) findViewById(R.id.editTextLayout);
+
+        Iterator iterator = _map.entrySet().iterator();
+        while(iterator.hasNext()) {
+            // get hash map entry pair
+            Map.Entry pair = (Map.Entry)iterator.next();
+
+            // create new elements to add to layouts
+            TextView textView = (TextView) View
+                    .inflate(UploadActivity.this, R.layout.table_text_view, null);
+            HorizontalScrollView scrollView = (HorizontalScrollView) View
+                    .inflate(UploadActivity.this, R.layout.table_scroll_view, null);
+            EditText editText = (EditText) scrollView.getChildAt(0);
+
+            textView.setText(pair.getKey().toString());
+            editText.setText(pair.getValue().toString());
+
+            textViewLayout.addView(textView);
+            editTextLayout.addView(scrollView);
+
+            _data.put(pair.getKey().toString(), editText);
+        }
     }
 
     private void promptUser() {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        final TextView nameLabel = new TextView(this);
-        nameLabel.setText("Name:");
-        layout.addView(nameLabel);
-
-        final EditText nameBox = new EditText(this);
-        nameBox.setInputType(InputType.TYPE_CLASS_TEXT);
-        layout.addView(nameBox);
-
-        final TextView orgLabel = new TextView(this);
-        orgLabel.setText("Organization:");
-        layout.addView(orgLabel);
-
-        final EditText orgBox = new EditText(this);
-        orgBox.setInputType(InputType.TYPE_CLASS_TEXT);
-        layout.addView(orgBox);
-
         final TextView commentLabel = new TextView(this);
-        commentLabel.setText("Comment (optional):");
+        commentLabel.setText("Enter a comment if you'd like to:");
         layout.addView(commentLabel);
 
         final EditText commentBox = new EditText(this);
@@ -103,7 +110,7 @@ public class UploadActivity extends AppCompatActivity {
 
         final AlertDialog alert = new AlertDialog.Builder(this)
                 .setView(layout)
-                .setTitle("Test Information")
+                .setTitle("Comment")
                 .setPositiveButton(android.R.string.ok, null)
                 .create();
 
@@ -116,89 +123,28 @@ public class UploadActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(View view) {
-                        String name = nameBox.getText().toString();
-                        String organization = orgBox.getText().toString();
                         String comment = commentBox.getText().toString();
-                        String message;
-                        if (name.length() < 1 && organization.length() < 1) {
-                            message = "Name and organization are required!";
-                            Toast.makeText(UploadActivity.this, message,
-                                    Toast.LENGTH_LONG).show();
-                        }
-                        else if (name.length() < 1 && organization.length() > 0) {
-                            message = "Name is required!";
-                            Toast.makeText(UploadActivity.this, message,
-                                    Toast.LENGTH_LONG).show();
-                        } else if (organization.length() < 1 && name.length() > 0) {
-                            message = "Organization is required!";
-                            Toast.makeText(UploadActivity.this, message,
-                                    Toast.LENGTH_LONG).show();
-                        }
-                        else {
-                            alert.dismiss();
-                            compileData(name, organization, comment);
-                        }
+                        alert.dismiss();
+
+                        // initialize lists
+                        List<String> keys   = new ArrayList<String>();
+                        List<String> values = new ArrayList<String>();
+
+                        // add keys and values to lists
+                        keys.add(SessionManager.KEY_COMMENT);
+                        values.add(comment);
+
+                        // add data to session variables
+                        _session.addSessionVariables(keys, values);
+
+                        // create view
+                        createView();
                     }
                 });
             }
         });
 
         alert.show();
-    }
-
-    private EditText[] getData() {
-        EditText[] editTexts = new EditText[DATA_SIZE];
-
-        editTexts[DATE]          = (EditText) this.findViewById(R.id.dateEdit);
-        editTexts[CITY]          = (EditText) this.findViewById(R.id.cityEdit);
-        editTexts[STATE]         = (EditText) this.findViewById(R.id.stateEdit);
-        editTexts[LATITUDE]      = (EditText) this.findViewById(R.id.latitudeEdit);
-        editTexts[LONGITUDE]     = (EditText) this.findViewById(R.id.longitudeEdit);
-        editTexts[TEST]          = (EditText) this.findViewById(R.id.testEdit);
-        editTexts[SERIAL]        = (EditText) this.findViewById(R.id.serialEdit);
-        editTexts[TEMPERATURE]   = (EditText) this.findViewById(R.id.temperatureEdit);
-        editTexts[PRECIPITATION] = (EditText) this.findViewById(R.id.precipitationEdit);
-        editTexts[NAME]          = (EditText) this.findViewById(R.id.nameEdit);
-        editTexts[ORGANIZATION]  = (EditText) this.findViewById(R.id.organizationEdit);
-        editTexts[COMMENT]       = (EditText) this.findViewById(R.id.commentEdit);
-
-        return editTexts;
-    }
-
-    private void setText() {
-        EditText[] editTexts = getData();
-
-        for (int i = 0; i < DATA_SIZE; i++) {
-            editTexts[i].setText(mData[i]);
-        }
-    }
-
-    private void compileData(String name, String organization, String comment) {
-        Intent intent = getIntent();
-        Bundle data = intent.getExtras();
-
-        mData[DATE]          = data.getString("EXTRA_DATE");
-        mData[CITY]          = data.getString("EXTRA_CITY");
-        mData[STATE]         = data.getString("EXTRA_STATE");
-        mData[LATITUDE]      = data.getString("EXTRA_LATITUDE");
-        mData[LONGITUDE]     = data.getString("EXTRA_LONGITUDE");
-        mData[TEST]          = data.getString("EXTRA_TEST");
-        mData[SERIAL]        = data.getString("EXTRA_SERIAL");
-        mData[TEMPERATURE]   = data.getString("EXTRA_TEMPERATURE");
-        mData[PRECIPITATION] = data.getString("EXTRA_PRECIPITATION");
-        mData[NAME]          = name;
-        mData[ORGANIZATION]  = organization;
-        mData[COMMENT]       = comment;
-
-        setText();
-    }
-
-    private void recompileData() {
-        EditText[] editTexts = getData();
-
-        for (int i = 0; i < DATA_SIZE; i++) {
-            mData[i] = editTexts[i].getText().toString();
-        }
     }
 
     // Triggers when LOGIN Button clicked
@@ -246,12 +192,14 @@ public class UploadActivity extends AppCompatActivity {
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
 
-                // Append parameters to URL
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("name", mData[NAME])
-                        .appendQueryParameter("organization", mData[ORGANIZATION])
-                        .appendQueryParameter("latitude", mData[LATITUDE])
-                        .appendQueryParameter("longitude", mData[LONGITUDE]);
+                // build query and append variables
+                Uri.Builder builder = new Uri.Builder();
+                Iterator iterator   = _map.entrySet().iterator();
+                while(iterator.hasNext()) {
+                    // get hash map entry pair
+                    Map.Entry pair = (Map.Entry) iterator.next();
+                    builder.appendQueryParameter(pair.getKey().toString(), pair.getValue().toString());
+                }
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -305,27 +253,16 @@ public class UploadActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-
-            //this method will be running on UI thread
-
             pdLoading.dismiss();
 
             if(result.equalsIgnoreCase("true"))
             {
-                /* Here launching another activity when login successful. If you persist login state
-                use sharedPreferences of Android. and logout button to clear sharedPreferences.
-                 */
                 UploadActivity.this.finish();
-
-            }else if (result.equalsIgnoreCase("false")){
-
+            } else if (result.equalsIgnoreCase("false")){
                 // If username and password does not match display a error message
                 Toast.makeText(UploadActivity.this, "Invalid email or password", Toast.LENGTH_LONG).show();
-
             } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
-
                 Toast.makeText(UploadActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-
             }
         }
 

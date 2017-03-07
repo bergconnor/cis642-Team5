@@ -2,6 +2,7 @@ package edu.ksu.cis.waterquality;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -23,36 +27,40 @@ import java.net.URL;
 public class LoginActivity extends AppCompatActivity {
 
     // CONNECTION_TIMEOUT and READ_TIMEOUT are in milliseconds
+    public static final int CONNECTION_TIMEOUT  = 10000;
+    public static final int READ_TIMEOUT        = 15000;
 
-    public static final int CONNECTION_TIMEOUT=10000;
-    public static final int READ_TIMEOUT=15000;
-    private EditText emailText;
-    private EditText passwordText;
+    private SessionManager  _session;
+    private EditText        _emailText;
+    private EditText        _passwordText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Get Reference to variables
-        emailText = (EditText) findViewById(R.id.email);
-        passwordText = (EditText) findViewById(R.id.password);
+        // set session manager
+        _session = new SessionManager(LoginActivity.this);
 
+        // get reference to variables
+        _emailText       = (EditText) findViewById(R.id.email);
+        _passwordText    = (EditText) findViewById(R.id.password);
     }
 
-    // Triggers when LOGIN Button clicked
     public void loginClick(View arg0) {
 
         // Get text from email and password field
-        final String email = emailText.getText().toString();
-        final String password = passwordText.getText().toString();
+        String email = _emailText.getText().toString();
+        String password = _passwordText.getText().toString();
 
-        // Initialize  AsyncLogin() class with email and password
-        new AsyncLogin().execute(email,password);
-
+        if(email.trim().length() > 0 && password.trim().length() > 0) {
+            new AsyncLogin().execute(email, password);
+        } else {
+            Toast.makeText(LoginActivity.this, "Please fill out all fields.", Toast.LENGTH_LONG).show();
+        }
     }
 
-    // Triggers when SIGN UP Button clicked
     public void signUpClick(View arg0) {
         Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
@@ -60,58 +68,63 @@ public class LoginActivity extends AppCompatActivity {
 
     private class AsyncLogin extends AsyncTask<String, String, String>
     {
-        ProgressDialog pdLoading = new ProgressDialog(LoginActivity.this);
-        HttpURLConnection conn;
-        URL url = null;
+        private String              _email;
+        private String              _password;
+        private ProgressDialog      _dialog = new ProgressDialog(LoginActivity.this);
+        private HttpURLConnection   _conn;
+        private URL                 _url;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            //this method will be running on UI thread
-            pdLoading.setMessage("\tLoading...");
-            pdLoading.setCancelable(false);
-            pdLoading.show();
+            // initialize variables
+            _email      = null;
+            _password   = null;
 
+            // set up dialog
+            _dialog.setMessage("\tLoading...");
+            _dialog.setCancelable(false);
+            _dialog.show();
         }
+
         @Override
         protected String doInBackground(String... params) {
+            _email = params[0];
+            _password = params[1];
             try {
-
-                // Enter URL address where your php file resides
-                url = new URL("http://people.cs.ksu.edu/~cberg1/android_login.php");
-
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                _url = new URL("http://people.cs.ksu.edu/~cberg1/android/login.php");
+            } catch (MalformedURLException ex) {
+                // TO DO: handle exception
+                ex.printStackTrace();
                 return "exception";
             }
             try {
                 // Setup HttpURLConnection class to send and receive data from php and mysql
-                conn = (HttpURLConnection)url.openConnection();
-                conn.setReadTimeout(READ_TIMEOUT);
-                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-                conn.setRequestMethod("POST");
+                _conn = (HttpURLConnection)_url.openConnection();
+                _conn.setReadTimeout(READ_TIMEOUT);
+                _conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                _conn.setRequestMethod("POST");
 
                 // setDoInput and setDoOutput method depict handling of both send and receive
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
+                _conn.setDoInput(true);
+                _conn.setDoOutput(true);
 
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("email", params[0])
-                        .appendQueryParameter("pass", params[1]);
+                        .appendQueryParameter("email", _email)
+                        .appendQueryParameter("password", _password);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
-                OutputStream os = conn.getOutputStream();
+                OutputStream os = _conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(os, "UTF-8"));
                 writer.write(query);
                 writer.flush();
                 writer.close();
                 os.close();
-                conn.connect();
+                _conn.connect();
 
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
@@ -121,13 +134,13 @@ public class LoginActivity extends AppCompatActivity {
 
             try {
 
-                int response_code = conn.getResponseCode();
+                int response_code = _conn.getResponseCode();
 
                 // Check if successful connection made
                 if (response_code == HttpURLConnection.HTTP_OK) {
 
                     // Read data sent from server
-                    InputStream input = conn.getInputStream();
+                    InputStream input = _conn.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(input));
                     StringBuilder result = new StringBuilder();
                     String line;
@@ -136,48 +149,46 @@ public class LoginActivity extends AppCompatActivity {
                         result.append(line);
                     }
 
-                    // Pass data to onPostExecute method
+                    // pass data to onPostExecute method
                     return(result.toString());
 
-                }else{
-
+                } else{
                     return("unsuccessful");
                 }
-
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
                 return "exception";
             } finally {
-                conn.disconnect();
+                _conn.disconnect();
             }
-
-
         }
 
         @Override
         protected void onPostExecute(String result) {
+            _dialog.dismiss();
+            String success = null;
+            String message = null;
 
-            //this method will be running on UI thread
-            pdLoading.dismiss();
+            try {
+                JSONObject reader = new JSONObject(result);
+                success = reader.getString("success");
+                message = reader.getString("message");
+            }  catch(Exception ex) {
+                // TO DO: handle error
+                ex.printStackTrace();
+            }
 
-            if(result.equalsIgnoreCase("true"))
+            if(success.equalsIgnoreCase("true"))
             {
-                /* Here launching another activity when login successful. If you persist login state
-                use sharedPreferences of Android. and logout button to clear sharedPreferences.
-                 */
-
+                _session.createLoginSession(_email);
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 LoginActivity.this.finish();
-
             } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
-
                 Toast.makeText(LoginActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-
             } else {
-                Toast.makeText(LoginActivity.this, result, Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
             }
         }
-
     }
 }

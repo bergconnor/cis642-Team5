@@ -1,13 +1,14 @@
 <?php
 /**
  * Login page to process user's login information
- * and allow access to website based on information
- * stored in MySQL database.
+ * from the web server and allow access based on
+ * information stored in the database.
  */
 session_start();
-require_once 'config.php'; /* database connection */
+require_once 'config.php';  // database connection
+require_once 'modules.php'; // query modules
 
-$_SESSION['email_sent'] = false; /* password reset flag */
+$_SESSION['email_sent'] = false;  // password reset flag
 
 /**
  * Direct user to the sign up page
@@ -24,64 +25,45 @@ if(isset($_POST["sign_up"])) {
  * is pressed.
  */
 if(isset($_POST['login'])) {
-  if(empty($_POST['email']) || empty($_POST['pass'])) {
-    /* empty email or password field */
+  if(empty($_POST['email']) || empty($_POST['password'])) {
+    // empty field
     $msg = 'Please provide your email address and password.';
-  }
-  elseif(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-    /* invalid email format */
-    $msg = 'Invalid email.';
-  }
-  else {
-    /* check database for information */
-    $msg = login($conn);
-    header('location: map.php');
-    exit();
+  } elseif(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+    // invalid email format
+    $msg = 'Invalid email format.';
+  } else {
+    // verify account information
+    $email    = $_POST['email'];
+    $password = $_POST['password'];
+    $result = login($conn, $email, $password);
+
+    switch($result) {
+      case 0:
+        $msg = 'You successfully logged in.';
+        header('location: map.php');
+        exit();
+      case 1:
+        $msg = 'You need to activate your account.';
+        break;
+      case 2:
+        $msg = 'Invalid account information.';
+        break;
+      case 3:
+        $msg = 'Error checking account information.
+                Please try again.';
+        break;
+      default:
+        $msg = 'An unknown error has occured.';
+        break;
+    }
   }
 
   if(isset($msg)) {
-    /* show error message if set */
+    // show error message if set
     echo '<div class="statusmsg">'.$msg.'</div>';
   }
 }
 
-/**
- * Verify user's login information with the database.
- * @param object $conn A MySQL connection object.
- * @return string A success or error message.
- */
-function login($conn) {
-  $email = mysqli_real_escape_string($conn, $_POST['email']);
-  $pass = mysqli_real_escape_string($conn, $_POST['pass']);
-
-  $stmt = $conn->stmt_init();
-  if($stmt->prepare('SELECT email, password, active FROM users
-                     WHERE email=? AND password=?')) {
-
-    $stmt->bind_param('ss', $email, $pass);
-    $stmt->execute();
-
-    $stmt->bind_result($email, $password, $active);
-
-    if($stmt->fetch() > 0) {
-      if($active == 0) {
-        /* account not activated */
-        return 'Please check your email to activate your account.';
-      } else {
-          /* valid account */
-          return 'Success.';
-          header('location: map.php');
-          exit();
-        }
-    } else {
-        /* invalid account */
-        return 'Invalid email address or password.';
-    }
-  } else {
-    // TO DO: handle error if $stmt->prepare() fails
-    return 'Error';
-  }
-}
 ?>
 
 <!DOCTYPE html>
@@ -96,7 +78,7 @@ function login($conn) {
         <h1>Login</h1>
         <form action="" method="post">
           <p><input type="email" name="email" placeholder="Email"></p>
-          <p><input type="password" name="pass" placeholder="Password"></p>
+          <p><input type="password" name="password" placeholder="Password"></p>
           <p class="submit">
             <input type="submit" name="login" value="Login" align="left">
             <input type="submit" name="sign_up" value="Sign Up" align="left">
