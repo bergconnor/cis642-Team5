@@ -59,21 +59,13 @@ public class ImageActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST = 1772;
     private static final int MAX_SERIAL_NUMBER = 99999;
 
-    private static final boolean IN_CHART = false;
-    private View chartView;
     private LineChart vchart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(IN_CHART) {
-            setContentView(chartView);
-            //exitChartWait();
-        } else {
-            setContentView(R.layout.activity_image);
-            takePicture();
-        }
-
+        setContentView(R.layout.activity_image);
+        takePicture();
     }
 
     private void takePicture() {
@@ -135,10 +127,9 @@ public class ImageActivity extends AppCompatActivity {
                 vchart.setData(graphData);
                 XAxis vchartX = vchart.getXAxis();
                 vchartX.setDrawLabels(true);
-                //chartView = chart;
                 //chart.saveToGallery("chart.jpg", 75);
             } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "Unable to create chart.", Toast.LENGTH_LONG).show();
+                imageException();
             }
 
             final Button chartButton = (Button)findViewById(R.id.contButton);

@@ -19,7 +19,7 @@ public class ImageProcTest {
                 testList.add(new Scalar(Math.random(), Math.random(), Math.random()));
             }
         } catch(IllegalArgumentException e) {
-            assertTrue("createData throws IllegalArgumentException");
+            assertTrue("createData throws IllegalArgumentException", true);
         }
     }
 

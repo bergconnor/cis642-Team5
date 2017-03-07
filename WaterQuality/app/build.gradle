@@ -48,4 +48,5 @@ dependencies {
     compile 'pub.devrel:easypermissions:0.1.5'
     compile project(':libraries:opencv')
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    compile 'junit:junit:4.12'
 }
