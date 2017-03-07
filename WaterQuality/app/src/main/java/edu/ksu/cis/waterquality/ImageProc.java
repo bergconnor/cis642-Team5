@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -263,7 +264,7 @@ public class ImageProc {
      * @throws Exception Throws IllegalArgumentException if there is not the correct number of
      *                   colors.
      */
-    public static LineChart createGraph(List<Scalar> colorVals, Context context) throws Exception {
+    public static LineData createData(List<Scalar> colorVals) throws Exception {
         if(colorVals.size() != 12) {
             throw new IllegalArgumentException();
         }
@@ -284,9 +285,7 @@ public class ImageProc {
         }
 
         LineDataSet dataset = new LineDataSet(lineGraphEntries, "Values");
-        LineChart chart = new LineChart(context);
         LineData data = new LineData(dataset);
-        chart.setData(data);
-        return chart;
+        return data;
     }
 }

@@ -32,6 +32,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.LineData;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
@@ -59,6 +61,7 @@ public class ImageActivity extends AppCompatActivity {
 
     private static final boolean IN_CHART = false;
     private View chartView;
+    private LineChart vchart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,19 +123,32 @@ public class ImageActivity extends AppCompatActivity {
             bitmap = rotateImage(bitmap, path);
             Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
                     (bitmap.getWidth() / 2), bitmap.getHeight());
-            String code = scanQRCode(croppedBitmap);
+            final String code = scanQRCode(croppedBitmap);
 
-            List<Scalar> colors = ImageProc.readImage(bitmap);
+            final List<Scalar> colors = ImageProc.readImage(bitmap);
+
+            //Creates the graph and displays it until the user presses okay
             try {
-                LineChart chart = ImageProc.createGraph(colors, getApplicationContext());
-                chart.setContentDescription("Test Results");
-                chartView = chart;
-                setContentView(chart);
+                LineData graphData = ImageProc.createData(colors);
+                setContentView(R.layout.activity_chart);
+                vchart = (LineChart)findViewById(R.id.chart1);
+                vchart.setData(graphData);
+                XAxis vchartX = vchart.getXAxis();
+                vchartX.setDrawLabels(true);
+                //chartView = chart;
                 //chart.saveToGallery("chart.jpg", 75);
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "Unable to create chart.", Toast.LENGTH_LONG).show();
             }
-            //processResults(code, colors);
+
+            final Button chartButton = (Button)findViewById(R.id.contButton);
+            chartButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    processResults(code, colors);
+                }
+            });
         }
     }
 
