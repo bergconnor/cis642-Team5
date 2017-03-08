@@ -5,6 +5,7 @@
     android:layout_weight="1"
     android:paddingLeft="2dp"
     android:paddingRight="2dp"
+    android:fillViewport="true"
     android:scrollbars="none"
     android:background="@drawable/border" >
     <EditText

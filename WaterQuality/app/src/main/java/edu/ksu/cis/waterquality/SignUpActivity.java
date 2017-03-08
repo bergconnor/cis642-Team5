@@ -65,7 +65,7 @@ public class SignUpActivity extends AppCompatActivity {
         if (password1.equals(password2))
         {
             // Initialize  AsyncSignUp() class with email, username and password
-            new SignUpActivity.AsyncSignUp().execute(first, last, organization, email, password1);
+            new AsyncSignUp().execute(first, last, organization, email, password1);
         }
         else {
             // If both passwords do not match display a error message
@@ -118,7 +118,7 @@ public class SignUpActivity extends AppCompatActivity {
                         .appendQueryParameter("last", params[1])
                         .appendQueryParameter("organization", params[2])
                         .appendQueryParameter("email", params[3])
-                        .appendQueryParameter("pass", params[4]);
+                        .appendQueryParameter("password", params[4]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data

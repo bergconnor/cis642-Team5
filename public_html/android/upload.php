@@ -8,7 +8,7 @@
 require_once '../config.php';   // database connection
 require_once '../modules.php';  // modules for database queries
 
-$data = ("user_id", "date", "test", "serial", "concentration", "latitude",
+$data = array("user_id", "date", "test", "serial", "concentration", "latitude",
          "longitude", "city", "state", "temperature", "precipitation", "comment");
 
 /**
@@ -23,19 +23,22 @@ if(!empty($_POST)) {
 
   $empty = false;
   foreach($data as $field) {
-    if(empty($_POST[$field])) {
-      $flag = true;
+    if(empty($_POST[$field]) && $field != "comment") {
+      $json['var'] = $field;
+      $empty = true;
     }
   }
 
-  if($flag) {
+  if($empty) {
     // empty field
     $json['success'] = false;
     $json['message'] = 'Please fill out all fields.';
   } else {
     // attempt to upload data
-    $user_id        = mysqli_real_escape_string($conn, $_POST['user_id']);
-    $date           = mysqli_real_escape_string($conn, $_POST['date']);
+    $date = date("Y-m-d", strtotime($_POST['date']));
+
+    $date           = mysqli_real_escape_string($conn, $date);
+    $user_id        = mysqli_real_escape_string($conn, (int)$_POST['user_id']);
     $test_id        = mysqli_real_escape_string($conn, getTestId($conn, $_POST['test']));
     $serial         = mysqli_real_escape_string($conn, $_POST['serial']);
     $concentration  = mysqli_real_escape_string($conn, $_POST['concentration']);
@@ -46,6 +49,7 @@ if(!empty($_POST)) {
     $temperature    = mysqli_real_escape_string($conn, $_POST['temperature']);
     $precipitation  = mysqli_real_escape_string($conn, $_POST['precipitation']);
     $comment        = mysqli_real_escape_string($conn, $_POST['comment']);
+    $verified       = mysqli_real_escape_string($conn, false);
 
     $stmt = $conn->stmt_init();
     if($stmt->prepare('INSERT INTO markers (user_id, date, test_id, serial,
@@ -54,17 +58,21 @@ if(!empty($_POST)) {
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')) {
       $stmt->bind_param('ssssssssssss', $user_id, $date, $test_id, $serial,
                         $latitude, $longitude, $city, $state, $temperature,
-                        $precipitation, $comment, false);
+                        $precipitation, $comment, $verified);
 
       if($stmt->execute()) {
         // success
-        mysqli_close($conn);
-        return 0;
-      } else {
-        // insertion error
+        $json['success'] = true;
+        $json['message'] = 'Successfully uploaded data.';
         $stmt->close();
         mysqli_close($conn);
-        return 1;
+      } else {
+        // insertion error
+        $json['success'] = false;
+        $json['message'] = mysqli_error($conn);//'Failed to upload data.';
+        $json['var'] = $var;
+        $stmt->close();
+        mysqli_close($conn);
       }
     }
   }
@@ -78,7 +86,7 @@ if(!empty($_POST)) {
  * @return int The test type id.
  */
 function getTestId($conn, $test) {
-  $type = mysqli_real_escape_string($conn, $test)
+  $type = mysqli_real_escape_string($conn, $test);
 
   $stmt = $conn->stmt_init();
   if($stmt->prepare('SELECT id FROM tests WHERE type=?')) {
@@ -89,18 +97,15 @@ function getTestId($conn, $test) {
     if($stmt->fetch() > 0) {
       // user info found
       $stmt->close();
-      mysqli_close($conn);
-      return $id;
+      return (int)$id;
     }
     else {
       // failed to retrieve id
       $stmt->close();
-      mysqli_close($conn);
       return -1;
     }
   } else {
     $stmt->close();
-    mysqli_close($conn);
     return -1;
   }
 }

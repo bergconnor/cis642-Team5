@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 public class SessionManager implements AsyncResponse {
 
-    public static final String KEY_ID       = "id";
+    public static final String KEY_ID       = "user_id";
     public static final String KEY_EMAIL    = "email";
     public static final String KEY_NAME     = "name";
     public static final String KEY_ORG      = "organization";
@@ -96,11 +96,12 @@ public class SessionManager implements AsyncResponse {
         }
     }
 
-    public LinkedHashMap<String, String> getDetails(){
+    public LinkedHashMap<String, String> getDetails() {
         LinkedHashMap<String, String> details = new LinkedHashMap<String, String>();
 
         String date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
         _editor.putString(KEY_DATE, date);
+        _editor.commit();
         details.put(KEY_DATE, date);
 
         for(int i = 0; i < _keys.length; i++) {
@@ -109,6 +110,12 @@ public class SessionManager implements AsyncResponse {
         }
 
         return details;
+    }
+
+    public void updateValue(String key, String value) {
+        _editor.remove(key);
+        _editor.putString(key, value);
+        _editor.commit();
     }
 
     public void logoutUser(){

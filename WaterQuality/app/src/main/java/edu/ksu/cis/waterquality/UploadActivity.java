@@ -7,15 +7,18 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -42,9 +45,6 @@ public class UploadActivity extends AppCompatActivity {
 
     private SessionManager _session;
     private ProgressDialog _dialog;
-    private LinkedHashMap<String, String> _map;
-    private LinkedHashMap<String, EditText> _data = new LinkedHashMap<String, EditText>();
-
 
     /**
      * Create the main activity.
@@ -69,14 +69,15 @@ public class UploadActivity extends AppCompatActivity {
 
     private void createView() {
         // get data and layouts
-        _map = _session.getDetails();
+        LinkedHashMap<String, String> map = _session.getDetails();
         LinearLayout textViewLayout = (LinearLayout) findViewById(R.id.textViewLayout);
         LinearLayout editTextLayout = (LinearLayout) findViewById(R.id.editTextLayout);
 
-        Iterator iterator = _map.entrySet().iterator();
+        Iterator iterator = map.entrySet().iterator();
         while(iterator.hasNext()) {
             // get hash map entry pair
-            Map.Entry pair = (Map.Entry)iterator.next();
+            Map.Entry pair      = (Map.Entry)iterator.next();
+            final String key    = pair.getKey().toString();
 
             // create new elements to add to layouts
             TextView textView = (TextView) View
@@ -88,10 +89,20 @@ public class UploadActivity extends AppCompatActivity {
             textView.setText(pair.getKey().toString());
             editText.setText(pair.getValue().toString());
 
+            editText.addTextChangedListener( new TextWatcher() {
+                public void afterTextChanged(Editable editable) {
+                    _session.updateValue(key, editable.toString());
+                }
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    // do nothing
+                }
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // do nothing
+                }
+            });
+
             textViewLayout.addView(textView);
             editTextLayout.addView(scrollView);
-
-            _data.put(pair.getKey().toString(), editText);
         }
     }
 
@@ -174,7 +185,7 @@ public class UploadActivity extends AppCompatActivity {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://people.cs.ksu.edu/~cberg1/upload.php");
+                url = new URL("http://people.cs.ksu.edu/~cberg1/android/upload.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
@@ -194,7 +205,8 @@ public class UploadActivity extends AppCompatActivity {
 
                 // build query and append variables
                 Uri.Builder builder = new Uri.Builder();
-                Iterator iterator   = _map.entrySet().iterator();
+                LinkedHashMap<String, String> map = _session.getDetails();
+                Iterator iterator   = map.entrySet().iterator();
                 while(iterator.hasNext()) {
                     // get hash map entry pair
                     Map.Entry pair = (Map.Entry) iterator.next();
@@ -254,17 +266,30 @@ public class UploadActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             pdLoading.dismiss();
+            String success = "false";
+            String message = "";
 
-            if(result.equalsIgnoreCase("true"))
+            try {
+                JSONObject reader = new JSONObject(result);
+                success = reader.getString("success");
+                message = reader.getString("message");
+
+            }  catch(Exception ex) {
+                // TO DO: handle error
+                ex.printStackTrace();
+            }
+
+            if(success.equalsIgnoreCase("true"))
             {
                 UploadActivity.this.finish();
             } else if (result.equalsIgnoreCase("false")){
-                // If username and password does not match display a error message
+                // if username and password does not match display a error message
                 Toast.makeText(UploadActivity.this, "Invalid email or password", Toast.LENGTH_LONG).show();
             } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
                 Toast.makeText(UploadActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(UploadActivity.this, message, Toast.LENGTH_LONG).show();
             }
         }
-
     }
 }

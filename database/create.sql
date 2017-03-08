@@ -1,9 +1,9 @@
--- DROP TABLE IF EXISTS `tests`;
 DROP TABLE IF EXISTS `markers`;
+DROP TABLE IF EXISTS `tests`;
 DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
-  `id`            INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+  `id`            INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
   `first`         VARCHAR( 32 ) NOT NULL ,
   `last`          VARCHAR( 32 ) NOT NULL ,
   `organization`  VARCHAR( 64 ) NOT NULL ,
@@ -14,9 +14,15 @@ CREATE TABLE `users` (
   `admin`         BOOLEAN NOT NULL DEFAULT '0'
   ) ENGINE = InnoDB ;
 
+CREATE TABLE `tests` (
+  `id`        INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+  `type`      VARCHAR( 32 ) NOT NULL ,
+  CONSTRAINT  type_uq UNIQUE( `type` )
+  ) ENGINE = InnoDB ;
+
 CREATE TABLE `markers` (
   `id`            INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-  `user_id`       VARCHAR( 80 ) NOT NULL ,
+  `user_id`       INT NOT NULL ,
   `date`          DATE NOT NULL ,
   `test_id`       INT NOT NULL ,
   `serial`        INT NOT NULL ,
@@ -31,9 +37,5 @@ CREATE TABLE `markers` (
   CONSTRAINT      users_fk
     FOREIGN KEY( `user_id` ) REFERENCES users( `id` ) ,
   CONSTRAINT      tests_fk
-    FOREIGN KEY( `test_id` ) REFERENCES tests( `id` ) );
-
-  CREATE TABLE `tests` (
-    `id`        INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-    `type`      VARCHAR( 32 ) NOT NULL ,
-    CONSTRAINT  type_uq UNIQUE( type ) );
+    FOREIGN KEY( `test_id` ) REFERENCES tests( `id` )
+  ) ENGINE = InnoDB ;
