@@ -40,7 +40,7 @@ if(isset($_POST['login'])) {
     switch($result) {
       case 0:
         $msg = 'You successfully logged in.';
-        header('location: map.php');
+        header('location: webpage backup/index.php');
         exit();
       case 1:
         $msg = 'You need to activate your account.';

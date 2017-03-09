@@ -39,7 +39,7 @@ if(isset($_POST['sign_up'])) {
     $last  = $_POST['last'];
     $org   = $_POST['organization'];
     $email = $_POST['email'];
-    $password  = $_POST['password1'];
+    $pass  = $_POST['password1'];
 
     if(check_email($conn, $email)) {
       // email is not in use
