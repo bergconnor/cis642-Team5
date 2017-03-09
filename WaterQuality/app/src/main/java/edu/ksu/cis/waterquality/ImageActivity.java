@@ -1,12 +1,11 @@
 package edu.ksu.cis.waterquality;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,14 +19,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,9 +42,7 @@ import com.github.mikephil.charting.charts.LineChart;
 
 import org.opencv.core.Scalar;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ImageActivity extends AppCompatActivity {
@@ -119,7 +113,10 @@ public class ImageActivity extends AppCompatActivity {
 
             final List<Scalar> colors = ImageProc.readImage(bitmap);
 
-            //Creates the graph and displays it until the user presses okay
+            /* Creates the graph and displays it until the user presses okay. Also temporarily
+             * disables screen rotation during Chart view to prevent refresh. */
+            final int oldOrientation = getRequestedOrientation();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
             try {
                 LineData graphData = ImageProc.createData(colors);
                 setContentView(R.layout.activity_chart);
@@ -127,7 +124,6 @@ public class ImageActivity extends AppCompatActivity {
                 vchart.setData(graphData);
                 XAxis vchartX = vchart.getXAxis();
                 vchartX.setDrawLabels(true);
-                //chart.saveToGallery("chart.jpg", 75);
             } catch (Exception e) {
                 imageException();
             }
@@ -137,6 +133,8 @@ public class ImageActivity extends AppCompatActivity {
 
                 @Override
                 public void onClick(View v) {
+                    vchart.saveToGallery("chart.jpg", 75);
+                    setRequestedOrientation(oldOrientation);
                     processResults(code, colors);
                 }
             });

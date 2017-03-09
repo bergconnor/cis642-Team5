@@ -12,15 +12,32 @@ import static org.junit.Assert.*;
  */
 public class ImageProcTest {
     @org.junit.Test
-    public void testCreateDataOnlyAcceptsTwelve() throws Exception {
+    public void testCreateDataFailsOnLargerThanTwelveList() throws Exception {
         try {
             List<Scalar> testList = new ArrayList<Scalar>();
             for(int i = 0; i < 13; i++) {
                 testList.add(new Scalar(Math.random(), Math.random(), Math.random()));
             }
+            ImageProc.createData(testList);
+            assertFalse("Method should have thrown IllegalArgumentException", false);
         } catch(IllegalArgumentException e) {
             assertTrue("createData throws IllegalArgumentException", true);
         }
     }
+
+    @org.junit.Test
+    public void testCreateDataFailsOnSmallerThanTwelveList() throws Exception {
+        try {
+            List<Scalar> testList = new ArrayList<Scalar>();
+            for (int i = 0; i < 8; i++) {
+                testList.add(new Scalar(Math.random(), Math.random(), Math.random()));
+            }
+            ImageProc.createData(testList);
+            assertFalse("Method should have thrown IllegalArgumentException", false);
+        } catch (IllegalArgumentException e) {
+            assertTrue("createData throws IllegalArgumentException", true);
+        }
+    }
+
 
 }

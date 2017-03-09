@@ -1,7 +1,6 @@
 package edu.ksu.cis.waterquality;
 
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
@@ -10,8 +9,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -257,8 +254,9 @@ public class ImageProc {
         return avg;
     }
 
-    /** Creates a line graph giving the linear curve of the test results, showing concentration
-     * on the Y-axis and the squares the test was taken from on the X-axis.
+    /** Creates the LineData variable for creating a LineGraph View. The colorVals must be exactly
+     *  12 in size and contain RGB scalars. It then converts colorVals to HSV from RGB. It then
+     *  creates the data set and data for the LineGraph and returns the LineData.
      *
      * @param colorVals the Scalar values of the colors from each square in the RGB colorspace.
      * @throws Exception Throws IllegalArgumentException if there is not the correct number of
@@ -269,6 +267,7 @@ public class ImageProc {
             throw new IllegalArgumentException();
         }
 
+        //Converting RGB Scalars to HSV float arrays
         float[][] hsvColors = new float[colorVals.size()][3];
         for(int i = 0; i < colorVals.size(); i++) {
             Color.RGBToHSV((int)colorVals.get(i).val[2], (int)colorVals.get(i).val[1], (int)colorVals.get(i).val[0], hsvColors[i]);
@@ -278,10 +277,8 @@ public class ImageProc {
 
         //Creating the data set for the line graph here.
         ArrayList<Entry> lineGraphEntries = new ArrayList<Entry>();
-        ArrayList<String> labels = new ArrayList<String>();
         for (int i = 2; i < colorVals.size() - 2; i++) {
             lineGraphEntries.add(i - 2, new Entry(i-2, hsvColors[i][1]));
-            labels.add(i - 2, Double.toString(percVals[i - 2]));
         }
 
         LineDataSet dataset = new LineDataSet(lineGraphEntries, "Values");
