@@ -27,15 +27,36 @@ if (!$result) {
 }
 
 header("Content-type: text/xml");
+ /*  select 
+			 m.id 'id', m.user_id 'userid', m.latitude 'latitude' , m.longitude 'longitude',
+			 m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation',
+			 m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization',
+			 u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'
 
+			 from markers m
+					join users u on m.user_id = u.id
+					join tests t on m.test_id = t.id 
+		
+			where true 
+        */
 // Iterate through the rows, adding XML nodes for each
 while ($row = @mysql_fetch_assoc($result)){
   // Add to XML document node
   $node = $doc->createElement("marker");
   $newnode = $parnode->appendChild($node);
-
+  /*
   $newnode->setAttribute("id", $row['id']);
-  $newnode->setAttribute("name", $row['name']);
+  $newnode->setAttribute("name", $row['last']);
+  $newnode->setAttribute("organization", $row['organization']);
+  $newnode->setAttribute("latitude", $row['latitude']);
+  $newnode->setAttribute("longitude", $row['longitude']);
+  $newnode->setAttribute("verified", $row['verified']);
+  */
+  
+  $name = $row['first']. " " .$row['last'];
+ 
+  $newnode->setAttribute("id", $row['id']);
+  $newnode->setAttribute("name",$name);
   $newnode->setAttribute("organization", $row['organization']);
   $newnode->setAttribute("latitude", $row['latitude']);
   $newnode->setAttribute("longitude", $row['longitude']);

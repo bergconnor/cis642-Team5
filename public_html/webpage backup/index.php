@@ -104,7 +104,7 @@ session_start();
 	 
 	<ul>
 	  <li><a  type="button" id = "button"   onclick="">Home</a></li>
-	  <li><a  align= "right" id = "button" href="" target="_blank">Account</a></li>
+	  <li><a  align= "right" id = "button" href="login.php" target="_blank">Login</a></li>
 	  <li><a  id = "button" href="all_samples.php" target="_blank">All Samples</a></li>
 	<text  id = 'text'  > This should be aligned to right</text>
 	
@@ -310,9 +310,9 @@ session_start();
 		 var level1 = document.getElementById('Level1').value;
 		 
 		 var verified = " = 1";
-		 var id = '> 0';
+		 var id = '';
 		 if (pendingSamples)
-			 verified = " > -1";
+			 verified = "and verified > -1";
 		 console.log(isNaN(numberLevel));
 		  console.log(0>(numberLevel));
 		 
@@ -330,9 +330,30 @@ session_start();
 				 id = '> ' +   document.getElementById('numberLevel').value ;
 		 }
 		 
-		 
-		 var query = 'SELECT * FROM markers where '+
-		 'verified '+ verified + ' and id '+ id ;
+		 /*  select 
+			 m.id 'id', m.user_id 'userid', m.latitude 'latitude' , m.longitude 'longitude',
+			 m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation',
+			 m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization',
+			 u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'
+
+			 from markers m
+					join users u on m.user_id = u.id
+					join tests t on m.test_id = t.id 
+		
+			where true 
+        */
+		 var querySetUp = "select "+ 
+			 " m.id 'id', m.user_id 'userid', m.latitude 'latitude' , m.longitude 'longitude',"+
+			 " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation',"+
+			 " m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization',"+
+			 " u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'"+
+				
+			 " from markers m "+
+					" join users u on m.user_id = u.id"+
+					" join tests t on m.test_id = t.id "+
+		
+			" where true "
+		 var query = querySetUp;
 		                                          
 		 return query;
 		  
