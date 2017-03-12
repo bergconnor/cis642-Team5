@@ -316,10 +316,10 @@ session_start();
 		 var precipitationLevel = document.getElementById('precipitationLevel').value;
 		 var level1 = document.getElementById('Level1').value;
 		 var precipitation = '';
-		 var verified = " and verified = 1";
+		 var verified = " and verified = 1 ";
 		 var id = '';
 		 if (pendingSamples)
-			 verified = "and verified > -1";
+			 verified = " and verified > -1 ";
 		 console.log(isNaN(precipitationLevel));
 		  console.log(0>(precipitationLevel));
 		 
