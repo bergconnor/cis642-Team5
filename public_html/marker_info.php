@@ -11,23 +11,39 @@ session_start();
 <th>Marker ID</th>
 <th>Name</th>
 <th>Orgnization</th>
+<th>Email</th>
+<th>Test Type</th>
 <th>Latitude</th>
 <th>Longitude</th>
+<th>Temperature</th>
+<th>Precipitation</th>
+<th>Comment</th>
 </tr>
 <tr>
 <td id = "markerid"> not working yet</td>
 <td id = "name">Row 1, Column 2</td>
 <td id = "orgnization">Row 1, Column 3</td>
-<td id = "lat">Row 1, Column 4</td>
-<td id = "log">Row 1, Column 5</td>
+<td id = "email">Row 1, Column 4</td>
+<td id = "type">Row 1, Column 5</td>
+<td id = "lat">Row 1, Column 6</td>
+<td id = "log">Row 1, Column 7</td>
+<td id = "temperature">Row 1, Column 8</td>
+<td id = "precipitation">Row 1, Column 9</td>
+<td id = "comment">Row 1, Column 10</td>
 </tr>
 </table>
 <script>
 var markerid = sessionStorage.getItem('marker');
 var name = "none"
 var orgnization = "none"
+var email = "none"
+var type = "none"
 var lat = "none"
 var log = "none"
+var temperature = "none"
+var precipitation = "none"
+var comment = "none"
+
 downloadUrl('create_xml.php', function(data) {
             var xml = data.responseXML;
             var markers = xml.documentElement.getElementsByTagName('marker');
@@ -37,13 +53,24 @@ downloadUrl('create_xml.php', function(data) {
 
 					name = markerElem.getAttribute('name');
 					orgnization = markerElem.getAttribute('organization');
+					email = markerElem.getAttribute('email');
+					type = markerElem.getAttribute('type');
 					lat = markerElem.getAttribute('latitude');
 					log = markerElem.getAttribute('longitude');
+					temperature = markerElem.getAttribute('temperature');
+					precipitation = markerElem.getAttribute('precipitation');
+					comment = markerElem.getAttribute('comment');
 					document.getElementById("markerid").innerHTML = markerid;
 					document.getElementById("name").innerHTML = name;
 					document.getElementById("orgnization").innerHTML = orgnization;
+					document.getElementById("email").innerHTML = email;
+					document.getElementById("type").innerHTML = type;
 					document.getElementById("lat").innerHTML = lat;
 					document.getElementById("log").innerHTML = log;
+					document.getElementById("temperature").innerHTML = temperature;
+					document.getElementById("precipitation").innerHTML = precipitation;
+					document.getElementById("comment").innerHTML = comment;
+					
 	
 				}
    

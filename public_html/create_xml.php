@@ -60,6 +60,11 @@ while ($row = @mysql_fetch_assoc($result)){
   $newnode->setAttribute("organization", $row['organization']);
   $newnode->setAttribute("latitude", $row['latitude']);
   $newnode->setAttribute("longitude", $row['longitude']);
+  $newnode->setAttribute("temperature", $row['temperature']);
+  $newnode->setAttribute("precipitation", $row['precipitation']);
+  $newnode->setAttribute("comment", $row['comment']);
+  $newnode->setAttribute("email", $row['email']);
+  $newnode->setAttribute("type", $row['type']);
   $newnode->setAttribute("verified", $row['verified']);
 }
 
