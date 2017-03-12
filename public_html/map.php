@@ -118,10 +118,10 @@ session_start();
   include xxxx <input type="checkbox" name="vehicle" value="Bike" id = 'include1'>  <!--  placeholder -->
   <br>
   
-  ID Number
+  Precipitation Level
   <a  id = "inequalitySign1"   onclick="changeSign('inequalitySign1')"><</a> 
-  <input type="text" name="fname" size = 7 placeholder = 0  id = 'numberLevel'>
-  <a  id = "button2"   onclick="clearBox('numberLevel')">Clear</a>
+  <input type="text" name="fname" size = 7 placeholder = 0  id = 'precipitationLevel'>
+  <a  id = "button2"   onclick="clearBox('precipitationLevel')">Clear</a>
   
   xxx level  <!--  placeholder -->
   <a  id = "inequalitySign2"   onclick="changeSign('inequalitySign2')"><</a> <!--  placeholder -->
@@ -159,7 +159,7 @@ session_start();
 		  /* used for debugging*********************************
 		  //console.log('Show pending samples: '+document.getElementById('pendingSamples').checked);//.'AcceptedSamples');
 		  //console.log('include xxxx: '+document.getElementById('include1').checked);
-		  //console.log('Number level: '+document.getElementById('numberLevel').value);
+		  //console.log('Number level: '+document.getElementById('precipitationLevel').value);
 		  //console.log('xxx level: '+document.getElementById('Level1').value);
 		    used for debugging********************************* */
 		  
@@ -170,6 +170,8 @@ session_start();
             Array.prototype.forEach.call(markers, function(markerElem) {
               var name = markerElem.getAttribute('name');
               var organization = markerElem.getAttribute('organization');
+			  var type = markerElem.getAttribute('type');
+			  var comment = markerElem.getAttribute('comment');;
               var point = new google.maps.LatLng(
                   parseFloat(markerElem.getAttribute('latitude')),
                   parseFloat(markerElem.getAttribute('longitude')));
@@ -181,10 +183,20 @@ session_start();
               infowincontent.appendChild(document.createElement('br'));
 
               var text = document.createElement('text');
-              text.textContent = organization
+              text.textContent = organization;
               infowincontent.appendChild(text);
-			  
 			  infowincontent.appendChild(document.createElement('br'));
+			  
+			  var text3 = document.createElement('text');
+			  text3.textContent = type + " test";
+			  infowincontent.appendChild(text3);
+			  infowincontent.appendChild(document.createElement('br'));
+			  
+			  var text4 = document.createElement('text');
+			  text4.textContent = comment;
+			  infowincontent.appendChild(text4);
+			  infowincontent.appendChild(document.createElement('br'));
+
 			  var text2 = document.createElement('text');
 			  text2.textContent = "more info";
 			  var ul =  document.createElement('a');
@@ -306,42 +318,31 @@ session_start();
 	  function createQuery(){
 		 var pendingSamples = document.getElementById('pendingSamples').checked;
 		 var include1 = document.getElementById('include1').checked ;
-		 var numberLevel = document.getElementById('numberLevel').value;
+		 var precipitationLevel = document.getElementById('precipitationLevel').value;
 		 var level1 = document.getElementById('Level1').value;
-		 
-		 var verified = " = 1";
+		 var precipitation = '';
+		 var verified = " and verified = 1";
 		 var id = '';
 		 if (pendingSamples)
 			 verified = "and verified > -1";
-		 console.log(isNaN(numberLevel));
-		  console.log(0>(numberLevel));
+		 console.log(isNaN(precipitationLevel));
+		  console.log(0>(precipitationLevel));
 		 
-		 if (isNaN(numberLevel) || numberLevel < 0 ){
-			 numberLevel = '';
-			 document.getElementById('numberLevel').value = '';
+		 if (isNaN(precipitationLevel) || precipitationLevel < 0 ){
+			 precipitationLevel = '';
+			 document.getElementById('precipitationLevel').value = '';
 		 }
 			 
-		 if (numberLevel!=''){
+		 if (precipitationLevel!=''){
 			 
 			 
 			 if (document.getElementById('inequalitySign1').textContent == '<')
-				 id = '< ' +   document.getElementById('numberLevel').value ;
+				 precipitation = ' and precipitation < ' +   document.getElementById('precipitationLevel').value ;
 			 else 
-				 id = '> ' +   document.getElementById('numberLevel').value ;
+				 precipitation = ' and precipitation > ' +   document.getElementById('precipitationLevel').value ;
+			 
 		 }
-		 
-		 /*  select 
-			 m.id 'id', m.user_id 'userid', m.latitude 'latitude' , m.longitude 'longitude',
-			 m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation',
-			 m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization',
-			 u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'
 
-			 from markers m
-					join users u on m.user_id = u.id
-					join tests t on m.test_id = t.id 
-		
-			where true 
-        */
 		 var querySetUp = "select "+ 
 			 " m.id 'id', m.user_id 'userid', m.latitude 'latitude' , m.longitude 'longitude',"+
 			 " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation',"+
@@ -352,7 +353,7 @@ session_start();
 					" join users u on m.user_id = u.id"+
 					" join tests t on m.test_id = t.id "+
 		
-			" where true "
+			" where true "+precipitation+verified;
 		 var query = querySetUp;
 		                                          
 		 return query;
