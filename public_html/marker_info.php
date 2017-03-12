@@ -60,7 +60,16 @@ function downloadUrl(url, callback) {
             callback(request, request.status);
           }
         };
-		var query = "SELECT * FROM markers WHERE 1";
+		var query =  "select "+ 
+			 " m.id 'id', m.user_id 'userid', m.latitude 'latitude' , m.longitude 'longitude',"+
+			 " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation',"+
+			 " m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization',"+
+			 " u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'"+
+				
+			 " from markers m "+
+					" join users u on m.user_id = u.id"+
+					" join tests t on m.test_id = t.id ";
+					console.log(query);
         request.open('GET', url, true);
 		request.open("GET", url+"?q=" + query, true);
         request.send(null);
