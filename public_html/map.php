@@ -210,22 +210,17 @@ session_start();
 			  
 			    // change the color of the marker based on the id 
 				var pinColor = 0xFFFF00;
-				var myId = markerElem.getAttribute('id');
+				var type = markerElem.getAttribute('type');
 				
-				var colorRange = (myId%4)+1;
+				var colorRange = type;
 				switch (colorRange){
-					case 1:
-					pinColor = 0x3399FF;
+					case 'Phosphate':
+					pinColor = 0x3333ff;
 					break;
-					case 2:
-					pinColor = 0x6673BF;
+					case 'Nitrate':
+					pinColor = 0xff0000;
 					break;
-					case 3:
-					pinColor = 0x992966;
-					break;
-					case 4:
-					pinColor = 0xFF0000;
-					break;
+					
 					
 				}
 				 
@@ -262,7 +257,7 @@ session_start();
               });
 			  marker.label.color = 'white';
 			  marker.icon.labelOrigin = {x: 11, y: 11};
-			  console.log(marker);
+			  //console.log(marker);
 				}
 			  //create the info window when the marker gets clicked
 			  
