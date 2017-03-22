@@ -4,9 +4,9 @@
  * from the web server and allow access based on
  * information stored in the database.
  */
+
 session_start();
-require_once 'config.php';  // database connection
-require_once 'modules.php'; // query modules
+require_once('lib/modules.php'); // query modules
 
 $_SESSION['email_sent'] = false;  // password reset flag
 
@@ -16,7 +16,7 @@ $_SESSION['email_sent'] = false;  // password reset flag
  */
 if(isset($_POST["sign_up"])) {
   /* sign up button pressed */
-  header('location: sign_up.php');
+  header('location: lib/sign_up.php');
   exit();
 }
 
@@ -25,7 +25,7 @@ if(isset($_POST["sign_up"])) {
  * is pressed.
  */
 if(isset($_POST['login'])) {
-  if(empty($_POST['email']) || empty($_POST['password'])) {
+  if(empty($_POST['email']) || empty($_POST['pass'])) {
     // empty field
     $msg = 'Please provide your email address and password.';
   } elseif(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
@@ -33,24 +33,21 @@ if(isset($_POST['login'])) {
     $msg = 'Invalid email format.';
   } else {
     // verify account information
-    $email    = $_POST['email'];
-    $password = $_POST['password'];
-    $result = login($conn, $email, $password);
+    $email  = $_POST['email'];
+    $pass   = $_POST['pass'];
+    $result = login( $email, $pass);
 
     switch($result) {
       case 0:
         $msg = 'You successfully logged in.';
-        header('location: map.php');
+        // header('location: webpage backup/index.php');
+        header('location: lib/home.php');
         exit();
       case 1:
         $msg = 'You need to activate your account.';
         break;
       case 2:
         $msg = 'Invalid account information.';
-        break;
-      case 3:
-        $msg = 'Error checking account information.
-                Please try again.';
         break;
       default:
         $msg = 'An unknown error has occured.';
@@ -70,7 +67,7 @@ if(isset($_POST['login'])) {
 <html>
   <head>
     <title>Water Quality</title>
-    <link href="css/style.css" type="text/css" rel="stylesheet" />
+    <link href="css/login.css" type="text/css" rel="stylesheet" />
   </head>
   <body>
     <div class="container">
@@ -78,7 +75,7 @@ if(isset($_POST['login'])) {
         <h1>Login</h1>
         <form action="" method="post">
           <p><input type="email" name="email" placeholder="Email"></p>
-          <p><input type="password" name="password" placeholder="Password"></p>
+          <p><input type="password" name="pass" placeholder="Password"></p>
           <p class="submit">
             <input type="submit" name="login" value="Login" align="left">
             <input type="submit" name="sign_up" value="Sign Up" align="left">
