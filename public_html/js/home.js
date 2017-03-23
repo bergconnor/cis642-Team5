@@ -66,7 +66,7 @@ used for debugging********************************* */
       var text2 = document.createElement('text');
       text2.textContent = "More Info";
       var ul =  document.createElement('a');
-      ul.setAttribute('href', "marker.php");
+      ul.setAttribute('href', "table.php");
       var d = markerElem.getAttribute('id');
       ul.setAttribute('onclick', "setId('"+d+"')");
       ul.setAttribute('id_number', markerElem.getAttribute('id'));

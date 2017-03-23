@@ -1,13 +1,17 @@
-var date          = "none"
-var name          = "none"
-var orgnization   = "none"
-var email         = "none"
-var type          = "none"
-var lat           = "none"
-var log           = "none"
-var temperature   = "none"
-var precipitation = "none"
-var comment       = "none"
+var markerid = sessionStorage.getItem('marker');
+console.log(markerid);
+sessionStorage.removeItem('marker');
+
+var date          = "none";
+var name          = "none";
+var orgnization   = "none";
+var email         = "none";
+var type          = "none";
+var lat           = "none";
+var log           = "none";
+var temperature   = "none";
+var precipitation = "none";
+var comment       = "none";
 
 downloadUrl('../lib/create_xml.php', function(data) {
   var xml     = data.responseXML;
@@ -47,7 +51,20 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		latCell.innerHTML           = lat;
 		logCell.innerHTML           = log;
 
-		var row = document.createElement("tr");
+    if(markerid == markerElem.getAttribute('id')) {
+      dateCell.style.backgroundColor="yellow";
+      nameCell.style.backgroundColor="yellow";
+      orgnizationCell.style.backgroundColor="yellow";
+      temperatureCell.style.backgroundColor="yellow";
+      precipitationCell.style.backgroundColor="yellow";
+      commentCell.style.backgroundColor="yellow";
+      typeCell.style.backgroundColor="yellow";
+      emailCell.style.backgroundColor="yellow";
+      latCell.style.backgroundColor="yellow";
+      logCell.style.backgroundColor="yellow";
+    }
+
+    var row = document.createElement("tr");
 		row.appendChild(dateCell);
 		row.appendChild(nameCell);
 		row.appendChild(orgnizationCell);
@@ -59,7 +76,7 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		row.appendChild(precipitationCell);
 		row.appendChild(commentCell);
 
-		document.getElementById('table').appendChild(row);
+		document.getElementById('table-body').appendChild(row);
   });
 });
 
