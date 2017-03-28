@@ -30,7 +30,7 @@ public class ImageProcTest {
         try {
             List<Scalar> testList = new ArrayList<Scalar>();
             for (int i = 0; i < 8; i++) {
-                testList.add(new Scalar(Math.random(), Math.random(), Math.random()));
+                testList.add(new Scalar((int)(Math.random() * 251), (int)(Math.random() * 251), (Math.random() * 251));
             }
             ImageProc.createData(testList);
             assertFalse("Method should have thrown IllegalArgumentException", false);
@@ -38,6 +38,14 @@ public class ImageProcTest {
             assertTrue("createData throws IllegalArgumentException", true);
         }
     }
+
+    /*@org.junit.Test
+    public void testCreateDataDoesntAcceptScalarValuesBeyondBoundsOfRGB() {
+        try {
+            List<Scalar> testList = new
+        }
+    }
+    */
 
 
 }
