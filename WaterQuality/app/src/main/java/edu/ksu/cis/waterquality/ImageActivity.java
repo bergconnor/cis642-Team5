@@ -43,6 +43,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import org.opencv.core.Scalar;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImageActivity extends AppCompatActivity {
@@ -55,10 +56,17 @@ public class ImageActivity extends AppCompatActivity {
 
     private LineChart vchart;
 
+    private SessionManager _session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
+
+        // check login status
+        _session = new SessionManager(getApplicationContext());
+        _session.checkLogin();
+
         takePicture();
     }
 
@@ -222,34 +230,11 @@ public class ImageActivity extends AppCompatActivity {
             String message = "Value = " + ImageProc.linearRegression(colors);
             Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
             String[] information = code.split("\n");
-            String test = information[0].split(" ")[0];
+            String type = information[0].split(" ")[0];
             String serial = information[1].replaceAll("[^0-9]","");
-            sendResults(test, serial);
+            sendResults(type, serial, value);
         } else {
             imageException();
-//            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    switch (which){
-//                        case DialogInterface.BUTTON_POSITIVE:
-//                            takePicture();
-//                            break;
-//
-//                        case DialogInterface.BUTTON_NEGATIVE:
-//                            manualEntry();
-//                            break;
-//                    }
-//                }
-//            };
-//
-//            final AlertDialog alert = new AlertDialog.Builder(this)
-//                    .setTitle("Test Information")
-//                    .setMessage("Would you like to take a new picture or manually enter the information?")
-//                    .setPositiveButton("New Picture", dialogClickListener)
-//                    .setNegativeButton("Manual Entry", dialogClickListener)
-//                    .create();
-//
-//            alert.show();
         }
     }
 
@@ -279,74 +264,6 @@ public class ImageActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void manualEntry() {
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-        final TextView testLabel = new TextView(this);
-        testLabel.setText("Test type:");
-        layout.addView(testLabel);
-
-        final Spinner spinner = new Spinner(this);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, mTestTypes);
-        spinner.setAdapter(adapter);
-        layout.addView(spinner);
-
-        final TextView serialLabel = new TextView(this);
-        serialLabel.setText("Serial number:");
-        layout.addView(serialLabel);
-
-        final EditText textBox = new EditText(this);
-        textBox.setInputType(InputType.TYPE_CLASS_TEXT);
-        layout.addView(textBox);
-
-
-        final AlertDialog alert = new AlertDialog.Builder(this)
-                .setView(layout)
-                .setTitle("Test Information")
-                .setPositiveButton(android.R.string.ok, null)
-                .create();
-
-        alert.setOnShowListener(new DialogInterface.OnShowListener() {
-
-            @Override
-            public void onShow(DialogInterface dialog) {
-                Button button = alert.getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        String name = spinner.getSelectedItem().toString();
-                        String serial = textBox.getText().toString();
-                        String message;
-                        if (serial.length() < 1) {
-                            message = "You must enter a serial number";
-                            Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
-                        } else if(!isInteger(serial, 10)) {
-                            message = "Invalid serial number";
-                            Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
-                        } else if(Integer.parseInt(serial) > MAX_SERIAL_NUMBER ) {
-                            message = "Serial numbers must be below "
-                                    + String.valueOf(MAX_SERIAL_NUMBER);
-                            Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
-                        }
-                        else {
-                            int diff = String.valueOf(MAX_SERIAL_NUMBER).length() - serial.length();
-                            for (int i = diff; i > 0; i--) {
-                                serial = '0' + serial;
-                            }
-                            alert.dismiss();
-                            sendResults(name, serial);
-                        }
-                    }
-                });
-            }
-        });
-
-        alert.show();
-    }
-
     private boolean isInteger(String s, int radix) {
         if(s.isEmpty()) return false;
         for(int i = 0; i < s.length(); i++) {
@@ -359,10 +276,20 @@ public class ImageActivity extends AppCompatActivity {
         return true;
     }
 
-    private void sendResults(String test, String serial) {
+    private void sendResults(String test, String serial, Double value) {
+        List<String> keys   = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
+
+        keys.add(SessionManager.KEY_TEST);
+        values.add(test);
+        keys.add(SessionManager.KEY_SERIAL);
+        values.add(serial);
+        keys.add(SessionManager.KEY_VALUE);
+        values.add(value.toString());
+
+        _session.addSessionVariables(keys, values);
+
         Intent intent = new Intent();
-        intent.putExtra("EXTRA_TEST", test);
-        intent.putExtra("EXTRA_SERIAL", serial);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

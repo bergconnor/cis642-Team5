@@ -1,0 +1,186 @@
+#map {
+  border: 3px solid grey;
+  height: 75%;
+  width: 85%;
+  padding: 10;
+
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  -webkit-border-radius: 15px;
+     -moz-border-radius: 15px;
+          border-radius: 15px;
+}
+
+h1 {
+  text-align: center;
+  color: #1B1B67 !important;
+}
+
+body {
+  background-color: #BCD2F4;
+}
+
+.navbar {
+  background-color: #8080FF;
+}
+
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-nav > li > a {
+  color: white;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: white;
+  background-color: #B3B3FF;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active >
+ a:hover, .navbar-default .navbar-nav > .active > a:focus {
+  color: white;
+  background-color: #4B479A;
+  cursor: pointer;
+}
+
+.navbar-nav {
+  margin-left: 6%;
+}
+
+.navbar > div > ul > li > a {
+  color: white;
+}
+
+.samples-table {
+  width: 85%;
+  border-collapse: collapse;
+}
+
+.samples-table th {
+  height: 50%;
+  background-color: #8080FF;
+  color: white;
+}
+
+.samples-table, .samples-table th, .samples-table td {
+  border: 1px solid black;
+  margin: 0 auto;
+}
+
+.samples-table th, .samples-table td {
+  padding: 10px;
+  text-align: center;
+}
+
+.table-margin {
+    margin-top: 20px;
+}
+/*
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #8080FF;
+}
+
+#home {
+  margin-left: 11%;
+}
+
+li {
+  float: left;
+  display: inline;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: #B3B3FF;
+  cursor: pointer;
+}
+
+li.home {
+  margin-left: 7%;
+}
+
+.label {
+  margin-left: 7%;
+}
+
+li.marker {
+  float: right;
+  margin-right: 7.5%;
+}
+
+#text
+{
+  background-color: #9aafd1;
+  float: right;
+}
+
+#text2
+{
+  background-color: #9aafd1;
+  margin-left: 200;
+  font-weight: bold
+}
+#button  {
+  background-color:#8080ff;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  border: 3px solid black;
+}
+#button:hover, #button:active {
+  background-color: #b3b3ff;
+  cursor: pointer;
+}
+
+#button2  {
+  background-color: #8080ff;
+  color: white;
+  padding:  0px 14px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  border: 2px solid black;
+}
+
+#button2:hover, #button2:active {
+  background-color: #b3b3ff;
+  cursor: pointer;
+}
+
+#inequalitySign1, #inequalitySign2 {
+  background-color: #8080ff;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  border: 1.9px solid black;
+}
+
+#inequalitySign1:hover, #inequalitySign1:active {
+  background-color: #b3b3ff;
+  cursor: pointer;
+}
+
+#inequalitySign2:hover, #inequalitySign2:active {
+  background-color: #b3b3ff;
+  cursor: pointer;
+}

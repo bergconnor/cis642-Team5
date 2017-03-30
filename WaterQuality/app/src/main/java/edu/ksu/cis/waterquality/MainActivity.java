@@ -8,27 +8,51 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int IMAGE_REQUEST    = 1571;
-    private static final int LOCATION_REQUEST = 1995;
-    private static final int TEMP   = 0;
-    private static final int PRECIP = 1;
+    private static final int IMAGE_REQUEST      = 1571;
+    private static final int LOCATION_REQUEST   = 1995;
 
-    private String mTest;
-    private String mSerial;
-    private String mLatitude;
-    private String mLongitude;
+    private SessionManager _session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // check login status
+        _session = new SessionManager(getApplicationContext());
+        _session.checkLogin();
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Intent intent;
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case IMAGE_REQUEST:
+                    // start LocationActivity
+                    intent = new Intent(this, LocationActivity.class);
+                    startActivityForResult(intent, LOCATION_REQUEST);
+                    break;
+                case LOCATION_REQUEST:
+                    setAddress();
+
+                    // set weather data
+                    setWeatherData();
+
+                    // start UploadActivity
+                    intent = new Intent(MainActivity.this, UploadActivity.class);
+                    startActivity(intent);
+                    break;
+            }
+        }
     }
 
     public void onAboutButtonClicked(View v) {
@@ -37,8 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onHelpButtonClicked(View v) {
-        Intent intent = new Intent(this, MapsActivity.class);
-        startActivity(intent);
+
     }
 
     public void onPictureButtonClicked(View v) {
@@ -46,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, IMAGE_REQUEST);
     }
 
-    public void onHistoryButtonClicked(View v) {
-        Intent intent = new Intent(this, HistoryActivity.class);
+    public void onMapButtonClicked(View v) {
+        Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
     }
 
@@ -55,76 +78,69 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private List<Address> getAddress() {
-        List<Address> address = null;
+    public void onLogoutButtonClicked(View v) {
+        _session.logoutUser();
+    }
+
+    private void setAddress() {
+        List<Address> address;
         try {
-            Double latitude = Double.parseDouble(mLatitude);
-            Double longitude = Double.parseDouble(mLongitude);
+            LinkedHashMap<String, String> map = _session.getDetails();
+
+            String latitude  = map.get(SessionManager.KEY_LAT);
+            String longitude = map.get(SessionManager.KEY_LON);
+
+            Double lat = Double.parseDouble(latitude);
+            Double lon = Double.parseDouble(longitude);
             Geocoder gcd = new Geocoder(this, Locale.getDefault());
-            address = gcd.getFromLocation(latitude, longitude, 1);
+            address = gcd.getFromLocation(lat, lon, 1);
+            String city = address.get(0).getLocality();
+            String state = address.get(0).getAdminArea();
+
+            // initialize lists
+            List<String> keys   = new ArrayList<String>();
+            List<String> values = new ArrayList<String>();
+
+            // fill key and value lists
+            keys.add(SessionManager.KEY_LAT);
+            values.add(latitude);
+            keys.add(SessionManager.KEY_LON);
+            values.add(longitude);
+            _session.addSessionVariables(keys, values);
+            keys.add(SessionManager.KEY_CITY);
+            values.add(city);
+            keys.add(SessionManager.KEY_STATE);
+            values.add(state);
+
+            // add data to session variables
+            _session.addSessionVariables(keys, values);
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
-        return address;
     }
 
-    private String[] getWeatherData(String city, String state) {
-        String weather = "";
+    private void setWeatherData() {
         try {
-            weather = new Weather(this, mLatitude, mLongitude, city, state)
-                    .execute()
-                    .get();
+            AsyncGetWeatherData asyncTask = new AsyncGetWeatherData();
+            // get details from session
+            HashMap<String, String> details = _session.getDetails();
+
+            String latitude         = details.get(SessionManager.KEY_LAT);
+            String longitude        = details.get(SessionManager.KEY_LON);
+            String city             = details.get(SessionManager.KEY_CITY);
+            String state            = details.get(SessionManager.KEY_STATE);
+
+            asyncTask.delegate  = _session;
+            asyncTask.latitude  = latitude;
+            asyncTask.longitude = longitude;
+            asyncTask.city      = city;
+            asyncTask.state     = state;
+
+            asyncTask.execute();
         }
         catch (Exception ex) {
             ex.printStackTrace();
-        }
-        return weather.split(", ");
-    }
-
-    private void sendData() {
-        Intent intent = new Intent(this, SpreadsheetActivity.class);
-
-        String date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
-
-        List<Address> address = getAddress();
-        String city = address.get(0).getLocality();
-        String state = address.get(0).getAdminArea();
-
-        String[] weatherData = getWeatherData(city, state);
-        String temperature = weatherData[TEMP];
-        String precipitation = weatherData[PRECIP];
-
-        intent.putExtra("EXTRA_DATE", date);
-        intent.putExtra("EXTRA_CITY", city);
-        intent.putExtra("EXTRA_STATE", state);
-        intent.putExtra("EXTRA_LATITUDE", mLatitude);
-        intent.putExtra("EXTRA_LONGITUDE", mLongitude);
-        intent.putExtra("EXTRA_TEST", mTest);
-        intent.putExtra("EXTRA_SERIAL", mSerial);
-        intent.putExtra("EXTRA_TEMPERATURE", temperature);
-        intent.putExtra("EXTRA_PRECIPITATION", precipitation);
-
-        startActivity(intent);
-    }
-
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case IMAGE_REQUEST:
-                    mTest = data.getStringExtra("EXTRA_TEST");
-                    mSerial = data.getStringExtra("EXTRA_SERIAL");
-                    Intent intent = new Intent(this, LocationActivity.class);
-                    startActivityForResult(intent, LOCATION_REQUEST);
-                    break;
-
-                case LOCATION_REQUEST:
-                    mLatitude = data.getStringExtra("EXTRA_LATITUDE");
-                    mLongitude = data.getStringExtra("EXTRA_LONGITUDE");
-                    sendData();
-                    break;
-            }
         }
     }
 }

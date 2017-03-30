@@ -60,12 +60,12 @@
             android:onClick="onPictureButtonClicked" />
 
         <Button
-            android:id="@+id/historyButton"
+            android:id="@+id/mapButton"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="View History"
+            android:text="View Map"
             android:layout_gravity="center_horizontal"
-            android:onClick="onHistoryButtonClicked" />
+            android:onClick="onMapButtonClicked" />
 
         <Button
             android:id="@+id/spreadsheetButton"
@@ -74,6 +74,15 @@
             android:text="View Spreadsheet"
             android:layout_gravity="center_horizontal"
             android:onClick="onSpreadsheetButtonClicked" />
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onLogoutButtonClicked" />
+
     </LinearLayout>
 
 </LinearLayout>
