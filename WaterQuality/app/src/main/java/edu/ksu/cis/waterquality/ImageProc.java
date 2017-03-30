@@ -9,6 +9,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+
 import org.opencv.android.Utils;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
@@ -28,7 +32,7 @@ public class ImageProc {
      * Parameters:
      *      String fileName: name of the picture file to perform the processing on.
      */
-    public static double readImage(Bitmap bitmap) {
+    public static List<Scalar> readImage(Bitmap bitmap) {
         try {
             System.loadLibrary("opencv_java3");
 
@@ -50,17 +54,18 @@ public class ImageProc {
             squares = sortTestSquares(squares);
             if (squares.size() != 12)
             {
-                return -1;
+                throw new IllegalArgumentException("Did not find all squares.");
             }
-            List<Scalar> colors = findColor(image, squares);
-            return linearRegression(colors);
+
+            return findColor(image, squares);
+
         } catch (Exception ex)
         {
-            return -1;
+            return new ArrayList<Scalar>();
         }
     }
 
-    /* Finds all the contours in the image, then removes any non-square contours and contours that
+    /** Finds all the contours in the image, then removes any non-square contours and contours that
      * are the incorrect size range.
      * Parameters:
      *      Mat img: the grayscale Mat of an image, allowing us to find the contours and narrow them
@@ -228,9 +233,9 @@ public class ImageProc {
      *
      * @param colorVals: the color values of the test squares.
      */
-    private static double linearRegression(List<Scalar> colorVals) {
-        double[] colorArr = new double[colorVals.size() - 4];
-        double[] percVals = { 90, 85, 80, 75, 70, 65, 60, 55 };
+    public static double linearRegression(List<Scalar> colorVals) {
+        double[] colorArr = new double[colorVals.size() - 4]; //minus 4 as we take off the two test squares and the positve and negative squares
+        double[] percVals = { 90, 85, 80, 75, 70, 65, 60, 55 }; //these percvals are preset for now, but will eventually be loaded by the app.
         for(int i = 2; i < colorVals.size() - 2; i++) {
             float[] tempHSV = new float[3];
             Color.RGBToHSV((int)colorVals.get(i).val[2], (int)colorVals.get(i).val[1], (int)colorVals.get(i).val[0], tempHSV);
@@ -247,5 +252,37 @@ public class ImageProc {
         double avg = (predictPerc1 + predictPerc2) / 2;
         System.out.print(avg);
         return avg;
+    }
+
+    /** Creates the LineData variable for creating a LineGraph View. The colorVals must be exactly
+     *  12 in size and contain RGB scalars. It then converts colorVals to HSV from RGB. It then
+     *  creates the data set and data for the LineGraph and returns the LineData.
+     *
+     * @param colorVals the Scalar values of the colors from each square in the RGB colorspace.
+     * @throws Exception Throws IllegalArgumentException if there is not the correct number of
+     *                   colors.
+     */
+    public static LineData createData(List<Scalar> colorVals) throws Exception {
+        if(colorVals.size() != 12) {
+            throw new IllegalArgumentException();
+        }
+
+        //Converting RGB Scalars to HSV float arrays
+        float[][] hsvColors = new float[colorVals.size()][3];
+        for(int i = 0; i < colorVals.size(); i++) {
+            Color.RGBToHSV((int)colorVals.get(i).val[2], (int)colorVals.get(i).val[1], (int)colorVals.get(i).val[0], hsvColors[i]);
+        }
+
+        double[] percVals = { 90, 85, 80, 75, 70, 65, 60, 55 }; //defaulted to this, will implement variable values
+
+        //Creating the data set for the line graph here.
+        ArrayList<Entry> lineGraphEntries = new ArrayList<Entry>();
+        for (int i = 2; i < colorVals.size() - 2; i++) {
+            lineGraphEntries.add(i - 2, new Entry(i-2, hsvColors[i][1]));
+        }
+
+        LineDataSet dataset = new LineDataSet(lineGraphEntries, "Values");
+        LineData data = new LineData(dataset);
+        return data;
     }
 }

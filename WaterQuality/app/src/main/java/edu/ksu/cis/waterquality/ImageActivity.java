@@ -1,11 +1,11 @@
 package edu.ksu.cis.waterquality;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,18 +19,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.LineData;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
@@ -39,7 +38,12 @@ import com.google.zxing.Reader;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 
+import com.github.mikephil.charting.charts.LineChart;
+
+import org.opencv.core.Scalar;
+
 import java.io.File;
+import java.util.List;
 
 public class ImageActivity extends AppCompatActivity {
 
@@ -48,6 +52,8 @@ public class ImageActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST = 1441;
     private static final int CAMERA_REQUEST = 1772;
     private static final int MAX_SERIAL_NUMBER = 99999;
+
+    private LineChart vchart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,10 +108,36 @@ public class ImageActivity extends AppCompatActivity {
 
             bitmap = rotateImage(bitmap, path);
             Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
-                    (bitmap.getWidth()/2), bitmap.getHeight());
-            String code = scanQRCode(croppedBitmap);
-            double value = ImageProc.readImage(bitmap);
-            processResults(code, value);
+                    (bitmap.getWidth() / 2), bitmap.getHeight());
+            final String code = scanQRCode(croppedBitmap);
+
+            final List<Scalar> colors = ImageProc.readImage(bitmap);
+
+            /* Creates the graph and displays it until the user presses okay. Also temporarily
+             * disables screen rotation during Chart view to prevent refresh. */
+            final int oldOrientation = getRequestedOrientation();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+            try {
+                LineData graphData = ImageProc.createData(colors);
+                setContentView(R.layout.activity_chart);
+                vchart = (LineChart)findViewById(R.id.chart1);
+                vchart.setData(graphData);
+                XAxis vchartX = vchart.getXAxis();
+                vchartX.setDrawLabels(true);
+            } catch (Exception e) {
+                imageException();
+            }
+
+            final Button chartButton = (Button)findViewById(R.id.contButton);
+            chartButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    vchart.saveToGallery("chart.jpg", 75);
+                    setRequestedOrientation(oldOrientation);
+                    processResults(code, colors);
+                }
+            });
         }
     }
 
@@ -185,9 +217,9 @@ public class ImageActivity extends AppCompatActivity {
         return contents;
     }
 
-    private void processResults(String code, double value) {
-        if (code.length() > 0 && value > 0.0) {
-            String message = "Value = " + value;
+    private void processResults(String code, List<Scalar> colors) {
+        if (code.length() > 0 && colors.size() > 0) {
+            String message = "Value = " + ImageProc.linearRegression(colors);
             Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
             String[] information = code.split("\n");
             String test = information[0].split(" ")[0];

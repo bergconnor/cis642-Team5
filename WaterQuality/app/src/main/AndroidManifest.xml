@@ -33,7 +33,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".LocationActivity" />
-        <activity android:name=".ImageActivity" />
+        <activity android:name=".ImageActivity"
+                  android:screenOrientation="portrait"/>
         <activity android:name=".AboutActivity" />
         <activity android:name=".HelpActivity" />
         <activity android:name=".HistoryActivity" />
