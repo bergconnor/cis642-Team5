@@ -36,7 +36,7 @@ session_start();
     </nav>
     <label class="label" for="pendingSamples">Show pending samples</label>
     <input id="pendingSamples" type="checkbox" name="pend" value="pending">
-    
+
 
     <label class="label" for="precipitationLevel">Precipitation Level</label>
     <a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>

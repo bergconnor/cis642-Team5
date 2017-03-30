@@ -6,7 +6,7 @@
  * name, last name, email address, and a
  * password.
  */
-require_once '../config.php';   // database connection
+require_once '../lib/config.php';   // database connection
 
 /**
  * Handle event when the app calls
@@ -30,7 +30,7 @@ if(!empty($_POST)) {
   }
   else {
     // attempt to get user info from database
-    $json = getInfo($conn);
+    $json = getInfo();
   }
   // send back data as a json string
   echo json_encode($json);
@@ -41,40 +41,27 @@ if(!empty($_POST)) {
  * @param object $conn A MySQL connection object.
  * @return string A success or error message.
  */
-function getInfo($conn) {
+function getInfo() {
+  global $pdo;
+
   $json = array();
-  $email = mysqli_real_escape_string($conn, $_POST['email']);
+  $stmt = $pdo->prepare('SELECT id, first, last, organization FROM users WHERE email=?');
+  $stmt->execute([$_POST['email']]);
 
-  $stmt = $conn->stmt_init();
-  if($stmt->prepare('SELECT id, first, last, organization FROM users WHERE email=?')) {
-    $stmt->bind_param('s', $email);
-    $stmt->execute();
-    $stmt->bind_result($id, $first, $last, $organization);
+  if($stmt->rowCount() > 0) {
+    // user info found
+    $user = $stmt->fetch();
 
-    if($stmt->fetch() > 0) {
-      // user info found
-      $json['success']      = 'true';
-      $json['message']      = 'Succes!';
-      $json['user_id']      = $id;
-      $json['name']         = $first . ' ' . $last;
-      $json['organization'] = $organization;
-      $stmt->close();
-      mysqli_close($conn);
-      return $json;
-    }
-    else {
-      // failed to retrieve user info
-      $json['success'] = 'false';
-      $json['message'] = 'Error retrieving user information.';
-      $stmt->close();
-      mysqli_close($conn);
-      return $json;
-    }
+    $json['success']      = 'true';
+    $json['message']      = 'Succes!';
+    $json['user_id']      = $user['id'];
+    $json['name']         = $user['first'] . ' ' . $user['last'];
+    $json['organization'] = $user['organization'];
+    return $json;
   } else {
+    // failed to retrieve user info
     $json['success'] = 'false';
     $json['message'] = 'Error retrieving user information.';
-    $stmt->close();
-    mysqli_close($conn);
     return $json;
   }
 }
@@ -84,7 +71,7 @@ function getInfo($conn) {
 <html>
   <head>
     <title>Test JSON</title>
-    <link href="css/style.css" type="text/css" rel="stylesheet" />
+    <link href="../css/style.css" type="text/css" rel="stylesheet" />
   </head>
   <body>
     <h1>Test JSON</h1>

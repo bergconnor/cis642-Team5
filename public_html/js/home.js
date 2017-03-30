@@ -58,7 +58,7 @@ used for debugging********************************* */
       text3.textContent = type + " test";
       infowincontent.appendChild(text3);
       infowincontent.appendChild(document.createElement('br'));
-	  
+
 	  var text5 = document.createElement('text');
       text5.textContent = "Concentration Level: " + concentration;
       infowincontent.appendChild(text5);
@@ -154,7 +154,9 @@ function downloadUrl(url, callback) {
   console.log(query);
 
   // pass the query to create_xml page in a request
-  request.open("GET", url+"?q=" + query, true);
+  var str = url + "?q=" + query;
+  console.log(str);
+  request.open("GET", url + "?q=" + query, true);
   request.send(null);
 }
 
@@ -173,6 +175,7 @@ function clearBox(numberBox) {
 }
 
 function createQuery() {
+
   var pendingSamples = document.getElementById('pendingSamples').checked;
   //var include1 = document.getElementById('include1').checked ;
   var precipitationLevel = document.getElementById('precipitationLevel').value;
@@ -198,7 +201,7 @@ function createQuery() {
     else
       precipitation = ' and precipitation > ' +   document.getElementById('precipitationLevel').value;
   }
-  
+
   if(concentrationLevel!='') {
     if(document.getElementById('inequalitySign2').textContent == '<')
       concentration = ' and concentration < ' +   document.getElementById('concentrationLevel').value;
@@ -218,7 +221,6 @@ function createQuery() {
 
     " WHERE true " + precipitation + concentration+  verified;
   var query = querySetUp;
-
   return query;
 }
 

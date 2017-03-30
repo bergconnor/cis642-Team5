@@ -4,8 +4,8 @@
  * from the android app and allow access based on
  * information stored in the database.
  */
-require_once '../config.php';  // database connection
-require_once '../modules.php'; // modules for database queries
+require_once '../lib/config.php';  // database connection
+require_once '../lib/modules.php'; // modules for database queries
 
 /**
  * Handle event when the login button
@@ -17,7 +17,7 @@ if(!empty($_POST)) {
   $json['success'] = false;
   $json['message'] = '';
 
-  if(empty($_POST['email']) || empty($_POST['password'])) {
+  if(empty($_POST['email']) || empty($_POST['pass'])) {
     // empty field
     $json['success'] = false;
     $json['message'] = 'Please provide your email address and password.';
@@ -29,8 +29,8 @@ if(!empty($_POST)) {
   else {
     // verify account information
     $email  = $_POST['email'];
-    $password   = $_POST['password'];
-    $result = login($conn, $email, $password);
+    $pass   = $_POST['pass'];
+    $result = login($email, $pass);
 
     switch($result) {
       case 0:

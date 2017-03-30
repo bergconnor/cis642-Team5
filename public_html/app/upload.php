@@ -5,8 +5,8 @@
  * The upload is initiated from the
  * android app.
  */
-require_once '../config.php';   // database connection
-require_once '../modules.php';  // modules for database queries
+require_once '../lib/config.php';   // database connection
+require_once '../lib/modules.php';  // modules for database queries
 
 $data = array("user_id", "date", "test", "serial", "concentration", "latitude",
          "longitude", "city", "state", "temperature", "precipitation", "comment");
@@ -16,6 +16,8 @@ $data = array("user_id", "date", "test", "serial", "concentration", "latitude",
  * is pressed.
  */
 if(!empty($_POST)) {
+  global $pdo;
+
   // initialize variables
   $json = array();
   $json['success'] = false;
@@ -35,46 +37,29 @@ if(!empty($_POST)) {
     $json['message'] = 'Please fill out all fields.';
   } else {
     // attempt to upload data
-    $date = date("Y-m-d", strtotime($_POST['date']));
+    $date           = date("Y-m-d", strtotime($_POST['date']));
+    $user_id        = (int)$_POST['user_id'];
+    $test_id        = getTestId($_POST['test']);
+    $concentration  = $_POST['concentration'];
+    $latitude       = $_POST['latitude'];
+    $longitude      = $_POST['longitude'];
+    $serial         = $_POST['serial'];
+    $city           = $_POST['city'];
+    $state          = $_POST['state'];
+    $temperature    = $_POST['temperature'];
+    $precipitation  = $_POST['precipitation'];
+    $comment        = $_POST['comment'];
+    $verified       = false;
 
-    $date           = mysqli_real_escape_string($conn, $date);
-    $user_id        = mysqli_real_escape_string($conn, (int)$_POST['user_id']);
-    $test_id        = mysqli_real_escape_string($conn, getTestId($conn, $_POST['test']));
-    $serial         = mysqli_real_escape_string($conn, $_POST['serial']);
-    $concentration  = mysqli_real_escape_string($conn, $_POST['concentration']);
-    $latitude       = mysqli_real_escape_string($conn, $_POST['latitude']);
-    $longitude      = mysqli_real_escape_string($conn, $_POST['longitude']);
-    $city           = mysqli_real_escape_string($conn, $_POST['city']);
-    $state          = mysqli_real_escape_string($conn, $_POST['state']);
-    $temperature    = mysqli_real_escape_string($conn, $_POST['temperature']);
-    $precipitation  = mysqli_real_escape_string($conn, $_POST['precipitation']);
-    $comment        = mysqli_real_escape_string($conn, $_POST['comment']);
-    $verified       = mysqli_real_escape_string($conn, false);
+    $stmt = $pdo->prepare('INSERT INTO markers (date, user_id, test_id, concentration,
+                           latitude, longitude, serial, city, state, temperature,
+                           precipitation, comment, verified)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
-    $stmt = $conn->stmt_init();
-    if($stmt->prepare('INSERT INTO markers (user_id, date, test_id, serial,
-                          latitude, longitude, city, state, temperature,
-                          precipitation, comment, verified)
-                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')) {
-      $stmt->bind_param('ssssssssssss', $user_id, $date, $test_id, $serial,
-                        $latitude, $longitude, $city, $state, $temperature,
-                        $precipitation, $comment, $verified);
-
-      if($stmt->execute()) {
-        // success
-        $json['success'] = true;
-        $json['message'] = 'Successfully uploaded data.';
-        $stmt->close();
-        mysqli_close($conn);
-      } else {
-        // insertion error
-        $json['success'] = false;
-        $json['message'] = mysqli_error($conn);//'Failed to upload data.';
-        $json['var'] = $var;
-        $stmt->close();
-        mysqli_close($conn);
-      }
-    }
+    $stmt->execute([$date, $user_id, $test_id, $concentration, $latitude, $longitude,
+                    $serial, $city, $state, $temperature, $precipitation, $comment, $verified]);
+    $json['success'] = true;
+    $json['message'] = 'Successfully uploaded data.';
   }
   // send back data as a json string
   echo json_encode($json);
@@ -85,27 +70,19 @@ if(!empty($_POST)) {
  * @param object $conn A MySQL connection object.
  * @return int The test type id.
  */
-function getTestId($conn, $test) {
-  $type = mysqli_real_escape_string($conn, $test);
+function getTestId($test) {
+  global $pdo;
 
-  $stmt = $conn->stmt_init();
-  if($stmt->prepare('SELECT id FROM tests WHERE type=?')) {
-    $stmt->bind_param('s', $type);
-    $stmt->execute();
-    $stmt->bind_result($id);
+  $stmt = $pdo->prepare('SELECT id FROM tests WHERE type=?');
+  $stmt->execute([$test]);
 
-    if($stmt->fetch() > 0) {
-      // user info found
-      $stmt->close();
-      return (int)$id;
-    }
-    else {
-      // failed to retrieve id
-      $stmt->close();
-      return -1;
-    }
-  } else {
-    $stmt->close();
+  if($stmt->rowCount() > 0) {
+    // user info found
+    $test = $stmt->fetch();
+    return (int)$test['id'];
+  }
+  else {
+    // failed to retrieve id
     return -1;
   }
 }

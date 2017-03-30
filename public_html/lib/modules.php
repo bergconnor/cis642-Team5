@@ -91,7 +91,7 @@ function send_email($email, $hash) {
   activated your account by pressing the url below.
 
   Please click this link to activate your account:
-  http://people.cs.ksu.edu/~cberg1/src/verify.php?email='.$email.'&hash='.$hash.'
+  http://people.cs.ksu.edu/~cberg1/lib/verify.php?email='.$email.'&hash='.$hash.'
 
   ';
 

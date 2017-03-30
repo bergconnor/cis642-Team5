@@ -6,8 +6,8 @@
  * name, last name, email address, and a
  * password.
  */
-require_once '../config.php';   // database connection
-require_once '../modules.php';  // modules for database queries
+require_once '../lib/config.php';   // database connection
+require_once '../lib/modules.php';  // modules for database queries
 
 /**
  * Handle event when sign up button
@@ -30,15 +30,15 @@ if(!empty($_POST)) {
     $json['message'] = 'Invalid email format.';
   } else {
     // attempt to create a new account
-    $first        = $_POST['first'];
-    $last         = $_POST['last'];
-    $organization = $_POST['organization'];
-    $email        = $_POST['email'];
-    $password     = $_POST['password'];
+    $first  = $_POST['first'];
+    $last   = $_POST['last'];
+    $org    = $_POST['organization'];
+    $email  = $_POST['email'];
+    $pass   = $_POST['password'];
 
-    if(check_email($conn, $email)) {
+    if(check_email($email)) {
       // email is not in use
-      $result = sign_up($conn, $first, $last, $organization, $email, $password);
+      $result = sign_up($first, $last, $org, $email, $pass);
       switch($result) {
         case 0:
           $json['success'] = true;

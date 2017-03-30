@@ -1,6 +1,5 @@
 <?php
 require_once("config.php");
-include("../dbg/ChromePhp.php");
 
 // Start XML file, create parent node
 header("Content-type: text/xml");
@@ -10,7 +9,6 @@ $parnode = $doc->appendChild($node);
 
 try {
   // load the query from the request
-  ChromePhp::log($_REQUEST['q']);
   $stmt = $pdo->prepare($_REQUEST['q']);
   $stmt->execute();
   $markers = $stmt->fetchAll();
