@@ -11,6 +11,7 @@ var lat           = "none";
 var log           = "none";
 var temperature   = "none";
 var precipitation = "none";
+var concentration = "none"; 
 var comment       = "none";
 
 downloadUrl('../lib/create_xml.php', function(data) {
@@ -27,6 +28,7 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		log           = markerElem.getAttribute('longitude');
 		temperature   = markerElem.getAttribute('temperature');
 		precipitation = markerElem.getAttribute('precipitation');
+		concentration = markerElem.getAttribute('concentration');
 		comment       = markerElem.getAttribute('comment');
 
     var dateCell          = document.createElement("td");
@@ -36,6 +38,7 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		var typeCell          = document.createElement("td");
 		var temperatureCell   = document.createElement("td");
 		var precipitationCell = document.createElement("td");
+		var concentrationCell = document.createElement("td");
 		var commentCell       = document.createElement("td");
 		var latCell           = document.createElement("td");
 		var logCell           = document.createElement("td");
@@ -45,6 +48,7 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		orgnizationCell.innerHTML   = orgnization;
 		temperatureCell.innerHTML   = temperature;
 		precipitationCell.innerHTML = precipitation;
+		concentrationCell.innerHTML = concentration;
 		commentCell.innerHTML       = comment;
 		typeCell.innerHTML          = type;
 		emailCell.innerHTML         = email;
@@ -57,6 +61,7 @@ downloadUrl('../lib/create_xml.php', function(data) {
       orgnizationCell.style.backgroundColor="yellow";
       temperatureCell.style.backgroundColor="yellow";
       precipitationCell.style.backgroundColor="yellow";
+	  concentrationCell.style.backgroundColor="yellow";
       commentCell.style.backgroundColor="yellow";
       typeCell.style.backgroundColor="yellow";
       emailCell.style.backgroundColor="yellow";
@@ -74,6 +79,7 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		row.appendChild(logCell);
 		row.appendChild(temperatureCell);
 		row.appendChild(precipitationCell);
+		row.appendChild(concentrationCell);
 		row.appendChild(commentCell);
 
 		document.getElementById('table-body').appendChild(row);
@@ -93,7 +99,7 @@ function downloadUrl(url, callback) {
   };
 	var query = "SELECT " +
     " m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
-    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation'," +
+    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation',m.concentration 'concentration', " +
     " m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
     " u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
 
