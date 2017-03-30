@@ -51,6 +51,7 @@ session_start();
             <th>Longitude</th>
             <th>Temperature</th>
             <th>Precipitation</th>
+			<th>Concentration</th>
             <th>Comment</th>
           </tr>
         </thead>

@@ -35,6 +35,7 @@ used for debugging********************************* */
       var name = markerElem.getAttribute('name');
       var organization = markerElem.getAttribute('organization');
       var type = markerElem.getAttribute('type');
+	  var concentration = markerElem.getAttribute('concentration');
       var comment = markerElem.getAttribute('comment');;
       var point = new google.maps.LatLng
       (
@@ -56,6 +57,11 @@ used for debugging********************************* */
       var text3 = document.createElement('text');
       text3.textContent = type + " test";
       infowincontent.appendChild(text3);
+      infowincontent.appendChild(document.createElement('br'));
+	  
+	  var text5 = document.createElement('text');
+      text5.textContent = "Concentration Level: " + concentration;
+      infowincontent.appendChild(text5);
       infowincontent.appendChild(document.createElement('br'));
 
       var text4 = document.createElement('text');
@@ -168,10 +174,12 @@ function clearBox(numberBox) {
 
 function createQuery() {
   var pendingSamples = document.getElementById('pendingSamples').checked;
-  var include1 = document.getElementById('include1').checked ;
+  //var include1 = document.getElementById('include1').checked ;
   var precipitationLevel = document.getElementById('precipitationLevel').value;
-  var level1 = document.getElementById('Level1').value;
+  var concentrationLevel = document.getElementById('concentrationLevel').value;
+  //var level1 = document.getElementById('Level1').value;
   var precipitation = '';
+  var concentration = '';
   var verified = " and verified = 1 ";
   var id = '';
   if(pendingSamples)
@@ -190,10 +198,17 @@ function createQuery() {
     else
       precipitation = ' and precipitation > ' +   document.getElementById('precipitationLevel').value;
   }
+  
+  if(concentrationLevel!='') {
+    if(document.getElementById('inequalitySign2').textContent == '<')
+      concentration = ' and concentration < ' +   document.getElementById('concentrationLevel').value;
+    else
+      concentration = ' and concentration > ' +   document.getElementById('concentrationLevel').value;
+  }
 
   var querySetUp = "SELECT " +
     " m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
-    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation'," +
+    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation',m.concentration 'concentration', " +
     " m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
     " u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
 
@@ -201,7 +216,7 @@ function createQuery() {
       " JOIN users u ON m.user_id = u.id"+
       " JOIN tests t ON m.test_id = t.id "+
 
-    " WHERE true " + precipitation + verified;
+    " WHERE true " + precipitation + concentration+  verified;
   var query = querySetUp;
 
   return query;

@@ -11,6 +11,7 @@ var lat           = "none";
 var log           = "none";
 var temperature   = "none";
 var precipitation = "none";
+var concentration = "none"; 
 var comment       = "none";
 
 downloadUrl('../lib/create_xml.php', function(data) {
@@ -27,6 +28,7 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		log           = markerElem.getAttribute('longitude');
 		temperature   = markerElem.getAttribute('temperature');
 		precipitation = markerElem.getAttribute('precipitation');
+		concentration = markerElem.getAttribute('concentration');
 		comment       = markerElem.getAttribute('comment');
 
     var dateCell          = document.createElement("td");
@@ -36,6 +38,7 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		var typeCell          = document.createElement("td");
 		var temperatureCell   = document.createElement("td");
 		var precipitationCell = document.createElement("td");
+		var concentrationCell = document.createElement("td");
 		var commentCell       = document.createElement("td");
 		var latCell           = document.createElement("td");
 		var logCell           = document.createElement("td");
@@ -45,23 +48,34 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		orgnizationCell.innerHTML   = orgnization;
 		temperatureCell.innerHTML   = temperature;
 		precipitationCell.innerHTML = precipitation;
+		concentrationCell.innerHTML = concentration;
 		commentCell.innerHTML       = comment;
 		typeCell.innerHTML          = type;
 		emailCell.innerHTML         = email;
 		latCell.innerHTML           = lat;
 		logCell.innerHTML           = log;
-
+	var temp  = false
     if(markerid == markerElem.getAttribute('id')) {
+	  
       dateCell.style.backgroundColor="yellow";
       nameCell.style.backgroundColor="yellow";
       orgnizationCell.style.backgroundColor="yellow";
       temperatureCell.style.backgroundColor="yellow";
       precipitationCell.style.backgroundColor="yellow";
+	  concentrationCell.style.backgroundColor="yellow";
       commentCell.style.backgroundColor="yellow";
       typeCell.style.backgroundColor="yellow";
       emailCell.style.backgroundColor="yellow";
       latCell.style.backgroundColor="yellow";
       logCell.style.backgroundColor="yellow";
+	  /*
+	  var url = location.href; 
+	  console.log(location.href);	  
+	  location.href = "#"+markerElem.getAttribute('id');   
+	  console.log(location.href);
+	  history.replaceState(null,null,url); 
+	  */
+	  temp  = true;
     }
 
     var row = document.createElement("tr");
@@ -74,9 +88,25 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		row.appendChild(logCell);
 		row.appendChild(temperatureCell);
 		row.appendChild(precipitationCell);
+		row.appendChild(concentrationCell);
 		row.appendChild(commentCell);
 
 		document.getElementById('table-body').appendChild(row);
+		if (temp)
+		{
+			var t = row.offsetTop; //Getting Y of target element
+			window.scrollTo(0, (t+50));    
+			console.log("offsetTop: "+t)
+			console.log("offsetTop+50: "+(t+50))
+			/*
+			var url = location.href; 
+			console.log(location.href);	  
+			location.href = "#"+row;
+			console.log(location.href);
+			history.replaceState(null,null,url); 
+			*/
+		}
+		
   });
 });
 
@@ -93,7 +123,7 @@ function downloadUrl(url, callback) {
   };
 	var query = "SELECT " +
     " m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
-    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation'," +
+    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation',m.concentration 'concentration', " +
     " m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
     " u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
 
