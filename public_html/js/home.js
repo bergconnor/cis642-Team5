@@ -168,10 +168,12 @@ function clearBox(numberBox) {
 
 function createQuery() {
   var pendingSamples = document.getElementById('pendingSamples').checked;
-  var include1 = document.getElementById('include1').checked ;
+  //var include1 = document.getElementById('include1').checked ;
   var precipitationLevel = document.getElementById('precipitationLevel').value;
+  var concentrationLevel = document.getElementById('concentrationLevel').value;
   var level1 = document.getElementById('Level1').value;
   var precipitation = '';
+  var concentration = '';
   var verified = " and verified = 1 ";
   var id = '';
   if(pendingSamples)
@@ -189,6 +191,13 @@ function createQuery() {
       precipitation = ' and precipitation < ' +   document.getElementById('precipitationLevel').value;
     else
       precipitation = ' and precipitation > ' +   document.getElementById('precipitationLevel').value;
+  }
+  
+  if(concentrationLevel!='') {
+    if(document.getElementById('inequalitySign1').textContent == '<')
+      concentration = ' and concentration < ' +   document.getElementById('concentrationLevel').value;
+    else
+      concentration = ' and concentration > ' +   document.getElementById('concentrationLevel').value;
   }
 
   var querySetUp = "SELECT " +
