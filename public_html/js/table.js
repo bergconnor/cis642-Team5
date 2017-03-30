@@ -54,8 +54,9 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		emailCell.innerHTML         = email;
 		latCell.innerHTML           = lat;
 		logCell.innerHTML           = log;
-
+	var temp  = false
     if(markerid == markerElem.getAttribute('id')) {
+	  
       dateCell.style.backgroundColor="yellow";
       nameCell.style.backgroundColor="yellow";
       orgnizationCell.style.backgroundColor="yellow";
@@ -67,6 +68,14 @@ downloadUrl('../lib/create_xml.php', function(data) {
       emailCell.style.backgroundColor="yellow";
       latCell.style.backgroundColor="yellow";
       logCell.style.backgroundColor="yellow";
+	  /*
+	  var url = location.href; 
+	  console.log(location.href);	  
+	  location.href = "#"+markerElem.getAttribute('id');   
+	  console.log(location.href);
+	  history.replaceState(null,null,url); 
+	  */
+	  temp  = true;
     }
 
     var row = document.createElement("tr");
@@ -83,6 +92,21 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		row.appendChild(commentCell);
 
 		document.getElementById('table-body').appendChild(row);
+		if (temp)
+		{
+			var t = row.offsetTop; //Getting Y of target element
+			window.scrollTo(0, (t+50));    
+			console.log("offsetTop: "+t)
+			console.log("offsetTop+50: "+(t+50))
+			/*
+			var url = location.href; 
+			console.log(location.href);	  
+			location.href = "#"+row;
+			console.log(location.href);
+			history.replaceState(null,null,url); 
+			*/
+		}
+		
   });
 });
 
