@@ -25,6 +25,7 @@ CREATE TABLE `markers` (
   `user_id`       INT NOT NULL ,
   `date`          DATE NOT NULL ,
   `test_id`       INT NOT NULL ,
+  `concentration` FLOAT( 5, 2 ) NOT NULL ,
   `serial`        INT NOT NULL ,
   `latitude`      FLOAT( 10, 6 ) NOT NULL ,
   `longitude`     FLOAT( 10, 6 ) NOT NULL ,
