@@ -30,7 +30,7 @@ public class ImageProcTest {
         try {
             List<Scalar> testList = new ArrayList<Scalar>();
             for (int i = 0; i < 8; i++) {
-                testList.add(new Scalar((int)(Math.random() * 251), (int)(Math.random() * 251), (Math.random() * 251));
+                testList.add(new Scalar((int)(Math.random() * 251), (int)(Math.random() * 251), (Math.random() * 251)));
             }
             ImageProc.createData(testList);
             assertFalse("Method should have thrown IllegalArgumentException", false);
