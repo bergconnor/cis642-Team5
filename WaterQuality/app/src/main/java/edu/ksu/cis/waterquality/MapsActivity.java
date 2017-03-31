@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -100,13 +101,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void buildMap() {
         for (int i = 0; i < mData.size(); i++) {
             List list = mData.get(i);
-            double lat = Double.parseDouble(list.get(2).toString());
-            double lng = Double.parseDouble(list.get(3).toString());
+            double lat = Double.parseDouble(list.get(4).toString());
+            double lng = Double.parseDouble(list.get(5).toString());
             LatLng latLng = new LatLng(lat, lng);
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
-            markerOptions.title(list.get(0).toString());
-            markerOptions.snippet(list.get(1).toString());
+            markerOptions.title(list.get(2).toString());
+            markerOptions.snippet(list.get(3).toString() + '\n' +
+                    list.get(11).toString() + " test" + '\n' +
+                    "Concentration level: " + list.get(1).toString() + '\n' +
+                    list.get(1).toString());
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
             mMap.addMarker(markerOptions);
         }
@@ -247,7 +251,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(4));
 
         //stop location updates
         if (mGoogleApiClient != null) {
@@ -296,7 +300,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://people.cs.ksu.edu/~cberg1/create_xml.php");
+                url = new URL("http://people.cs.ksu.edu/~cberg1/lib/create_xml.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
@@ -315,8 +319,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 conn.setDoOutput(true);
 
                 // Append parameters to URL
+                String q = "SELECT m.id 'id', m.user_id 'user_id', " +
+                        "DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude', " +
+                        "m.longitude 'longitude', m.city 'city', m.state 'state', " +
+                        "m.temperature 'temperature', m.precipitation 'precipitation', " +
+                        "m.concentration 'concentration', m.comment 'comment', m.verified 'verified', " +
+                        "u.first 'first', u.last 'last', u.organization 'organization', " +
+                        "u.email 'email', u.active 'active', u.admin 'admin', t.type 'type' " +
+                        "FROM markers m " +
+                        "JOIN users u ON m.user_id = u.id " +
+                        "JOIN tests t ON m.test_id = t.id";
+                Log.e("QUERY", q);
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("name", "Connor");
+                        .appendQueryParameter("q", q);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data

@@ -94,7 +94,7 @@ public class SignUpActivity extends AppCompatActivity {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://people.cs.ksu.edu/~cberg1/android/sign_up.php");
+                url = new URL("http://people.cs.ksu.edu/~cberg1/app/sign_up.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block

@@ -19,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -77,7 +78,8 @@ public class ImageActivity extends AppCompatActivity {
                     Manifest.permission.ACCESS_NETWORK_STATE,
                     Manifest.permission.INTERNET,
                     Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSION_REQUEST);
         }
         else {
@@ -132,20 +134,20 @@ public class ImageActivity extends AppCompatActivity {
                 vchart.setData(graphData);
                 XAxis vchartX = vchart.getXAxis();
                 vchartX.setDrawLabels(true);
+
+                final Button chartButton = (Button)findViewById(R.id.contButton);
+                chartButton.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        vchart.saveToGallery("chart.jpg", 75);
+                        setRequestedOrientation(oldOrientation);
+                        processResults(code, colors);
+                    }
+                });
             } catch (Exception e) {
                 imageException();
             }
-
-            final Button chartButton = (Button)findViewById(R.id.contButton);
-            chartButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    vchart.saveToGallery("chart.jpg", 75);
-                    setRequestedOrientation(oldOrientation);
-                    processResults(code, colors);
-                }
-            });
         }
     }
 
@@ -232,7 +234,7 @@ public class ImageActivity extends AppCompatActivity {
             String[] information = code.split("\n");
             String type = information[0].split(" ")[0];
             String serial = information[1].replaceAll("[^0-9]","");
-            sendResults(type, serial, value);
+            sendResults(type, serial, ImageProc.linearRegression(colors));
         } else {
             imageException();
         }
@@ -276,7 +278,7 @@ public class ImageActivity extends AppCompatActivity {
         return true;
     }
 
-    private void sendResults(String test, String serial, Double value) {
+    private void sendResults(String test, String serial, double value) {
         List<String> keys   = new ArrayList<String>();
         List<String> values = new ArrayList<String>();
 
@@ -285,7 +287,7 @@ public class ImageActivity extends AppCompatActivity {
         keys.add(SessionManager.KEY_SERIAL);
         values.add(serial);
         keys.add(SessionManager.KEY_VALUE);
-        values.add(value.toString());
+        values.add(Double.toString(value));
 
         _session.addSessionVariables(keys, values);
 

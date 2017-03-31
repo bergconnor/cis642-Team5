@@ -37,7 +37,7 @@ public class AsyncGetUserInfo extends AsyncTask<String, String, String>
     protected String doInBackground(String... params) {
         try {
 
-            url = new URL("http://people.cs.ksu.edu/~cberg1/android/user_info.php");
+            url = new URL("http://people.cs.ksu.edu/~cberg1/app/user_info.php");
 
         } catch (MalformedURLException e) {
             // TODO Auto-generated catch block

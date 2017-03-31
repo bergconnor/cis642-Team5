@@ -1,5 +1,6 @@
 <?php
 require_once("config.php");
+include("../dbg/ChromePhp.php");
 
 // Start XML file, create parent node
 header("Content-type: text/xml");
@@ -9,6 +10,7 @@ $parnode = $doc->appendChild($node);
 
 try {
   // load the query from the request
+  ChromePhp::log($_REQUEST['q']);
   $stmt = $pdo->prepare($_REQUEST['q']);
   $stmt->execute();
   $markers = $stmt->fetchAll();
@@ -30,7 +32,6 @@ foreach($markers as $row) {
   $newnode->setAttribute('longitude', $row['longitude']);
   $newnode->setAttribute('temperature', $row['temperature']);
   $newnode->setAttribute('precipitation', $row['precipitation']);
-  $newnode->setAttribute('concentration', $row['concentration']);
   $newnode->setAttribute('comment', $row['comment']);
   $newnode->setAttribute('email', $row['email']);
   $newnode->setAttribute('type', $row['type']);

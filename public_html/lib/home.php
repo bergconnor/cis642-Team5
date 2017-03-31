@@ -36,18 +36,19 @@ session_start();
     </nav>
     <label class="label" for="pendingSamples">Show pending samples</label>
     <input id="pendingSamples" type="checkbox" name="pend" value="pending">
-
+    <label for="include1">include xxxx</label>
+    <input id="include1" type="checkbox" name="vehicle" value="Bike"><br>
 
     <label class="label" for="precipitationLevel">Precipitation Level</label>
     <a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>
     <input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">
     <a id="button2" onclick="clearBox('precipitationLevel')">Clear</a>
 
-    <label for="inequalitySign2">Concentration Level</label>
+    <label for="inequalitySign2">xxx level</label>
     <a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
-    <input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
-    <a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
-    <a  type="button" id = "button"  onclick="initMap()">Create Map</a>
+    <input id="Level1" type="text" name="fname" size="7" placeholder="0">
+    <a id="button2" onclick="clearBox('Level1')">Clear</a>
+    <a  type="button" id = "button"   onclick="initMap()">Create Map</a>
 
     <div id="map"></div>
 
