@@ -227,7 +227,8 @@ public class ImageActivity extends AppCompatActivity {
 
     private void processResults(String code, List<Scalar> colors) {
         if (code.length() > 0 && colors.size() > 0) {
-            String message = "Value = " + ImageProc.linearRegression(colors);
+            double value = ImageProc.linearRegression(colors);
+            String message = "Value = " + value;
             Toast.makeText(ImageActivity.this, message, Toast.LENGTH_LONG).show();
             String[] information = code.split("\n");
             String type = information[0].split(" ")[0];
