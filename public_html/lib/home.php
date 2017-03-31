@@ -14,9 +14,9 @@ session_start();
   </head>
   <body>
     <div class="page-header">
-      <div class="pull-right">
+      <!-- <div class="pull-right">
         <button type="button" class="btn btn-primary">Press me!</button>
-      </div>
+      </div> -->
       <h1>Water Quality</h1>
     </div>
     <nav class="navbar navbar-default" role="navigation">
@@ -34,20 +34,21 @@ session_start();
         </ul>
       </div>
     </nav>
-    <label class="label" for="pendingSamples">Show pending samples</label>
+    <label class="left-label" for="pendingSamples">Show pending samples</label>
     <input id="pendingSamples" type="checkbox" name="pend" value="pending">
+    <label for="include1">include xxxx</label>
+    <input id="include1" type="checkbox" name="vehicle" value="Bike"><br>
 
-
-    <label class="label" for="precipitationLevel">Precipitation Level</label>
+    <label class="left-label" for="precipitationLevel">Precipitation Level</label>
     <a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>
     <input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">
     <a id="button2" onclick="clearBox('precipitationLevel')">Clear</a>
 
-    <label for="inequalitySign2">Concentration Level</label>
+    <label for="inequalitySign2">xxx level</label>
     <a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
-    <input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
-    <a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
-    <a  type="button" id = "button"  onclick="initMap()">Create Map</a>
+    <input id="Level1" type="text" name="fname" size="7" placeholder="0">
+    <a id="button2" onclick="clearBox('Level1')">Clear</a>
+    <a  type="button" id = "button"   onclick="initMap()">Create Map</a>
 
     <div id="map"></div>
 

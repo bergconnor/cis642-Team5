@@ -79,30 +79,35 @@ public class UploadActivity extends AppCompatActivity {
             Map.Entry pair      = (Map.Entry)iterator.next();
             final String key    = pair.getKey().toString();
 
-            // create new elements to add to layouts
-            TextView textView = (TextView) View
-                    .inflate(UploadActivity.this, R.layout.table_text_view, null);
-            HorizontalScrollView scrollView = (HorizontalScrollView) View
-                    .inflate(UploadActivity.this, R.layout.table_scroll_view, null);
-            EditText editText = (EditText) scrollView.getChildAt(0);
+            if(!key.equals(_session.KEY_ID)) {
 
-            textView.setText(pair.getKey().toString());
-            editText.setText(pair.getValue().toString());
+                // create new elements to add to layouts
+                TextView textView = (TextView) View
+                        .inflate(UploadActivity.this, R.layout.table_text_view, null);
+                HorizontalScrollView scrollView = (HorizontalScrollView) View
+                        .inflate(UploadActivity.this, R.layout.table_scroll_view, null);
+                EditText editText = (EditText) scrollView.getChildAt(0);
 
-            editText.addTextChangedListener( new TextWatcher() {
-                public void afterTextChanged(Editable editable) {
-                    _session.updateValue(key, editable.toString());
-                }
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    // do nothing
-                }
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    // do nothing
-                }
-            });
+                textView.setText(pair.getKey().toString());
+                editText.setText(pair.getValue().toString());
 
-            textViewLayout.addView(textView);
-            editTextLayout.addView(scrollView);
+                editText.addTextChangedListener(new TextWatcher() {
+                    public void afterTextChanged(Editable editable) {
+                        _session.updateValue(key, editable.toString());
+                    }
+
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        // do nothing
+                    }
+
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        // do nothing
+                    }
+                });
+
+                textViewLayout.addView(textView);
+                editTextLayout.addView(scrollView);
+            }
         }
     }
 
@@ -185,7 +190,7 @@ public class UploadActivity extends AppCompatActivity {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://people.cs.ksu.edu/~cberg1/android/upload.php");
+                url = new URL("http://people.cs.ksu.edu/~cberg1/app/upload.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
@@ -268,11 +273,13 @@ public class UploadActivity extends AppCompatActivity {
             pdLoading.dismiss();
             String success = "false";
             String message = "";
+            String var = "";
 
             try {
                 JSONObject reader = new JSONObject(result);
                 success = reader.getString("success");
                 message = reader.getString("message");
+                var = reader.getString("var");
 
             }  catch(Exception ex) {
                 // TO DO: handle error

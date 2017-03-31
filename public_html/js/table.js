@@ -11,7 +11,7 @@ var lat           = "none";
 var log           = "none";
 var temperature   = "none";
 var precipitation = "none";
-var concentration = "none"; 
+var concentration = "none";
 var comment       = "none";
 
 downloadUrl('../lib/create_xml.php', function(data) {
@@ -56,7 +56,7 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		logCell.innerHTML           = log;
 	var temp  = false
     if(markerid == markerElem.getAttribute('id')) {
-	  
+
       dateCell.style.backgroundColor="yellow";
       nameCell.style.backgroundColor="yellow";
       orgnizationCell.style.backgroundColor="yellow";
@@ -69,11 +69,11 @@ downloadUrl('../lib/create_xml.php', function(data) {
       latCell.style.backgroundColor="yellow";
       logCell.style.backgroundColor="yellow";
 	  /*
-	  var url = location.href; 
-	  console.log(location.href);	  
-	  location.href = "#"+markerElem.getAttribute('id');   
+	  var url = location.href;
 	  console.log(location.href);
-	  history.replaceState(null,null,url); 
+	  location.href = "#"+markerElem.getAttribute('id');
+	  console.log(location.href);
+	  history.replaceState(null,null,url);
 	  */
 	  temp  = true;
     }
@@ -95,18 +95,18 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		if (temp)
 		{
 			var t = row.offsetTop; //Getting Y of target element
-			window.scrollTo(0, (t+50));    
+			window.scrollTo(0, (t+50));
 			console.log("offsetTop: "+t)
 			console.log("offsetTop+50: "+(t+50))
 			/*
-			var url = location.href; 
-			console.log(location.href);	  
+			var url = location.href;
+			console.log(location.href);
 			location.href = "#"+row;
 			console.log(location.href);
-			history.replaceState(null,null,url); 
+			history.replaceState(null,null,url);
 			*/
 		}
-		
+
   });
 });
 
@@ -123,7 +123,7 @@ function downloadUrl(url, callback) {
   };
 	var query = "SELECT " +
     " m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
-    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation',m.concentration 'concentration', " +
+    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
     " m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
     " u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
 

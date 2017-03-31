@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
             _email = params[0];
             _password = params[1];
             try {
-                _url = new URL("http://people.cs.ksu.edu/~cberg1/android/login.php");
+                _url = new URL("http://people.cs.ksu.edu/~cberg1/app/login.php");
             } catch (MalformedURLException ex) {
                 // TO DO: handle exception
                 ex.printStackTrace();

@@ -121,7 +121,7 @@ li.marker {
   float: right;
   margin-right: 7.5%;
 }
-
+*/
 #text
 {
   background-color: #9aafd1;
@@ -183,4 +183,8 @@ li.marker {
 #inequalitySign2:hover, #inequalitySign2:active {
   background-color: #b3b3ff;
   cursor: pointer;
+}
+
+.left-label {
+  margin-left: 7.5%;
 }

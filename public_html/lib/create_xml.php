@@ -25,12 +25,12 @@ foreach($markers as $row) {
   $newnode->setAttribute('id', $row['id']);
   $newnode->setAttribute('date', $row['date']);
   $newnode->setAttribute('name', $row['first'] . ' ' . $row['last']);
+  $newnode->setAttribute('concentration', $row['concentration']);
   $newnode->setAttribute('organization', $row['organization']);
   $newnode->setAttribute('latitude', $row['latitude']);
   $newnode->setAttribute('longitude', $row['longitude']);
   $newnode->setAttribute('temperature', $row['temperature']);
   $newnode->setAttribute('precipitation', $row['precipitation']);
-  $newnode->setAttribute('concentration', $row['concentration']);
   $newnode->setAttribute('comment', $row['comment']);
   $newnode->setAttribute('email', $row['email']);
   $newnode->setAttribute('type', $row['type']);
