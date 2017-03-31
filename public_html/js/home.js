@@ -31,6 +31,7 @@ used for debugging********************************* */
   downloadUrl('../lib/create_xml.php', function(data) {
     var xml = data.responseXML;
     var markers = xml.documentElement.getElementsByTagName('marker');
+    console.log(markers);
     Array.prototype.forEach.call(markers, function(markerElem) {
       var name = markerElem.getAttribute('name');
       var organization = markerElem.getAttribute('organization');
@@ -193,7 +194,7 @@ function createQuery() {
 
   var querySetUp = "SELECT " +
     " m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
-    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation'," +
+    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
     " m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
     " u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
 

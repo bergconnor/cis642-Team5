@@ -15,9 +15,9 @@ session_start();
   </head>
   <body>
     <div class="page-header">
-      <div class="pull-right">
+      <!-- <div class="pull-right">
         <button type="button" class="btn btn-primary">Press me!</button>
-      </div>
+      </div> -->
       <h1>Water Quality</h1>
     </div>
     <nav class="navbar navbar-default" role="navigation">
