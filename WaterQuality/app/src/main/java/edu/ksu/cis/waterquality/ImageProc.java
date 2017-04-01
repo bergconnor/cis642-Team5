@@ -285,4 +285,12 @@ public class ImageProc {
         LineData data = new LineData(dataset);
         return data;
     }
+
+    /** WIP: Method will hopefully correct the overall colors of the image to remove the effects
+     *  of different lighting / lack of lighting has on the card.
+     */
+
+    public static void colorCorrect() {
+
+    }
 }
