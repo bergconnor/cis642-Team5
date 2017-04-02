@@ -97,27 +97,62 @@ center = map.center;
 	  //(now just Nitrate and Phosphate)
       var pinColor;
       var type = markerElem.getAttribute('type');
-
+	 
       var colorRange = type;
+	  //note: this assumes 5 color levels
       switch (colorRange) {
         case 'Phosphate':
+		  var start = 80
+		  var end = 88
+		  var jump = (end-start)/4 // 4 because we want 5 colors
 		  //chose colors dpending on how much Phosphate concentration was found
-          pinColor = 0x3333ff;
+		  if (concentration<=start)
+			  pinColor = 0xe6e6ff;
+		  if (start<concentration&&concentration<=start+jump)
+			  pinColor = 0xb3b3ff;
+		  if (start+jump<concentration&&concentration<=start+jump*2)
+			  pinColor = 0x8080ff;
+		  if (start+jump*2<concentration&&concentration<=start+jump*3)
+			  pinColor = 0x4d4dff;
+		  if (start+jump*3<concentration)
+			  pinColor = 0x3939ac;
+          
           break;
         case 'Nitrate':
+		  
+		  var start = 80
+		  var end = 88
+		  var jump = (end-start)/4// 4 because we want 5 colors
 		  //chose colors dpending on how much Nitrate concentration was found
-          pinColor = 0xff0000;
+          if (concentration<=start)
+			  pinColor = 0xffe6e6;
+		  if (start<concentration&&concentration<=start+jump)
+			  pinColor = 0xffb3b3;
+		  if (start+jump<concentration&&concentration<=start+jump*2)
+			  pinColor = 0xff6666;
+		  if (start+jump*2<concentration&&concentration<=start+jump*3)
+			  pinColor = 0xff3333;
+		  if (start+jump*3<concentration)
+			  pinColor = 0xb30000;
           break;
       }
-
+		
       //create the pin marker image from a list of google images for pins
       //toString(16) is used because pinColor is in hexdecimal
-	  //Note: not all colors in color pickers have images 
-      var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" +
-        pinColor.toString(16),
-        new google.maps.Size(21, 34),
-        new google.maps.Point(0,0),
-        new google.maps.Point(10, 34));
+	  //Note: not all colors in color pickers have images
+	  var pinImage;
+		try {
+			pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" +
+			pinColor.toString(16),
+			new google.maps.Size(21, 34),
+			new google.maps.Point(0,0),
+			new google.maps.Point(10, 34));
+		}
+		catch(err) {
+			console.log( err.message);
+			pinImage = google.maps.SymbolPath.BACKWARD_CLOSED_ARROW
+		}
+       
         var pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",
         new google.maps.Size(40, 37),
         new google.maps.Point(0, 0),
