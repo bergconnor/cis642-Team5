@@ -20,12 +20,6 @@ map.addListener('center_changed', function() {
 center = map.center;
 });
 
-/* used for debugging*********************************
-//console.log('Show pending samples: '+document.getElementById('pendingSamples').checked);//.'AcceptedSamples');
-//console.log('include xxxx: '+document.getElementById('include1').checked);
-//console.log('Number level: '+document.getElementById('precipitationLevel').value);
-//console.log('xxx level: '+document.getElementById('Level1').value);
-used for debugging********************************* */
 
   // Change this depending on the name of your PHP or XML file
   downloadUrl('../lib/create_xml.php', function(data) {
@@ -36,60 +30,89 @@ used for debugging********************************* */
       var name = markerElem.getAttribute('name');
       var organization = markerElem.getAttribute('organization');
       var type = markerElem.getAttribute('type');
-      var comment = markerElem.getAttribute('comment');;
+      var comment = markerElem.getAttribute('comment');
+	  var concentration = markerElem.getAttribute('concentration');
       var point = new google.maps.LatLng
       (
         parseFloat(markerElem.getAttribute('latitude')),
         parseFloat(markerElem.getAttribute('longitude'))
       );
-
-      var infowincontent = document.createElement('div');
+	  
+	  //create info window when a marker gets clicked
+	  var infowincontent = document.createElement('div');
+	  
+	  // create bolded text for name
       var strong = document.createElement('strong');
       strong.textContent = name
+	  
       infowincontent.appendChild(strong);
       infowincontent.appendChild(document.createElement('br'));
-
+	  
+	  //create text for organization
       var text = document.createElement('text');
       text.textContent = organization;
       infowincontent.appendChild(text);
       infowincontent.appendChild(document.createElement('br'));
 
+	  //create text for which kind of test this marker represents 
       var text3 = document.createElement('text');
       text3.textContent = type + " test";
+	  
       infowincontent.appendChild(text3);
       infowincontent.appendChild(document.createElement('br'));
+	  
+	  //create text for the concentration of the test this marker represents
+      var text5 = document.createElement('text');
+      text5.textContent = concentration;
+	  
+      infowincontent.appendChild(text5);
+      infowincontent.appendChild(document.createElement('br'));
 
+	  //create text for comments written by the android app user
       var text4 = document.createElement('text');
       text4.textContent = comment;
+	  
       infowincontent.appendChild(text4);
       infowincontent.appendChild(document.createElement('br'));
 
+	  //create text for a link with more information about this marker
+	  //(it is just a coloring for entry in the "table" page in the website)
       var text2 = document.createElement('text');
       text2.textContent = "More Info";
+	  
+	  //create a link for "More Info"
       var ul =  document.createElement('a');
       ul.setAttribute('href', "table.php");
+	  
+	  //create and event handler that will call the 
+	  //setID function 
       var d = markerElem.getAttribute('id');
       ul.setAttribute('onclick', "setId('"+d+"')");
       ul.setAttribute('id_number', markerElem.getAttribute('id'));
+	  
       ul.appendChild(text2);
       infowincontent.appendChild(ul);
 
-      // change the color of the marker based on the id
-      var pinColor = 0xFFFF00;
+      // change the color of the marker based on the kind of test 
+	  //(now just Nitrate and Phosphate)
+      var pinColor;
       var type = markerElem.getAttribute('type');
 
       var colorRange = type;
       switch (colorRange) {
         case 'Phosphate':
+		  //chose colors dpending on how much Phosphate concentration was found
           pinColor = 0x3333ff;
           break;
         case 'Nitrate':
+		  //chose colors dpending on how much Nitrate concentration was found
           pinColor = 0xff0000;
           break;
       }
 
-      //create the pin marker image
+      //create the pin marker image from a list of google images for pins
       //toString(16) is used because pinColor is in hexdecimal
+	  //Note: not all colors in color pickers have images 
       var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" +
         pinColor.toString(16),
         new google.maps.Size(21, 34),
@@ -107,9 +130,9 @@ used for debugging********************************* */
         icon: pinImage,
         shadow: pinShadow,
         position: point,
-        strokeColor: 'green',
       });
-
+	  
+	  //Label unverified pins with P (for Pending)
       if (markerElem.getAttribute('verified')== 0) {
         marker = new google.maps.Marker( {
           map: map,
@@ -119,7 +142,8 @@ used for debugging********************************* */
           strokeColor: 'green',
           label: {text: 'P', color: 'white'},
         });
-
+		
+		// color of the label
         marker.label.color = 'white';
         marker.icon.labelOrigin = {x: 11, y: 11};
       }
@@ -156,7 +180,6 @@ function downloadUrl(url, callback) {
 function doNothing() {}
 
 function changeSign(inequalitySign) {
-  console.log(inequalitySign)
   if(document.getElementById(inequalitySign).textContent == '<')
     document.getElementById(inequalitySign).textContent = '>';
   else
@@ -167,12 +190,14 @@ function clearBox(numberBox) {
   document.getElementById(numberBox).value = '';
 }
 
+//Create the query which will be passed to create_xml
+//it will be used to filter the markers that will show up in the map
 function createQuery() {
   var pendingSamples = document.getElementById('pendingSamples').checked;
-  var include1 = document.getElementById('include1').checked ;
   var precipitationLevel = document.getElementById('precipitationLevel').value;
-  var level1 = document.getElementById('Level1').value;
+  var concentrationLevel = document.getElementById('concentrationLevel').value;
   var precipitation = '';
+  var concentration = '';
   var verified = " and verified = 1 ";
   var id = '';
   if(pendingSamples)
@@ -191,6 +216,13 @@ function createQuery() {
     else
       precipitation = ' and precipitation > ' +   document.getElementById('precipitationLevel').value;
   }
+  
+  if(concentrationLevel!='') {
+    if(document.getElementById('inequalitySign2').textContent == '<')
+      concentration = ' and concentration < ' +   document.getElementById('concentrationLevel').value;
+    else
+      concentration = ' and concentration > ' +   document.getElementById('concentrationLevel').value;
+  }
 
   var querySetUp = "SELECT " +
     " m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
@@ -202,12 +234,14 @@ function createQuery() {
       " JOIN users u ON m.user_id = u.id"+
       " JOIN tests t ON m.test_id = t.id "+
 
-    " WHERE true " + precipitation + verified;
+    " WHERE true " + precipitation + concentration+ verified;
   var query = querySetUp;
 
   return query;
 }
 
+//used in "More Info" when it is clicked
+//to send id of the marker to the "table" page 
 function setId(id) {
   sessionStorage.setItem('marker', id);
 }
