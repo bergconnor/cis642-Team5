@@ -204,7 +204,7 @@ function createQuery() {
     verified = " and verified > -1 ";
   console.log(isNaN(precipitationLevel));
   console.log(0>(precipitationLevel));
-
+  //data validation for precipitation
   if(isNaN(precipitationLevel) || precipitationLevel < 0 ) {
     precipitationLevel = '';
     document.getElementById('precipitationLevel').value = '';
@@ -217,6 +217,11 @@ function createQuery() {
       precipitation = ' and precipitation > ' +   document.getElementById('precipitationLevel').value;
   }
   
+  //data validation for concentration
+  if(isNaN(concentrationLevel) || concentrationLevel < 0 ) {
+    concentrationLevel = '';
+    document.getElementById('concentrationLevel').value = '';
+  }
   if(concentrationLevel!='') {
     if(document.getElementById('inequalitySign2').textContent == '<')
       concentration = ' and concentration < ' +   document.getElementById('concentrationLevel').value;
