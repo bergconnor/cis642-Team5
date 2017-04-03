@@ -16,9 +16,18 @@ var comment       = "none";
 
 
 var scrollHere = 0;
+var orderBy = 1;
+function createTable()
+{
+	
 downloadUrl('../lib/create_xml.php', function(data) {
   var xml     = data.responseXML;
   var markers = xml.documentElement.getElementsByTagName('marker');
+
+  var myNode = document.getElementById("table-body");
+  while (myNode.firstChild) {
+		myNode.removeChild(myNode.firstChild);
+  }
 
   Array.prototype.forEach.call(markers, function(markerElem) {
     date          = markerElem.getAttribute('date');
@@ -102,6 +111,71 @@ downloadUrl('../lib/create_xml.php', function(data) {
   });
 });
 
+	
+}
+function createQuery()
+{
+	var ord;
+	switch(orderBy)
+	{
+		case 1:
+		ord = "DATE(date)";
+		break;
+		
+		case 2:
+		ord = "first";
+		break;
+		
+		case 3:
+		ord = "organization"
+		break;
+		
+		case 4:
+		ord = "email";
+		break;
+		
+		case 5:
+		ord = "type";
+		break;
+		
+		case 6:
+		ord = "latitude";
+		break;
+		
+		case 7:
+		ord = "longitude";
+		break;
+		
+		case 8:
+		ord = "temperature";
+		break;
+		
+		case 9:
+		ord = "precipitation";
+		break;
+		
+		case 10:
+		ord = "concentration";
+		break;
+		
+		case 11:
+		ord = "comment"
+		break;
+	}
+	var query = "SELECT " +
+    " m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
+    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
+    " m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
+    " u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
+
+	  " FROM markers m "+
+	    " JOIN users u ON m.user_id = u.id" +
+			" JOIN tests t ON m.test_id = t.id " +
+    " ORDER BY "+ord+" DESC";
+	return query
+}
+createTable();
+
 //delay few seconds before jumping to the highlighted entry
 //note: it might need to be longer dpending on how big the database is
 if (markerid != null) 
@@ -122,19 +196,18 @@ function downloadUrl(url, callback) {
       callback(request, request.status);
     }
   };
-	var query = "SELECT " +
-    " m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
-    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
-    " m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
-    " u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
-
-	  " FROM markers m "+
-	    " JOIN users u ON m.user_id = u.id" +
-			" JOIN tests t ON m.test_id = t.id " +
-    " ORDER BY DATE(date) DESC";
+	var query =  createQuery();
   request.open('GET', url, true);
 	request.open("GET", url+"?q=" + query, true);
   request.send(null);
 }
 
+function changeOrder(ord)
+{
+	if (!isNaN(ord))
+	{
+			orderBy = ord
+	}
+	createTable();
+}
 function doNothing() {}

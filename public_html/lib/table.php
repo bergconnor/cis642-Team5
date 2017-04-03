@@ -42,17 +42,17 @@ session_start();
       <table class="samples-table">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Name</th>
-            <th>Orgnization</th>
-            <th>Email</th>
-            <th>Type</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
-            <th>Temperature</th>
-            <th>Precipitation</th>
-			      <th>Concentration</th>
-            <th>Comment</th>
+            <th onclick = changeOrder(1)>Date</th>
+            <th onclick = changeOrder(2)>Name</th>
+            <th onclick = changeOrder(3)>Orgnization</th>
+            <th onclick = changeOrder(4)>Email</th>
+            <th onclick = changeOrder(5)>Type</th>
+            <th onclick = changeOrder(6)>Latitude</th>
+            <th onclick = changeOrder(7)>Longitude</th>
+            <th onclick = changeOrder(8)>Temperature</th>
+            <th onclick = changeOrder(9)>Precipitation</th>
+			<th onclick = changeOrder(10)>Concentration</th>
+            <th onclick = changeOrder(11)>Comment</th>
           </tr>
         </thead>
         <tbody id="table-body">
