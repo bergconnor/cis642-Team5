@@ -239,6 +239,7 @@ function downloadUrl(url, callback) {
 
 function changeOrder(ord)
 {
+	console.log(document.getElementById("columns_headers").childNodes)
 	if (isNaN(ord))
 	{
 		
@@ -246,21 +247,88 @@ function changeOrder(ord)
 	
 	else
 	{
+		
 		if (orderBy == ord)
 		{
+			ordElm = document.getElementById("order_arrow");
 			if (orderType == "desc")
+			{
+				ordElm.setAttribute("class","glyphicon glyphicon-triangle-top")
 				orderType = "asc";
+			}
+				
 			else
+			{
+				ordElm.setAttribute("class","glyphicon glyphicon-triangle-bottom")
 				orderType = "desc";
+			}
+				
 		}
 		else
 		{
 			orderBy = ord;
+			ordElm = document.getElementById("order_arrow");
+			ordElm.parentElement.removeChild(ordElm);
+			ordElm = document.createElement("span");
+			ordElm.setAttribute("id","order_arrow");
 			
+			switch(orderBy)
+			{
+				case 1:
+				document.getElementById("date").appendChild(ordElm);
+				break;
+				
+				case 2:
+				document.getElementById("name").appendChild(ordElm);
+				break;
+				
+				case 3:
+				document.getElementById("orgnization").appendChild(ordElm);
+				break;
+				
+				case 4:
+				document.getElementById("email").appendChild(ordElm);
+				break;
+				
+				case 5:
+				document.getElementById("type").appendChild(ordElm);
+				break;
+				
+				case 6:
+				document.getElementById("latitude").appendChild(ordElm);
+				break;
+				
+				case 7:
+				document.getElementById("longitude").appendChild(ordElm);
+				break;
+				
+				case 8:
+				document.getElementById("temperature").appendChild(ordElm);
+				break;
+				
+				case 9:
+				document.getElementById("precipitation").appendChild(ordElm);
+				break;
+				
+				case 10:
+				document.getElementById("concentration").appendChild(ordElm);
+				break;
+				
+				case 11:
+				document.getElementById("comment").appendChild(ordElm);
+				break;
+			}
 			if (orderBy == 1)
+			{
+				ordElm.setAttribute("class","glyphicon glyphicon-triangle-bottom")
 				orderType = "desc";
+			}
+				
 			else
+			{
+				ordElm.setAttribute("class","glyphicon glyphicon-triangle-top")
 				orderType = "asc";
+			}
 			
 		}
 	  

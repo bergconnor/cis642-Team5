@@ -72,18 +72,18 @@ session_start();
     <div class="table-margin">
       <table class="samples-table">
         <thead>
-          <tr>
-            <th onclick = changeOrder(1)>Date</th>
-            <th onclick = changeOrder(2)>Name</th>
-            <th onclick = changeOrder(3)>Orgnization</th>
-            <th onclick = changeOrder(4)>Email</th>
-            <th onclick = changeOrder(5)>Type</th>
-            <th onclick = changeOrder(6)>Latitude</th>
-            <th onclick = changeOrder(7)>Longitude</th>
-            <th onclick = changeOrder(8)>Temperature °F</th>
-            <th onclick = changeOrder(9)>Precipitation</th>
-			<th onclick = changeOrder(10)>Concentration</th>
-            <th onclick = changeOrder(11)>Comment</th>
+          <tr id= columns_headers>
+            <th id ="date" onclick = changeOrder(1)>Date<span id = order_arrow class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span></th>
+            <th id ="name" onclick = changeOrder(2)>Name</th>
+            <th id ="orgnization" onclick = changeOrder(3)>Orgnization</th>
+            <th id ="email" onclick = changeOrder(4)>Email</th>
+            <th id ="type" onclick = changeOrder(5)>Type</th>
+            <th id ="latitude" onclick = changeOrder(6)>Latitude</th>
+            <th id ="longitude" onclick = changeOrder(7)>Longitude</th>
+            <th id ="temperature" onclick = changeOrder(8)>Temperature °F</th>
+            <th id ="precipitation" onclick = changeOrder(9)>Precipitation</th>
+			<th id ="concentration" onclick = changeOrder(10)>Concentration</th>
+            <th id ="comment" onclick = changeOrder(11)>Comment</th>
           </tr>
         </thead>
         <tbody id="table-body">
