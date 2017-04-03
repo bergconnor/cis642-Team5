@@ -38,6 +38,37 @@ session_start();
         </ul>
       </div>
     </nav>
+	<div class="left-label">
+		<div>
+			
+				<label  for="pendingSamples">Show pending samples</label>
+				<input id="pendingSamples" type="checkbox" name="pend" value="pending">
+			
+			<br>
+			
+			
+				<label  for="concentrationLevel"> Concentration level </label>
+				<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
+				<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
+				<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
+			
+			
+				<label  for="precipitationLevel"> Precipitation Level </label>
+				<a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>
+				<input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">
+				<a id="button2" onclick="clearBox('precipitationLevel')">Clear</a>
+			<div class="input-group date" data-provide="datepicker" data-date-format="mm/dd/yyyy">
+				<input type="text" class="form-control">
+				<div class="input-group-addon">
+					<span class="glyphicon glyphicon-th"></span>
+				</div>
+			</div>
+		</div>
+		<div>
+			<a  type="button" id = "button"   onclick="createTable()">Create Table</a>
+		</div>
+	</div>
+	
     <div class="table-margin">
       <table class="samples-table">
         <thead>
@@ -49,7 +80,7 @@ session_start();
             <th onclick = changeOrder(5)>Type</th>
             <th onclick = changeOrder(6)>Latitude</th>
             <th onclick = changeOrder(7)>Longitude</th>
-            <th onclick = changeOrder(8)>Temperature</th>
+            <th onclick = changeOrder(8)>Temperature °F</th>
             <th onclick = changeOrder(9)>Precipitation</th>
 			<th onclick = changeOrder(10)>Concentration</th>
             <th onclick = changeOrder(11)>Comment</th>

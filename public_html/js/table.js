@@ -1,5 +1,4 @@
 var markerid = sessionStorage.getItem('marker');
-console.log(markerid);
 sessionStorage.removeItem('marker');
 
 var date          = "none";
@@ -17,6 +16,9 @@ var comment       = "none";
 
 var scrollHere = 0;
 var orderBy = 1;
+var orderType = "desc";
+ 
+
 function createTable()
 {
 	
@@ -30,7 +32,7 @@ downloadUrl('../lib/create_xml.php', function(data) {
   }
 
   Array.prototype.forEach.call(markers, function(markerElem) {
-    date          = markerElem.getAttribute('date');
+		date          = markerElem.getAttribute('date');
 		name          = markerElem.getAttribute('name');
 		orgnization   = markerElem.getAttribute('organization');
 		email         = markerElem.getAttribute('email');
@@ -42,7 +44,7 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		concentration = markerElem.getAttribute('concentration');
 		comment       = markerElem.getAttribute('comment');
 
-    var dateCell          = document.createElement("td");
+		var dateCell          = document.createElement("td");
 		var nameCell          = document.createElement("td");
 		var orgnizationCell   = document.createElement("td");
 		var emailCell         = document.createElement("td");
@@ -54,7 +56,7 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		var latCell           = document.createElement("td");
 		var logCell           = document.createElement("td");
 
-    dateCell.innerHTML          = date;
+		dateCell.innerHTML          = date;
 		nameCell.innerHTML          = name;
 		orgnizationCell.innerHTML   = orgnization;
 		temperatureCell.innerHTML   = temperature;
@@ -79,13 +81,6 @@ downloadUrl('../lib/create_xml.php', function(data) {
       emailCell.style.backgroundColor="yellow";
       latCell.style.backgroundColor="yellow";
       logCell.style.backgroundColor="yellow";
-	  /*
-	  var url = location.href;
-	  console.log(location.href);
-	  location.href = "#"+markerElem.getAttribute('id');
-	  console.log(location.href);
-	  history.replaceState(null,null,url);
-	  */
 	  temp  = true;
     }
 
@@ -115,6 +110,42 @@ downloadUrl('../lib/create_xml.php', function(data) {
 }
 function createQuery()
 {
+	var pendingSamples = document.getElementById('pendingSamples').checked;
+	var precipitationLevel = document.getElementById('precipitationLevel').value;
+	var concentrationLevel = document.getElementById('concentrationLevel').value;
+	var precipitation = '';
+	var concentration = '';
+	var verified = " and verified = 1 ";
+	var id = '';
+  
+	if(pendingSamples)
+		verified = " and verified > -1 ";
+	
+	//data validation for precipitation
+	if(isNaN(precipitationLevel) || precipitationLevel < 0 ) {
+	precipitationLevel = '';
+	document.getElementById('precipitationLevel').value = '';
+	}
+
+	if(precipitationLevel!='') {
+		if(document.getElementById('inequalitySign1').textContent == '<')
+			precipitation = ' and precipitation < ' +   document.getElementById('precipitationLevel').value;
+		else
+			precipitation = ' and precipitation > ' +   document.getElementById('precipitationLevel').value;
+	}
+	
+	//data validation for concentration
+	if(isNaN(concentrationLevel) || concentrationLevel < 0 ) {
+		concentrationLevel = '';
+		document.getElementById('concentrationLevel').value = '';
+	}
+	if(concentrationLevel!='') {
+		if(document.getElementById('inequalitySign2').textContent == '<')
+			concentration = ' and concentration < ' +   document.getElementById('concentrationLevel').value;
+		else
+			concentration = ' and concentration > ' +   document.getElementById('concentrationLevel').value;
+	}
+  
 	var ord;
 	switch(orderBy)
 	{
@@ -162,17 +193,21 @@ function createQuery()
 		ord = "comment"
 		break;
 	}
+	console.log("version 1");
 	var query = "SELECT " +
     " m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
     " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
     " m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
     " u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
-
-	  " FROM markers m "+
-	    " JOIN users u ON m.user_id = u.id" +
-			" JOIN tests t ON m.test_id = t.id " +
-    " ORDER BY "+ord+" DESC";
+	" FROM markers m "+
+	    
+	" JOIN users u ON m.user_id = u.id" +
+	" JOIN tests t ON m.test_id = t.id " +
+	
+	" WHERE true " + precipitation + concentration+ verified +
+    " ORDER BY "+ord+" "+orderType;
 	return query
+	
 }
 createTable();
 
@@ -204,10 +239,43 @@ function downloadUrl(url, callback) {
 
 function changeOrder(ord)
 {
-	if (!isNaN(ord))
+	if (isNaN(ord))
 	{
-			orderBy = ord
+		
+	}
+	
+	else
+	{
+		if (orderBy == ord)
+		{
+			if (orderType == "desc")
+				orderType = "asc";
+			else
+				orderType = "desc";
+		}
+		else
+		{
+			orderBy = ord;
+			
+			if (orderBy == 1)
+				orderType = "desc";
+			else
+				orderType = "asc";
+			
+		}
+	  
 	}
 	createTable();
+}
+
+function changeSign(inequalitySign) {
+  if(document.getElementById(inequalitySign).textContent == '<')
+    document.getElementById(inequalitySign).textContent = '>';
+  else
+    document.getElementById(inequalitySign).textContent = '<';
+}
+
+function clearBox(numberBox) {
+  document.getElementById(numberBox).value = '';
 }
 function doNothing() {}
