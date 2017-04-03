@@ -14,6 +14,8 @@ var precipitation = "none";
 var concentration = "none";
 var comment       = "none";
 
+
+var scrollHere = 0;
 downloadUrl('../lib/create_xml.php', function(data) {
   var xml     = data.responseXML;
   var markers = xml.documentElement.getElementsByTagName('marker');
@@ -94,21 +96,20 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		document.getElementById('table-body').appendChild(row);
 		if (temp)
 		{
-			var t = row.offsetTop; //Getting Y of target element
-			window.scrollTo(0, (t+50));
-			console.log("offsetTop: "+t)
-			console.log("offsetTop+50: "+(t+50))
-			/*
-			var url = location.href;
-			console.log(location.href);
-			location.href = "#"+row;
-			console.log(location.href);
-			history.replaceState(null,null,url);
-			*/
+			scrollHere = row.offsetTop; //Getting Y of target element
 		}
 
   });
 });
+
+//delay few seconds before jumping to the highlighted entry
+//note: it might need to be longer dpending on how big the database is
+if (markerid != null) 
+	setTimeout(myScroll, 500)
+function myScroll()
+{
+	window.scrollTo(0, scrollHere);
+}
 
 function downloadUrl(url, callback) {
   var request = window.ActiveXObject ?
