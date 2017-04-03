@@ -61,12 +61,15 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		orgnizationCell.innerHTML   = orgnization;
 		if (degree == "f")
 		{
-			temperatureCell.innerHTML = temperature;
+			var num = Number(temperature);
+			temperatureCell.innerHTML = (num).toFixed(2);
+			
 		}
 			
 		else
 		{
-			temperatureCell.innerHTML = (temperature-32) * 5 / 9
+			var num = ((Number(temperature)-32) * 5 / 9);
+			temperatureCell.innerHTML = num.toFixed(2);
 		}
 		precipitationCell.innerHTML = precipitation;
 		concentrationCell.innerHTML = concentration;
