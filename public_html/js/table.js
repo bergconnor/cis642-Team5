@@ -17,7 +17,7 @@ var comment       = "none";
 var scrollHere = 0;
 var orderBy = 1;
 var orderType = "desc";
- 
+var degree = "f";
 
 function createTable()
 {
@@ -59,7 +59,15 @@ downloadUrl('../lib/create_xml.php', function(data) {
 		dateCell.innerHTML          = date;
 		nameCell.innerHTML          = name;
 		orgnizationCell.innerHTML   = orgnization;
-		temperatureCell.innerHTML   = temperature;
+		if (degree == "f")
+		{
+			temperatureCell.innerHTML = temperature;
+		}
+			
+		else
+		{
+			temperatureCell.innerHTML = (temperature-32) * 5 / 9
+		}
 		precipitationCell.innerHTML = precipitation;
 		concentrationCell.innerHTML = concentration;
 		commentCell.innerHTML       = comment;
@@ -237,6 +245,23 @@ function downloadUrl(url, callback) {
   request.send(null);
 }
 
+function changeDegree(d)
+{
+	degree = d;
+	var txt = document.getElementById("temperature_text");
+	
+	if (degree == "f")
+	{
+		txt.innerHTML = "Temperature °F";
+	}
+	
+	else
+	{
+		txt.innerHTML = "Temperature °C";
+	}
+	
+	createTable();
+}
 function changeOrder(ord)
 {
 	console.log(document.getElementById("columns_headers").childNodes)
@@ -346,4 +371,5 @@ function changeSign(inequalitySign) {
 function clearBox(numberBox) {
   document.getElementById(numberBox).value = '';
 }
+
 function doNothing() {}

@@ -57,6 +57,11 @@ session_start();
 				<a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>
 				<input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">
 				<a id="button2" onclick="clearBox('precipitationLevel')">Clear</a>
+				<form action="">
+				  <input type="radio" name="degree" value="celsius" id = "celsius" onclick = "changeDegree('c')"> Celsius<br>
+				  <input type="radio" name="degree" value="fahrenheit" id = "fahrenheit" onclick = "changeDegree('f')"> Fahrenheit<br>
+				</form>
+				
 			<div class="input-group date" data-provide="datepicker" data-date-format="mm/dd/yyyy">
 				<input type="text" class="form-control">
 				<div class="input-group-addon">
@@ -80,7 +85,7 @@ session_start();
             <th id ="type" onclick = changeOrder(5)>Type</th>
             <th id ="latitude" onclick = changeOrder(6)>Latitude</th>
             <th id ="longitude" onclick = changeOrder(7)>Longitude</th>
-            <th id ="temperature" onclick = changeOrder(8)>Temperature °F</th>
+            <th id ="temperature" onclick = changeOrder(8)><text id = "temperature_text">Temperature °F</text></th>
             <th id ="precipitation" onclick = changeOrder(9)>Precipitation</th>
 			<th id ="concentration" onclick = changeOrder(10)>Concentration</th>
             <th id ="comment" onclick = changeOrder(11)>Comment</th>
