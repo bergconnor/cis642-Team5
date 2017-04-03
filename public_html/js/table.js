@@ -71,13 +71,13 @@ downloadUrl('../lib/create_xml.php', function(data) {
 			var num = ((Number(temperature)-32) * 5 / 9);
 			temperatureCell.innerHTML = num.toFixed(2);
 		}
-		precipitationCell.innerHTML = precipitation;
-		concentrationCell.innerHTML = concentration;
+		precipitationCell.innerHTML = Number(precipitation).toFixed(3);
+		concentrationCell.innerHTML = Number(concentration).toFixed(3);
 		commentCell.innerHTML       = comment;
 		typeCell.innerHTML          = type;
 		emailCell.innerHTML         = email;
-		latCell.innerHTML           = lat;
-		logCell.innerHTML           = log;
+		latCell.innerHTML           = Number(lat).toFixed(3);
+		logCell.innerHTML           = Number(log).toFixed(3);
 	var temp  = false
     if(markerid == markerElem.getAttribute('id')) {
 
