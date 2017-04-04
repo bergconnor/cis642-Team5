@@ -27,10 +27,10 @@ public class ImageProc {
     private static final double LOWER_BOUND = 0.015;
     private static final double UPPER_BOUND = 0.03;
 
-    /* Takes in the image taken by the camera and converts it to a Mat that can then be used to
-     * perform the image processing needed.
-     * Parameters:
-     *      String fileName: name of the picture file to perform the processing on.
+    /** Takes in the image taken by the camera and converts it to a Mat that can then be used to
+     *  perform the image processing needed.
+     * @param bitmap the bitmap containing the image for the test.
+     * @return       a List of Scalars containing the color values in RGB of each test square.
      */
     public static List<Scalar> readImage(Bitmap bitmap) {
         try {
@@ -38,6 +38,8 @@ public class ImageProc {
 
             Mat image = new Mat();
             Utils.bitmapToMat(bitmap, image);
+
+            equalizeHist(image, image);
 
             Mat imageGray = new Mat();
             cvtColor(image, imageGray, COLOR_BGR2GRAY);
@@ -65,13 +67,11 @@ public class ImageProc {
         }
     }
 
-    /** Finds all the contours in the image, then removes any non-square contours and contours that
+    /**Finds all the contours in the image, then removes any non-square contours and contours that
      * are the incorrect size range.
-     * Parameters:
-     *      Mat img: the grayscale Mat of an image, allowing us to find the contours and narrow them
-     *               down to the ones we want.
-     * Returns:
-     *      List<Rect>: holds the 12 test rectangles that need further processing.
+     * @param img the grayscale Mat of an image, allowing us to find the contours and narrow them
+     *            down to the 12 test squares.
+     * @return    a List of Rects holding the 12 test squares that need further processing.
      */
     private static List<Rect> findTestSquares(Mat img) {
         /* Uses findContours to find all contours, or closed shapes, in the image. */
@@ -147,7 +147,6 @@ public class ImageProc {
     }
 
     /** Sorts the list of rectangles in order from upper left to bottom right.
-     *
      * @param squares The list of Rects to sort, should only contain 12 squares
      * @return        holds the sorted squares.
      */
@@ -189,7 +188,6 @@ public class ImageProc {
     /** Finds the colors inside each square by first shrinking the Rect object for the square to be
      * inside the square on the test card, then finds the average color in each square and stores
      * it as a Scalar in BGR colorspace.
-     *
      * @param img     the original, color image that was grabbed initially
      * @param squares the sorted list of the test squares
      * @return        holds the average color of each square in the same sort as the squares in the
@@ -230,7 +228,6 @@ public class ImageProc {
     /** Performs simple linear regression on the color values of the squares and their corresponding
      * strength values. It will then find the strength of the test squares. Currently uses just
      * saturation to perform the linear regression.
-     *
      * @param colorVals: the color values of the test squares.
      */
     public static double linearRegression(List<Scalar> colorVals) {
@@ -257,7 +254,6 @@ public class ImageProc {
     /** Creates the LineData variable for creating a LineGraph View. The colorVals must be exactly
      *  12 in size and contain RGB scalars. It then converts colorVals to HSV from RGB. It then
      *  creates the data set and data for the LineGraph and returns the LineData.
-     *
      * @param colorVals the Scalar values of the colors from each square in the RGB colorspace.
      * @throws Exception Throws IllegalArgumentException if there is not the correct number of
      *                   colors.
@@ -284,13 +280,5 @@ public class ImageProc {
         LineDataSet dataset = new LineDataSet(lineGraphEntries, "Values");
         LineData data = new LineData(dataset);
         return data;
-    }
-
-    /** WIP: Method will hopefully correct the overall colors of the image to remove the effects
-     *  of different lighting / lack of lighting has on the card.
-     */
-
-    public static void colorCorrect() {
-
     }
 }
