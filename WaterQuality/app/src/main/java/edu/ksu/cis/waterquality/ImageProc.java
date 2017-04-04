@@ -39,8 +39,6 @@ public class ImageProc {
             Mat image = new Mat();
             Utils.bitmapToMat(bitmap, image);
 
-            equalizeHist(image, image);
-
             Mat imageGray = new Mat();
             cvtColor(image, imageGray, COLOR_BGR2GRAY);
 
