@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
                         .appendQueryParameter("email", _email)
-                        .appendQueryParameter("password", _password);
+                        .appendQueryParameter("pass", _password);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
