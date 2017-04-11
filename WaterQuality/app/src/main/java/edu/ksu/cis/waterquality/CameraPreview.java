@@ -9,8 +9,8 @@ import android.view.SurfaceView;
 
 public class CameraPreview extends SurfaceView {
 
-    private Paint paint = new Paint();
+    private SurfaceView overlay;
+    private SurfaceView cameraView;
 
-    @Override
-    protected void onDraw()
+
 }
