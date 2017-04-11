@@ -5,7 +5,7 @@ android {
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "edu.ksu.cis.waterquality"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 24
         multiDexEnabled = true
         versionCode 1
