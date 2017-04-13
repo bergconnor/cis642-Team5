@@ -34,37 +34,49 @@ session_start();
         </ul>
       </div>
     </nav>
-	<div class="left-label" class ="col-9" >
-		<div>
-			<label  for="pendingSamples">Show pending samples</label>
-			<input id="pendingSamples" type="checkbox" name="pend" value="pending">
-			<br>
-			<label  for="concentrationLevel"> Concentration level </label>
-			<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
-			<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
-			<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
+	<div class = "row">
+		<div class="left-label" class ="col-md-9" >
+			<div>
+				<label  for="pendingSamples">Show pending samples</label>
+				<input id="pendingSamples" type="checkbox" name="pend" value="pending">
+				<br>
+				<label  for="concentrationLevel"> Concentration level </label>
+				<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
+				<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
+				<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
+				
+				<label  for="precipitationLevel"> Precipitation Level </label>
+				<a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>
+				<input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">
+				<a id="button2" onclick="clearBox('precipitationLevel')">Clear</a>
+			</div>
+			<div>
+				<a  type="button" id = "button"   onclick="initMap()">Create Map</a>
+			</div>
+		</div>
+		<div class="right-label" class ="col-md-2-offset-1" >
+			<div>
+				<input type="radio" name="shownTest" value="Nitrate" id = "nitrate" onclick = " "> Nitrate
+				<div class = "color-line">
+					<label id = "nitrate_color_box1" ></label>
+					<label id = "nitrate_color_box2" ></label>
+					<label id = "nitrate_color_box3" ></label>
+					<label id = "nitrate_color_box4" ></label>
+				</div>
+				<br>
+			</div>
+			<div style= "border:1px solid black" >
+				<input type="radio" name="shownTest" value="Phosphate" id = "phosphate" onclick = " "> Phosphate
+				<div >
+					<label id = "phosphate_color_box1"></label>
+					<label id = "phosphate_color_box2"></label>
+					<label id = "phosphate_color_box3"></label>
+					<label id = "phosphate_color_box4"></label>
+				</div>
+				<br>
+			</div>
 			
-			<label  for="precipitationLevel"> Precipitation Level </label>
-			<a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>
-			<input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">
-			<a id="button2" onclick="clearBox('precipitationLevel')">Clear</a>
 		</div>
-		<div>
-			<a  type="button" id = "button"   onclick="initMap()">Create Map</a>
-		</div>
-	</div>
-	<div class="right-label" class ="col-3" >
-		<div>
-			<input type="radio" name="shownTest" value="Nitrate" id = "nitrate" onclick = " "> Nitrate
-			<button id = "nitrate_color_box" ></button>
-			<br>
-		</div>
-		<div>
-			<input type="radio" name="shownTest" value="Phosphate" id = "phosphate" onclick = " "> Phosphate
-			<label id = "phosphate_color_box"></label>
-			<br>
-		</div>
-		
 	</div>
     <div id="map"></div>
 

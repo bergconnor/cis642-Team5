@@ -192,19 +192,66 @@ li.marker {
 
 .right-label {
   margin-right: 7.5%;
-  
+  border: 1px
 }
 
-#nitrate_color_box{
+.color-line {
+  margin-right: 7.5%;
+  border: 1px solid black;
+  width: 100px;
+  height: 30px;
+}
+
+#nitrate_color_box1{
 	background-color: #b30000;
-	margin-right: 7.5%;
+	margin: auto;
+	width: 20px;
+	height: 20px;
+}
+#nitrate_color_box2{
+	background-color: #b30000;
+	margin: auto;
+	width: 20px;
+	height: 20px;
+}
+#nitrate_color_box3{
+	background-color: #b30000;
+	margin: auto;
+	width: 20px;
+	height: 20px;
+}
+#nitrate_color_box4{
+	background-color: #b30000;
+	margin: auto;
 	width: 20px;
 	height: 20px;
 }
 
-#phosphate_color_box{
+#phosphate_color_box1{
 	background-color: #3939ac;
-	margin-right: 7.5%;
+	margin: auto;
+	
+	width: 20px;
+	height: 20px;
+}
+#phosphate_color_box2{
+	background-color: #3939ac;
+	margin: auto;
+	
+	width: 20px;
+	height: 20px;
+}
+#phosphate_color_box3{
+	background-color: #3939ac;
+	margin: auto;
+	
+	width: 20px;
+	height: 20px;
+}
+#phosphate_color_box4{
+	background-color: #3939ac;
+	margin: auto;
+	
 	width: 20px;
 	height: 20px;
 }
