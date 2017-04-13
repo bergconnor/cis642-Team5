@@ -34,8 +34,8 @@ session_start();
         </ul>
       </div>
     </nav>
-	<div class = "row">
-		<div class="left-label" class ="col-md-5" >
+	<div class = "col-md-12">
+		<div class="left-label" class ="col-md-11-offset-1" >
 			<div>
 				<label  for="pendingSamples">Show pending samples</label>
 				<input id="pendingSamples" type="checkbox" name="pend" value="pending">
@@ -50,7 +50,7 @@ session_start();
 				<a  type="button" id = "button"   onclick="initMap()">Create Map</a>
 			</div>
 		</div>
-		<div class="right-label" class ="col-md-4-offset-1" >
+		<div class="right-label" class ="col-md-6" >
 			<input type="radio" name="shownTest" value="All" id = "AllTest" onclick = " "> <label>All</label> 
 			<div>
 				
@@ -87,8 +87,26 @@ session_start();
 			</div>
 			
 		</div>
+		
+		
 	</div>
-	
+	<div class = "row">
+		<div class ="col-md-1">
+		<label >This is the margin </label>
+		</div>
+		<div class ="col-md-3">
+		
+		<div>
+		<label >First section </label><label style = "margin:10px;">First section sub </label>
+		</div>
+		
+		</div>
+		<div class ="col-md-5">
+		<label >Second section </label> 
+		<label style = "margin:10px">second subdiv</label>
+		<label style = "margin:10px">second subdiv2</label>
+		</div>
+	</div>
     <div id="map"></div>
 
     <!-- jQuery library -->
