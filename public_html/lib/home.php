@@ -34,7 +34,7 @@ session_start();
         </ul>
       </div>
     </nav>
-	<div class="left-label">
+	<div class="left-label" class ="col-9" >
 		<div>
 			<label  for="pendingSamples">Show pending samples</label>
 			<input id="pendingSamples" type="checkbox" name="pend" value="pending">
@@ -53,7 +53,19 @@ session_start();
 			<a  type="button" id = "button"   onclick="initMap()">Create Map</a>
 		</div>
 	</div>
-
+	<div class="right-label" class ="col-3" >
+		<div>
+			<input type="radio" name="shownTest" value="Nitrate" id = "nitrate" onclick = " "> Nitrate
+			<button id = "nitrate_color_box" ></button>
+			<br>
+		</div>
+		<div>
+			<input type="radio" name="shownTest" value="Phosphate" id = "phosphate" onclick = " "> Phosphate
+			<label id = "phosphate_color_box"></label>
+			<br>
+		</div>
+		
+	</div>
     <div id="map"></div>
 
     <!-- jQuery library -->

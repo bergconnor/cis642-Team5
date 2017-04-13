@@ -187,4 +187,24 @@ li.marker {
 
 .left-label {
   margin-left: 7.5%;
+  float: left
+}
+
+.right-label {
+  margin-right: 7.5%;
+  
+}
+
+#nitrate_color_box{
+	background-color: #b30000;
+	margin-right: 7.5%;
+	width: 20px;
+	height: 20px;
+}
+
+#phosphate_color_box{
+	background-color: #3939ac;
+	margin-right: 7.5%;
+	width: 20px;
+	height: 20px;
 }
