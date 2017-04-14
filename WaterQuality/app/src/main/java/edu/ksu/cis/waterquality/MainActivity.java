@@ -18,6 +18,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Main page to direct the user to login, take a picture, view the map,
+ * learn more about the app, or view the history.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final int IMAGE_REQUEST      = 1571;
@@ -38,6 +42,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Handles result of ImageActivity of LocationActivity.
+     *
+     * @param requestCode int predefined code used to determine which activity just finished
+     * @param resultCode int used to determine the status of the activity that just finished
+     * @param data Intent holding any data passed from the activity that just finished
+     * @return void
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Intent intent;
         if (resultCode == Activity.RESULT_OK) {
@@ -74,11 +86,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Starts the AboutActivity when the about button is clicked
+     *
+     * @param v parent View of the button
+     * @return void
+     */
     public void onAboutButtonClicked(View v) {
         Intent intent = new Intent(this, AboutActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Starts the AboutActivity when the about button is clicked
+     *
+     * @param v parent View of the button
+     * @return void
+     */
     public void onLoginButtonClicked(View v) {
         if (_session.isConnected()) {
             if(_session.checkLogin()) {
@@ -95,26 +119,45 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Starts the ImageActivity when the image button is clicked
+     *
+     * @param v parent View of the button
+     * @return void
+     */
     public void onPictureButtonClicked(View v) {
         Intent intent = new Intent(this, ImageActivity.class);
         startActivityForResult(intent, IMAGE_REQUEST);
     }
 
+    /**
+     * Starts the MapsActivity when the map button is clicked
+     *
+     * @param v parent View of the button
+     * @return void
+     */
     public void onMapButtonClicked(View v) {
         Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Starts the HistoryActivity when the history button is clicked
+     *
+     * @param v parent View of the button
+     * @return void
+     */
     public void onHistoryButtonClicked(View v) {
         Intent intent = new Intent(this, HistoryActivity.class);
         startActivity(intent);
     }
 
-    public void onClearButtonClicked(View v) {
-        FileManager fileManager = new FileManager(MainActivity.this);
-        fileManager.clearFile(_session.FILENAME);
-    }
-
+    /**
+     * Uses the phone's GPS coordinates to determine the city and state the user is
+     * currently in and adds this information to the SessionManager.
+     *
+     * @return void
+     */
     private void setAddress() {
         List<Address> address;
         try {
@@ -153,6 +196,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Uses the phone's GPS coordinates to determine the temperature and the
+     * precipitation over the past 24 hours at the user'c location.
+     *
+     * @return void
+     */
     private void setWeatherData() {
         try {
             AsyncGetWeatherData asyncTask = new AsyncGetWeatherData();
