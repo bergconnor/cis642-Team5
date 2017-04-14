@@ -24,14 +24,15 @@
             android:onClick="onAboutButtonClicked" />
 
         <Button
-            android:id="@+id/helpButton"
+            android:id="@+id/loginButton"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="Help"
+            android:text="Login"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:onClick="onHelpButtonClicked"/>
+            android:onClick="onLoginButtonClicked"/>
+
     </RelativeLayout>
 
     <FrameLayout
@@ -63,25 +64,25 @@
             android:id="@+id/mapButton"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="View Map"
+            android:text="Map"
             android:layout_gravity="center_horizontal"
             android:onClick="onMapButtonClicked" />
 
-        <!--<Button-->
-            <!--android:id="@+id/spreadsheetButton"-->
-            <!--android:layout_width="250dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="View Spreadsheet"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:onClick="onSpreadsheetButtonClicked" />-->
-
         <Button
-            android:id="@+id/logoutButton"
+            android:id="@+id/historyButton"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="Logout"
+            android:text="Clear"
             android:layout_gravity="center_horizontal"
-            android:onClick="onLogoutButtonClicked" />
+            android:onClick="onClearButtonClicked" />
+
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="History"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onHistoryButtonClicked" />
 
     </LinearLayout>
 

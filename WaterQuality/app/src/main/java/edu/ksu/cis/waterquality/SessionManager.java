@@ -9,10 +9,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.widget.Button;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
 public class SessionManager implements AsyncResponse {
+
+    public static final String FILENAME     = "data.json";
 
     public static final String KEY_ID       = "user_id";
     public static final String KEY_EMAIL    = "email";
@@ -68,19 +74,10 @@ public class SessionManager implements AsyncResponse {
         _editor.commit();
     }
 
-    public void checkLogin(){
-        if(!this.isLoggedIn()){
-            // user is not logged in, redirect him to Login Activity
-            Intent intent = new Intent(_context, LoginActivity.class);
+    public boolean checkLogin(){
+        boolean isLoggedIn = this.isLoggedIn();
+        if(isLoggedIn){
 
-            // close all the activities
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            // add new flag to start new Activity
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            // start login activity
-            _context.startActivity(intent);
         } else {
             // user is logged in, get user info
             _asyncUserTask.delegate = this;
@@ -94,15 +91,16 @@ public class SessionManager implements AsyncResponse {
                 ex.printStackTrace();
             }
         }
+        return isLoggedIn;
     }
 
     public LinkedHashMap<String, String> getDetails() {
         LinkedHashMap<String, String> details = new LinkedHashMap<String, String>();
 
-        String date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
-        _editor.putString(KEY_DATE, date);
-        _editor.commit();
-        details.put(KEY_DATE, date);
+//        String date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
+//        _editor.putString(KEY_DATE, date);
+//        _editor.commit();
+//        details.put(KEY_DATE, date);
 
         for(int i = 0; i < _keys.length; i++) {
             if(_pref.contains(_keys[i]))
@@ -122,20 +120,23 @@ public class SessionManager implements AsyncResponse {
         // clear all data from Shared Preferences
         _editor.clear();
         _editor.commit();
-
-        Intent intent = new Intent(_context, LoginActivity.class);
-        // close all the activities
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        // add new flag to start new Activity
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        // start login Activity
-        _context.startActivity(intent);
     }
 
     public boolean isLoggedIn(){
         return _pref.getBoolean(KEY_LOGIN, false);
+    }
+
+    public boolean isConnected() {
+        ConnectivityManager cm = (ConnectivityManager) _context
+                .getSystemService(_context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            // connected to the internet
+            return true;
+        } else {
+            // not connected to the internet
+            return false;
+        }
     }
 
     @Override

@@ -15,9 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -45,6 +47,7 @@ public class UploadActivity extends AppCompatActivity {
 
     private SessionManager _session;
     private ProgressDialog _dialog;
+    private FileManager _fileManager;
 
     /**
      * Create the main activity.
@@ -63,6 +66,8 @@ public class UploadActivity extends AppCompatActivity {
         _dialog = new ProgressDialog(this);
         _dialog.setMessage("Uploading data to database...");
 
+        _fileManager = new FileManager(UploadActivity.this);
+
         // prompt user to enter a comment
         promptUser();
     }
@@ -70,8 +75,12 @@ public class UploadActivity extends AppCompatActivity {
     private void createView() {
         // get data and layouts
         LinkedHashMap<String, String> map = _session.getDetails();
-        LinearLayout textViewLayout = (LinearLayout) findViewById(R.id.textViewLayout);
-        LinearLayout editTextLayout = (LinearLayout) findViewById(R.id.editTextLayout);
+        LinearLayout tableLayout = (LinearLayout) View
+                .inflate(UploadActivity.this, R.layout.table, null);
+        LinearLayout textViewLayout = (LinearLayout) tableLayout.getChildAt(0);
+        LinearLayout editTextLayout = (LinearLayout) tableLayout.getChildAt(1);
+//        LinearLayout textViewLayout = (LinearLayout) findViewById(R.id.textViewLayout);
+//        LinearLayout editTextLayout = (LinearLayout) findViewById(R.id.editTextLayout);
 
         Iterator iterator = map.entrySet().iterator();
         while(iterator.hasNext()) {
@@ -109,6 +118,8 @@ public class UploadActivity extends AppCompatActivity {
                 editTextLayout.addView(scrollView);
             }
         }
+        ScrollView layout = (ScrollView)findViewById(R.id.uploadLayout);
+        layout.addView(tableLayout);
     }
 
     private void promptUser() {
@@ -163,10 +174,36 @@ public class UploadActivity extends AppCompatActivity {
         alert.show();
     }
 
-    // Triggers when LOGIN Button clicked
-    public void onUploadClick(View arg0) {
-        // Initialize  AsyncLogin() class
-        new AsyncUpload().execute();
+    public void onUploadClicked(View v) {
+        if(_session.isConnected()) {
+            // initialize  AsyncLogin() class
+            new AsyncUpload().execute();
+        } else {
+            try {
+                JSONArray markers;
+                String jsonString = _fileManager.readFile(_session.FILENAME);
+                if(jsonString.equals("")) {
+                    markers = new JSONArray();
+                } else {
+                    JSONObject json = new JSONObject(_fileManager.readFile(_session.FILENAME));
+                    markers = json.getJSONArray("markers");
+                }
+                LinkedHashMap<String, String> map = _session.getDetails();
+
+                JSONObject marker = new JSONObject();
+                Iterator iterator   = map.entrySet().iterator();
+                while(iterator.hasNext()) {
+                    // get hash map entry pair
+                    Map.Entry pair = (Map.Entry) iterator.next();
+                    marker.put(pair.getKey().toString(), pair.getValue().toString());
+                }
+                markers.put(marker);
+                _fileManager.writeFile(_session.FILENAME, new JSONObject().put("markers", markers).toString());
+                UploadActivity.this.finish();
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     private class AsyncUpload extends AsyncTask<String, String, String>
@@ -273,13 +310,11 @@ public class UploadActivity extends AppCompatActivity {
             pdLoading.dismiss();
             String success = "false";
             String message = "";
-            String var = "";
 
             try {
                 JSONObject reader = new JSONObject(result);
                 success = reader.getString("success");
                 message = reader.getString("message");
-                var = reader.getString("var");
 
             }  catch(Exception ex) {
                 // TO DO: handle error

@@ -43,7 +43,7 @@ session_start();
 			<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
 			<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
 			<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
-			
+
 			<label  for="precipitationLevel"> Precipitation Level </label>
 			<a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>
 			<input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">

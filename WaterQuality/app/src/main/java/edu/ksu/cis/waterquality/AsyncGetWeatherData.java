@@ -1,6 +1,5 @@
 package edu.ksu.cis.waterquality;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
