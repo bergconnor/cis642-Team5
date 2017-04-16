@@ -59,13 +59,13 @@ session_start();
 		<div class ="col-md-6">
 			<div class = "row">	
 				<div class ="col-md-2">
-					<input type="radio" name="shownTest" value="All" id = "AllTest" onclick = " "> <label>All</label>
+					<input type="radio" name="shownTest" value="all" id = "Test" onclick = " "> <label>All</label>
 				</div>
 			</div>
 			
 			<div class = "row">
 				<div class ="col-md-2">
-					<input type="radio" name="shownTest" value="Nitrate" id = "nitrate" onclick = " "> <label> Nitrate</label>
+					<input type="radio" name="shownTest" value="nitrate" id = "Test" onclick = " "> <label> Nitrate</label>
 				</div>
 				
 				<div class ="col-md-9">
@@ -76,13 +76,13 @@ session_start();
 					<label id = "nitrate_color_box5" >5</label>
 					<label  for="concentrationLevel">Nitrate Concentration level </label>
 					<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
-					<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
+					<input id="nitrateConcentrationLevel" type="text" name="fname" size="7" placeholder="0">
 					<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
 				</div>
 			</div>
 			<div class = "row">
 				<div class ="col-md-2">
-					<input type="radio" name="shownTest" value="Phosphate" id = "phosphate" onclick = " "> <label>Phosphate</label>
+					<input type="radio" name="shownTest" value="phosphate" id = "Test" onclick = " "> <label>Phosphate</label>
 				</div>
 				
 				<div class ="col-md-9">
@@ -91,9 +91,9 @@ session_start();
 					<label id = "phosphate_color_box3">3</label>
 					<label id = "phosphate_color_box4">4</label>
 					<label id = "phosphate_color_box5">5</label>
-					<label  for="concentrationLevel">Phosphate Concentration level </label>
-					<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
-					<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
+					<label  for="phosphateConcentrationLevel">Phosphate Concentration level </label>
+					<a id="inequalitySign3" onclick="changeSign('inequalitySign3')"><</a>
+					<input id="phosphateConcentrationLevel" type="text" name="fname" size="7" placeholder="0">
 					<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
 				</div>
 			</div>

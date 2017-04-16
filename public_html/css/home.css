@@ -165,7 +165,7 @@ li.marker {
   cursor: pointer;
 }
 
-#inequalitySign1, #inequalitySign2 {
+#inequalitySign1, #inequalitySign2, #inequalitySign3 {
   background-color: #8080ff;
   color: white;
   text-align: center;
@@ -184,7 +184,10 @@ li.marker {
   background-color: #b3b3ff;
   cursor: pointer;
 }
-
+#inequalitySign3:hover, #inequalitySign3:active {
+  background-color: #b3b3ff;
+  cursor: pointer;
+}
 .left-label {
   margin-left: 7.5%;
   float: left
