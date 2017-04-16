@@ -376,3 +376,4 @@ function clearBox(numberBox) {
 }
 
 function doNothing() {}
+//setInterval(createTable, 1000/10);

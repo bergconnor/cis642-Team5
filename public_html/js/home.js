@@ -1,3 +1,5 @@
+//set default values
+document.getElementById('showAllTests').checked = true;
 // these variables will be used to keep the view consistent each time a new map is created
 var zoom = 4;
 var center = {lat: 39.8333333, lng: -98.585522}; // center is where the user is looking at in the map now
@@ -330,3 +332,4 @@ function createQuery() {
 function setId(id) {
   sessionStorage.setItem('marker', id);
 }
+

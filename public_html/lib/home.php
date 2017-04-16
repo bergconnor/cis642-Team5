@@ -59,13 +59,13 @@ session_start();
 		<div class ="col-md-6">
 			<div class = "row">	
 				<div class ="col-md-2">
-					<input type="radio" name="shownTest" value="all" id = "Test" onclick = " "> <label>All</label>
+					<input type="radio" name="shownTest" value="all" id = "showAllTests" onclick = " "> <label>All</label>
 				</div>
 			</div>
 			
 			<div class = "row">
 				<div class ="col-md-2">
-					<input type="radio" name="shownTest" value="nitrate" id = "Test" onclick = " "> <label> Nitrate</label>
+					<input type="radio" name="shownTest" value="nitrate" id = "showNitrateTests" onclick = " "> <label> Nitrate</label>
 				</div>
 				
 				<div class ="col-md-9">
@@ -82,7 +82,7 @@ session_start();
 			</div>
 			<div class = "row">
 				<div class ="col-md-2">
-					<input type="radio" name="shownTest" value="phosphate" id = "Test" onclick = " "> <label>Phosphate</label>
+					<input type="radio" name="shownTest" value="phosphate" id = "showPhosphateTests" onclick = " "> <label>Phosphate</label>
 				</div>
 				
 				<div class ="col-md-9">
