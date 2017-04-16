@@ -7,7 +7,8 @@ var center = {lat: 39.8333333, lng: -98.585522}; // center is where the user is 
 function initMap() {
   var map = new google.maps.Map(document.getElementById('map'), {
     center: center,
-    zoom: zoom
+    zoom: zoom,
+	streetViewControl: false
   });
 
 //event handler to remember the new zoom every time the zoom gets changed
@@ -239,8 +240,7 @@ function createQuery() {
   var id = '';
   if(pendingSamples)
     verified = " and verified > -1 ";
-  console.log(isNaN(precipitationLevel));
-  console.log(0>(precipitationLevel));
+
   //data validation for precipitation
   if(isNaN(precipitationLevel) || precipitationLevel < 0 ) {
     precipitationLevel = '';
@@ -258,6 +258,7 @@ function createQuery() {
   if(isNaN(phosphateConcentrationLevel) || phosphateConcentrationLevel < 0 ) {
     phosphateConcentration = '';
     document.getElementById('phosphateConcentrationLevel').value = '';
+	phosphateConcentrationLevel = '';
   }
   if(phosphateConcentrationLevel!='') {
     if(document.getElementById('inequalitySign3').textContent == '<')
@@ -268,8 +269,9 @@ function createQuery() {
   
   //data validation for concentration
   if(isNaN(nitrateConcentrationLevel) || nitrateConcentrationLevel < 0 ) {
-    phosphateConcentration = '';
+    nitrateConcentration = '';
     document.getElementById('nitrateConcentrationLevel').value = '';
+	nitrateConcentrationLevel ='';
   }
   if(nitrateConcentrationLevel!='') {
     if(document.getElementById('inequalitySign2').textContent == '<')
@@ -277,62 +279,48 @@ function createQuery() {
     else
       nitrateConcentration = ' and concentration > ' +   nitrateConcentrationLevel;
   }
-  var querySetUp;
+  var querySetUp = "SELECT " +
+		" m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
+		" m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
+		" m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
+		" u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
+
+		" FROM markers m "+
+		  " JOIN users u ON m.user_id = u.id"+
+		  " JOIN tests t ON m.test_id = t.id ";
+		  
   var temp = "all";
   var radios  =  document.getElementsByName("shownTest");
   for (var i = 0, length = radios.length; i < length; i++) {
     if (radios[i].checked) {
         // do whatever you want with the checked radio
         temp = radios[i].value;
-console.log("it is inside the loop")
+		console.log("it is inside the loop")
         // only one radio can be logically checked, don't check the rest
         break;
 	}
   }
+    var query;
 	switch (temp)
 	{
 		case 'all':
-		querySetUp = "SELECT " +
-		" m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
-		" m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
-		" m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
-		" u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
-
-		" FROM markers m "+
-		  " JOIN users u ON m.user_id = u.id"+
-		  " JOIN tests t ON m.test_id = t.id "+
-
-		" WHERE true " + precipitation +verified;
+		query = querySetUp + 
+		" WHERE true " +"and type = 'phosphate' "+ precipitation + phosphateConcentration+ verified
+		+ " union " +
+		querySetUp + 
+		" WHERE true " +"and type = 'nitrate' "+ precipitation + nitrateConcentration+ verified;
 		break;
 		case 'phosphate':
-		 querySetUp = "SELECT " +
-		" m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
-		" m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
-		" m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
-		" u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
-
-		" FROM markers m "+
-		  " JOIN users u ON m.user_id = u.id"+
-		  " JOIN tests t ON m.test_id = t.id "+
-
+		query = querySetUp +
 		" WHERE true " +"and type = 'phosphate' "+ precipitation + phosphateConcentration+ verified;
 		break;
 		case 'nitrate':
-		querySetUp = "SELECT " +
-		" m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
-		" m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
-		" m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
-		" u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
-
-		" FROM markers m "+
-		  " JOIN users u ON m.user_id = u.id"+
-		  " JOIN tests t ON m.test_id = t.id "+
-
+		query = querySetUp +
 		" WHERE true " +"and type = 'nitrate' "+ precipitation + nitrateConcentration+ verified;
 		break;
 	}
   
-  var query = querySetUp;
+  
 
   return query;
 }

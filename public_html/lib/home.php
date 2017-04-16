@@ -77,7 +77,7 @@ session_start();
 					<label  for="concentrationLevel">Nitrate Concentration level </label>
 					<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
 					<input id="nitrateConcentrationLevel" type="text" name="fname" size="7" placeholder="0">
-					<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
+					<a id="button2" onclick="clearBox('nitrateConcentrationLevel')">Clear</a>
 				</div>
 			</div>
 			<div class = "row">
@@ -94,7 +94,7 @@ session_start();
 					<label  for="phosphateConcentrationLevel">Phosphate Concentration level </label>
 					<a id="inequalitySign3" onclick="changeSign('inequalitySign3')"><</a>
 					<input id="phosphateConcentrationLevel" type="text" name="fname" size="7" placeholder="0">
-					<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
+					<a id="button2" onclick="clearBox('phosphateConcentrationLevel')">Clear</a>
 				</div>
 			</div>
 			
