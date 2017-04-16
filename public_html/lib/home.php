@@ -37,7 +37,7 @@ session_start();
 	
 	<div class = "row">
 		<div class ="col-md-1">
-		<label >This is the margin </label>
+		 
 		</div>
 		<div class ="col-md-3">
 		
@@ -56,7 +56,7 @@ session_start();
 			</div>
 		
 		</div>
-		<div class ="col-md-7">
+		<div class ="col-md-6">
 			<div class = "row">	
 				<div class ="col-md-2">
 					<input type="radio" name="shownTest" value="All" id = "AllTest" onclick = " "> <label>All</label>
@@ -68,13 +68,13 @@ session_start();
 					<input type="radio" name="shownTest" value="Nitrate" id = "nitrate" onclick = " "> <label> Nitrate</label>
 				</div>
 				
-				<div class ="col-md-7">
-					<label id = "nitrate_color_box1" ></label>
-					<label id = "nitrate_color_box2" ></label>
-					<label id = "nitrate_color_box3" ></label>
-					<label id = "nitrate_color_box4" ></label>
-					<label id = "nitrate_color_box5" ></label>
-					<label  for="concentrationLevel"> Concentration level </label>
+				<div class ="col-md-9">
+					<label id = "nitrate_color_box1" >1</label>
+					<label id = "nitrate_color_box2" >2</label>
+					<label id = "nitrate_color_box3" >3</label>
+					<label id = "nitrate_color_box4" >4</label>
+					<label id = "nitrate_color_box5" >5</label>
+					<label  for="concentrationLevel">Nitrate Concentration level </label>
 					<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
 					<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
 					<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
@@ -85,13 +85,13 @@ session_start();
 					<input type="radio" name="shownTest" value="Phosphate" id = "phosphate" onclick = " "> <label>Phosphate</label>
 				</div>
 				
-				<div class ="col-md-7">
-					<label id = "phosphate_color_box1"></label>
-					<label id = "phosphate_color_box2"></label>
-					<label id = "phosphate_color_box3"></label>
-					<label id = "phosphate_color_box4"></label>
-					<label id = "phosphate_color_box5"></label>
-					<label  for="concentrationLevel"> Concentration level </label>
+				<div class ="col-md-9">
+					<label id = "phosphate_color_box1">1</label>
+					<label id = "phosphate_color_box2">2</label>
+					<label id = "phosphate_color_box3">3</label>
+					<label id = "phosphate_color_box4">4</label>
+					<label id = "phosphate_color_box5">5</label>
+					<label  for="concentrationLevel">Phosphate Concentration level </label>
 					<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
 					<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
 					<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>

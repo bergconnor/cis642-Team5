@@ -204,64 +204,63 @@ li.marker {
 
 #nitrate_color_box1{
 	background-color: #ffe6e6;
-
+	color: #ffe6e6;
 	width: 20px;
 	height: 20px;
 }
 #nitrate_color_box2{
 	background-color: #ffb3b3;
-
+	color: #ffb3b3;
 	width: 20px;
 	height: 20px;
 }
 #nitrate_color_box3{
 	background-color: #ff6666;
-
+	color: #ff6666;
 	width: 20px;
 	height: 20px;
 }
 #nitrate_color_box4{
 	background-color: #ff3333;
-
+	color: #ff3333;
 	width: 20px;
 	height: 20px;
 }
 #nitrate_color_box5{
 	background-color: #b30000;
-	
+	color: #b30000;
 	width: 20px;
 	height: 20px;
 }
 
 #phosphate_color_box1{
 	background-color: #e6e6ff;
-	
+	color: #e6e6ff;
 	width: 20px;
 	height: 20px;
 }
 #phosphate_color_box2{
 	background-color: #b3b3ff;
-
+	color: #b3b3ff;
 	width: 20px;
 	height: 20px;
 }
 #phosphate_color_box3{
 	background-color: #8080ff;
-
+	color: #8080ff;
 	width: 20px;
 	height: 20px;
 }
 #phosphate_color_box4{
 	background-color: #4d4dff;
-	
-	
+	color: #4d4dff;
 	width: 20px;
 	height: 20px;
 }
 
 #phosphate_color_box5{
 	background-color: #3939ac;
-	
+	color: #3939ac;
 	width: 20px;
 	height: 20px;
 }
