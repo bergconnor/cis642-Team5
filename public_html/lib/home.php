@@ -62,11 +62,13 @@ session_start();
 					<input type="radio" name="shownTest" value="All" id = "AllTest" onclick = " "> <label>All</label>
 				</div>
 			</div>
+			
 			<div class = "row">
-				<div class="col-md-2">
+				<div class ="col-md-2">
 					<input type="radio" name="shownTest" value="Nitrate" id = "nitrate" onclick = " "> <label> Nitrate</label>
 				</div>
-				<div class ="col-md-2">
+				
+				<div class ="col-md-7">
 					<label id = "nitrate_color_box1" ></label>
 					<label id = "nitrate_color_box2" ></label>
 					<label id = "nitrate_color_box3" ></label>
@@ -76,7 +78,7 @@ session_start();
 					<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
 					<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
 					<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
-				</div>		
+				</div>
 			</div>
 			<div class = "row">
 				<div class ="col-md-2">
@@ -95,6 +97,8 @@ session_start();
 					<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
 				</div>
 			</div>
+			
+			
 		</div>
 	</div>
 	
