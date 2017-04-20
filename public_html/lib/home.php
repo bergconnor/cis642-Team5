@@ -52,9 +52,15 @@ session_start();
 				<a id="button2" onclick="clearBox('precipitationLevel')">Clear</a>
 			</div> 
 			<div class = "row">
+				<label  for="testDate1">Test Date </label> <a id="dateButton" onclick="changeDate()">After</a><input id = "testDate1" type="date">
+			</div>
+			<div class = "row">
+				<label  for="testDate2" id= "testDate2Label" style = "visibility:hidden" >and   </label><input id = "testDate2" type="date" style = "visibility:hidden">
+			</div>
+			<div class = "row">
 				<a  type="button" id = "button"   onclick="initMap()">Create Map</a>
 			</div>
-		
+			
 		</div>
 		<div class ="col-md-6">
 			<div class = "row">	

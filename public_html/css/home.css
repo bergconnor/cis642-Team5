@@ -165,6 +165,22 @@ li.marker {
   cursor: pointer;
 }
 
+#dateButton  {
+  background-color: #8080ff;
+  color: white;
+  padding:  0px 14px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  border: 2px solid black;
+}
+
+#dateButton:hover, #dateButton:active {
+  background-color: #b3b3ff;
+  cursor: pointer;
+}
+
 #inequalitySign1, #inequalitySign2, #inequalitySign3 {
   background-color: #8080ff;
   color: white;

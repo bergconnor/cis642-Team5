@@ -228,6 +228,26 @@ function clearBox(numberBox) {
   document.getElementById(numberBox).value = '';
 }
 
+function changeDate(){
+	if (document.getElementById("dateButton").textContent == "After")
+	{
+		document.getElementById("dateButton").textContent = "Before";
+	}
+	else if (document.getElementById("dateButton").textContent == "Before")
+	{
+		document.getElementById("dateButton").textContent = "Between";
+		document.getElementById("testDate2").style.visibility = 'visible';
+		document.getElementById("testDate2Label").style.visibility = 'visible';console.log("they should appear now1")
+	}
+	
+	else 
+	{
+		document.getElementById("dateButton").textContent = "After";
+		document.getElementById("testDate2").style.visibility = 'hidden';
+		document.getElementById("testDate2Label").style.visibility = 'hidden';
+	}
+}
+
 //Create the query which will be passed to create_xml
 //it will be used to filter the markers that will show up in the map
 function createQuery() {
@@ -235,6 +255,7 @@ function createQuery() {
   var precipitationLevel = document.getElementById('precipitationLevel').value;
   var phosphateConcentrationLevel = document.getElementById('phosphateConcentrationLevel').value;
   var nitrateConcentrationLevel = document.getElementById('nitrateConcentrationLevel').value;
+  var dateType = document.getElementById("dateButton").textContent;
   var precipitation = '';
   var phosphateConcentration = '';
   var nitrateConcentration = '';
@@ -281,6 +302,29 @@ function createQuery() {
     else
       nitrateConcentration = ' and concentration > ' +   nitrateConcentrationLevel;
   }
+  var date = "";
+  if (document.getElementById("testDate1").value != "")
+  {
+	  switch (dateType){
+	  case "After":
+	  date = " and  date > "+" '"+document.getElementById("testDate1").value+"' ";
+	  break;
+	  
+	  case "Before":
+	  date = " and  date < "+" '"+document.getElementById("testDate1").value+"' ";
+	  break;
+	  
+	  case "Between":
+	  if (document.getElementById("testDate2").value)
+	  {
+		  date = " and  date > "+" '"+document.getElementById("testDate1").value+"' "+
+			 " and  date < "+" '"+document.getElementById("testDate2").value+"' ";
+	  }
+	  break;
+	}
+  }
+  
+  console.log("the current date:"+date)
   var querySetUp = "SELECT " +
 		" m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
 		" m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
@@ -307,18 +351,18 @@ function createQuery() {
 	{
 		case 'all':
 		query = querySetUp + 
-		" WHERE true " +"and type = 'phosphate' "+ precipitation + phosphateConcentration+ verified
+		" WHERE true " +"and type = 'phosphate' "+ precipitation + phosphateConcentration+date+verified
 		+ " union " +
 		querySetUp + 
-		" WHERE true " +"and type = 'nitrate' "+ precipitation + nitrateConcentration+ verified;
+		" WHERE true " +"and type = 'nitrate' "+ precipitation + nitrateConcentration+date+ verified;
 		break;
 		case 'phosphate':
 		query = querySetUp +
-		" WHERE true " +"and type = 'phosphate' "+ precipitation + phosphateConcentration+ verified;
+		" WHERE true " +"and type = 'phosphate' "+ precipitation + phosphateConcentration+date+ verified;
 		break;
 		case 'nitrate':
 		query = querySetUp +
-		" WHERE true " +"and type = 'nitrate' "+ precipitation + nitrateConcentration+ verified;
+		" WHERE true " +"and type = 'nitrate' "+ precipitation + nitrateConcentration+date+ verified;
 		break;
 	}
   
