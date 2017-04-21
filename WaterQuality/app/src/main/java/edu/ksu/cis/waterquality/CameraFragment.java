@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.ImageFormat;
+import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Size;
+import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
 
@@ -25,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.Semaphore;
+import java.util.stream.Stream;
 
 /**
  * Created by Jacob on 4/11/2017.
@@ -36,6 +39,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener,
     private CameraManager manager;
     private CameraDevice mCameraDevice;
     private SurfaceView mSurfaceView;
+    private ImageReader mImageReader;
 
     private String getCameraId() {
         Activity activity = getActivity();
@@ -44,15 +48,31 @@ public class CameraFragment extends Fragment implements View.OnClickListener,
             for (String cameraId : manager.getCameraIdList()) {
                 CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
                 Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
-                //Here we get the rear facing camera(s)
+                //Here we get the rear facing camera
                 if (facing != null && facing == CameraCharacteristics.LENS_FACING_BACK) {
+                    //Here we grab the Stream Configurations of the camera to choose the largest
+                    //configuration.
+                    CameraCharacteristics camChars = manager.getCameraCharacteristics(cameraId);
+                    StreamConfigurationMap map = camChars.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                    Size largest = Collections.max(Arrays.asList(map.getOutputSizes(ImageFormat.JPEG)), new SizeCompareArea());
+
+                    mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(), ImageFormat.JPEG, 2);
+                    mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, mBackgroundHandler);
                     return cameraId;
                 }
             }
         } catch(Exception e) {
-
+            e.printStackTrace();
         }
         return null;
+    }
+
+    private static class SizeCompareArea implements Comparator<Size> {
+        @Override
+        public int compare(Size left, Size right) {
+            return Long.signum((long) left.getWidth() * left.getHeight() - (long) right.getWidth() *
+                                right.getHeight());
+        }
     }
 
     private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
@@ -82,7 +102,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener,
 
     private void createCameraPreviewSession() {
         try {
-            mSurfaceView
+            mSurfaceView.
         }
     }
 }
