@@ -17,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.util.Size;
 import android.view.Surface;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 
 import java.io.File;
@@ -38,7 +39,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener,
 
     private CameraManager manager;
     private CameraDevice mCameraDevice;
-    private SurfaceView mSurfaceView;
+    private TextureView mTextureView;
     private ImageReader mImageReader;
 
     private String getCameraId() {
@@ -102,7 +103,10 @@ public class CameraFragment extends Fragment implements View.OnClickListener,
 
     private void createCameraPreviewSession() {
         try {
-            mSurfaceView.
+            SurfaceTexture texture = mTextureView.getSurfaceTexture();
+            assert texture != null;
+
+            texture.setDefaultBufferSize();
         }
     }
 }
