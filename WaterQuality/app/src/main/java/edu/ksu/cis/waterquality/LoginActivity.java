@@ -153,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
                     return(result.toString());
 
                 } else{
-                    return("unsuccessful");
+                    return("{unsuccessful: CantConnectToHTTP}");
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -173,22 +173,23 @@ public class LoginActivity extends AppCompatActivity {
                 JSONObject reader = new JSONObject(result);
                 success = reader.getString("success");
                 message = reader.getString("message");
+
+                if(success.equalsIgnoreCase("true"))
+                {
+                    _session.createLoginSession(_email);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    LoginActivity.this.finish();
+                } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
+                    Toast.makeText(LoginActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+                }
             }  catch(Exception ex) {
                 // TO DO: handle error
                 ex.printStackTrace();
             }
 
-            if(success.equalsIgnoreCase("true"))
-            {
-                _session.createLoginSession(_email);
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                LoginActivity.this.finish();
-            } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
-                Toast.makeText(LoginActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
-            }
         }
     }
 }
