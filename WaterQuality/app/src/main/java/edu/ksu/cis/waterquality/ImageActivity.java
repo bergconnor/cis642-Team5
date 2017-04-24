@@ -93,10 +93,10 @@ public class ImageActivity extends AppCompatActivity {
     }
 
     private void startCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = new File(Environment.getExternalStorageDirectory()
-                + File.separator + "water_quality.jpg");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+        Intent intent = new Intent(this, CameraActivity.class);
+        //File file = new File(Environment.getExternalStorageDirectory()
+        //        + File.separator + "water_quality.jpg");
+        //intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(intent, CAMERA_REQUEST);
     }
 
