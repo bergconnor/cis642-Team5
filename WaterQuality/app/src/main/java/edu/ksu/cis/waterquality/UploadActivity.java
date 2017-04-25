@@ -75,10 +75,8 @@ public class UploadActivity extends AppCompatActivity {
         LinkedHashMap<String, String> map = _session.getDetails();
         LinearLayout tableLayout = (LinearLayout) View
                 .inflate(UploadActivity.this, R.layout.table, null);
-        LinearLayout textViewLayout = (LinearLayout) tableLayout.getChildAt(0);
-        LinearLayout editTextLayout = (LinearLayout) tableLayout.getChildAt(1);
-//        LinearLayout textViewLayout = (LinearLayout) findViewById(R.id.textViewLayout);
-//        LinearLayout editTextLayout = (LinearLayout) findViewById(R.id.editTextLayout);
+        LinearLayout tableLabelsLayout = (LinearLayout) tableLayout.getChildAt(0);
+        LinearLayout tableDataLayout = (LinearLayout) tableLayout.getChildAt(1);
 
         Iterator iterator = map.entrySet().iterator();
         while(iterator.hasNext()) {
@@ -89,31 +87,41 @@ public class UploadActivity extends AppCompatActivity {
             if(!key.equals(_session.KEY_ID)) {
 
                 // create new elements to add to layouts
-                TextView textView = (TextView) View
-                        .inflate(UploadActivity.this, R.layout.table_text_view, null);
-                HorizontalScrollView scrollView = (HorizontalScrollView) View
-                        .inflate(UploadActivity.this, R.layout.table_scroll_view, null);
-                EditText editText = (EditText) scrollView.getChildAt(0);
+                TextView tableLabel = (TextView) View
+                        .inflate(UploadActivity.this, R.layout.table_label, null);
+                HorizontalScrollView tableData;
 
-                textView.setText(pair.getKey().toString());
-                editText.setText(pair.getValue().toString());
+                tableLabel.setText(pair.getKey().toString());
 
-                editText.addTextChangedListener(new TextWatcher() {
-                    public void afterTextChanged(Editable editable) {
-                        _session.updateValue(key, editable.toString());
-                    }
+                if(key.equals(_session.KEY_COMMENT)) {
+                    tableData = (HorizontalScrollView) View
+                            .inflate(UploadActivity.this, R.layout.table_data_edit, null);
+                    EditText data = (EditText) tableData.getChildAt(0);
 
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        // do nothing
-                    }
+                    data.setText(pair.getValue().toString());
+                    data.addTextChangedListener(new TextWatcher() {
+                        public void afterTextChanged(Editable editable) {
+                            _session.updateValue(key, editable.toString());
+                        }
 
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        // do nothing
-                    }
-                });
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            // do nothing
+                        }
 
-                textViewLayout.addView(textView);
-                editTextLayout.addView(scrollView);
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            // do nothing
+                        }
+                    });
+                } else {
+                    tableData = (HorizontalScrollView) View
+                            .inflate(UploadActivity.this, R.layout.table_data_view, null);
+                    TextView data = (TextView) tableData.getChildAt(0);
+
+                    data.setText(pair.getValue().toString());
+                }
+
+                tableLabelsLayout.addView(tableLabel);
+                tableDataLayout.addView(tableData);
             }
         }
         ScrollView layout = (ScrollView)findViewById(R.id.uploadLayout);

@@ -3,21 +3,18 @@ package edu.ksu.cis.waterquality;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Space;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.Iterator;
 import java.util.List;
@@ -65,8 +62,8 @@ public class HistoryDetailsActivity extends AppCompatActivity {
             // get data and layouts
             LinearLayout tableLayout = (LinearLayout) View
                     .inflate(HistoryDetailsActivity.this, R.layout.table, null);
-            LinearLayout textViewLayout = (LinearLayout) tableLayout.getChildAt(0);
-            LinearLayout editTextLayout = (LinearLayout) tableLayout.getChildAt(1);
+            LinearLayout tableLabelsLayout = (LinearLayout) tableLayout.getChildAt(0);
+            LinearLayout tableDataLayout = (LinearLayout) tableLayout.getChildAt(1);
 
             JSONObject marker = null;
             try {
@@ -83,17 +80,28 @@ public class HistoryDetailsActivity extends AppCompatActivity {
                         header.setText(marker.get(key).toString());
                     } else {
                         // create new elements to add to layouts
-                        TextView textView = (TextView) View
-                                .inflate(HistoryDetailsActivity.this, R.layout.table_text_view, null);
-                        HorizontalScrollView scrollView = (HorizontalScrollView) View
-                                .inflate(HistoryDetailsActivity.this, R.layout.table_scroll_view, null);
-                        EditText editText = (EditText) scrollView.getChildAt(0);
+                        TextView tableLabel = (TextView) View
+                                .inflate(HistoryDetailsActivity.this, R.layout.table_label, null);
+                        HorizontalScrollView tableData;
 
-                        textView.setText(key);
-                        editText.setText(marker.get(key).toString());
+                        tableLabel.setText(key);
 
-                        textViewLayout.addView(textView);
-                        editTextLayout.addView(scrollView);
+                        if(key.equals(_session.KEY_COMMENT)) {
+                            tableData = (HorizontalScrollView) View
+                                    .inflate(HistoryDetailsActivity.this, R.layout.table_data_edit, null);
+                            EditText data = (EditText) tableData.getChildAt(0);
+
+                            data.setText(marker.get(key).toString());
+                        } else {
+                            tableData = (HorizontalScrollView) View
+                                    .inflate(HistoryDetailsActivity.this, R.layout.table_data_view, null);
+                            TextView data = (TextView) tableData.getChildAt(0);
+
+                            data.setText(marker.get(key).toString());
+                        }
+
+                        tableLabelsLayout.addView(tableLabel);
+                        tableDataLayout.addView(tableData);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
