@@ -71,7 +71,7 @@ public class ImageActivity extends AppCompatActivity {
 
         // check login status
         _session = new SessionManager(getApplicationContext());
-        _session.checkLogin();
+        //_session.checkLogin();
 
         takePicture();
     }

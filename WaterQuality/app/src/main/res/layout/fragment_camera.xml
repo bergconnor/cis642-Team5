@@ -4,30 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <edu.ksu.cis.waterquality.AutoFitTextureView
-        android:id="@+id/texture"
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
+        android:layout_above="@+id/picture"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="14dp"
+        app:srcCompat="@drawable/cameraoverlay" />
 
     <Button
         android:id="@+id/picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Capture"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp" />
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:text="Capture" />
 
-    <ImageView
-        android:id="@+id/imageView"
+    <edu.ksu.cis.waterquality.AutoFitTextureView
+        android:id="@+id/texture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="14dp"
-        app:srcCompat="@drawable/cameraoverlay"
-        android:layout_above="@+id/picture"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

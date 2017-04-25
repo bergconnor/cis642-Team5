@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         // check login status
         _session = new SessionManager(getApplicationContext());
-        _session.checkLogin();
+        //_session.checkLogin();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
