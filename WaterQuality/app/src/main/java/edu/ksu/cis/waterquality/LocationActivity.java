@@ -46,9 +46,7 @@ public class LocationActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // check login status
         _session = new SessionManager(getApplicationContext());
-        _session.checkLogin();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)

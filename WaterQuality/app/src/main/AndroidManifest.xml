@@ -39,6 +39,7 @@
         <activity android:name=".AboutActivity" />
         <activity android:name=".HelpActivity" />
         <activity android:name=".HistoryActivity" />
+        <activity android:name=".HistoryDetailsActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".MapsActivity" />
         <activity android:name=".SignUpActivity" />

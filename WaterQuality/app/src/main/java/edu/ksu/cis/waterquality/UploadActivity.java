@@ -58,9 +58,7 @@ public class UploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-        // check login status
         _session = new SessionManager(getApplicationContext());
-        _session.checkLogin();
 
         // set up progress dialog
         _dialog = new ProgressDialog(this);
@@ -175,7 +173,7 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     public void onUploadClicked(View v) {
-        if(_session.isConnected()) {
+        if(_session.isConnected() && _session.isLoggedIn()) {
             // initialize  AsyncLogin() class
             new AsyncUpload().execute();
         } else {

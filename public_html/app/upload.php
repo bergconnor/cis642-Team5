@@ -37,7 +37,8 @@ if(!empty($_POST)) {
     $json['message'] = 'Please fill out all fields.';
   } else {
     // attempt to upload data
-    $date           = date("Y-m-d", strtotime($_POST['date']));
+    $date           = date("Y-m-d H:i", strtotime($_POST['date']));
+    $json['date'] = $date;
     $user_id        = (int)$_POST['user_id'];
     $test_id        = getTestId($_POST['test']);
     $concentration  = $_POST['concentration'];

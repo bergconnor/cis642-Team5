@@ -23,7 +23,7 @@ import java.util.Locale;
  * learn more about the app, or view the history.
  */
 public class MainActivity extends AppCompatActivity {
-
+    // TO DO: add comments for each private variable
     private static final int IMAGE_REQUEST      = 1571;
     private static final int LOCATION_REQUEST   = 1995;
 
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         // check login status
         _session = new SessionManager(getApplicationContext());
-        if(_session.checkLogin()) {
+        if(_session.isLoggedIn()) {
             Button loginButton = (Button) findViewById(R.id.loginButton);
             loginButton.setText("Logout");
         }
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     List<String> keys   = new ArrayList<String>();
                     List<String> values = new ArrayList<String>();
 
-                    String date = new SimpleDateFormat("MM/dd/yyyy  hh:mm a" ).format(new Date());
+                    String date = new SimpleDateFormat("MM/dd/yyyy  h:mm a" ).format(new Date());
                     keys.add(SessionManager.KEY_DATE);
                     values.add(date);
 
@@ -104,18 +104,18 @@ public class MainActivity extends AppCompatActivity {
      * @return void
      */
     public void onLoginButtonClicked(View v) {
-        if (_session.isConnected()) {
-            if(_session.checkLogin()) {
-                Button loginButton = (Button) findViewById(R.id.loginButton);
-                loginButton.setText("Login");
-                _session.logoutUser();
-            } else {
+        if(_session.isLoggedIn()) {
+            Button loginButton = (Button) findViewById(R.id.loginButton);
+            loginButton.setText("Login");
+            _session.logoutUser();
+        } else {
+            if (_session.isConnected()) {
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
+            } else {
+                String message = "Internet connection is required to login.";
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
             }
-        } else {
-            String message = "Internet connection is required to login.";
-            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
         }
     }
 

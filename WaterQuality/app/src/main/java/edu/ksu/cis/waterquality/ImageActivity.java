@@ -64,10 +64,7 @@ public class ImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
 
-        // check login status
         _session = new SessionManager(getApplicationContext());
-        _session.checkLogin();
-
         takePicture();
     }
 

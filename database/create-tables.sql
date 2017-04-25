@@ -23,7 +23,7 @@ CREATE TABLE `tests` (
 CREATE TABLE `markers` (
   `id`            INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
   `user_id`       INT NOT NULL ,
-  `date`          DATE NOT NULL ,
+  `date`          DATETIME NOT NULL ,
   `test_id`       INT NOT NULL ,
   `concentration` FLOAT ( 5, 2 ) NOT NULL ,
   `latitude`      FLOAT( 10, 6 ) NOT NULL ,

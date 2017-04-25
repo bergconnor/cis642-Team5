@@ -65,6 +65,18 @@ public class SessionManager implements AsyncResponse {
         _editor.putString(KEY_EMAIL, email);
 
         _editor.commit();
+
+        // user is logged in, get user info
+        _asyncUserTask.delegate = this;
+        _asyncUserTask.email    = _pref.getString(KEY_EMAIL, null);
+        _asyncWeatherTask.delegate = this;
+        try {
+            _asyncUserTask.execute();
+        }
+        catch (Exception ex) {
+            // TO DO: handle error
+            ex.printStackTrace();
+        }
     }
 
     public void addSessionVariables(List<String> keys, List<String> values) {
@@ -72,26 +84,6 @@ public class SessionManager implements AsyncResponse {
             _editor.putString(keys.get(i), values.get(i));
         }
         _editor.commit();
-    }
-
-    public boolean checkLogin(){
-        boolean isLoggedIn = this.isLoggedIn();
-        if(isLoggedIn){
-
-        } else {
-            // user is logged in, get user info
-            _asyncUserTask.delegate = this;
-            _asyncUserTask.email    = _pref.getString(KEY_EMAIL, null);
-            _asyncWeatherTask.delegate = this;
-            try {
-                _asyncUserTask.execute();
-            }
-            catch (Exception ex) {
-                // TO DO: handle error
-                ex.printStackTrace();
-            }
-        }
-        return isLoggedIn;
     }
 
     public LinkedHashMap<String, String> getDetails() {
