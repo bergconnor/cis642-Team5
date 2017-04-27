@@ -181,7 +181,7 @@ li.marker {
   cursor: pointer;
 }
 
-#inequalitySign1, #inequalitySign2, #inequalitySign3 {
+#precipitationInequalitySign, #nitrateInequalitySign, #phosphateInequalitySign {
   background-color: #8080ff;
   color: white;
   text-align: center;
@@ -191,16 +191,16 @@ li.marker {
   border: 1.9px solid black;
 }
 
-#inequalitySign1:hover, #inequalitySign1:active {
+#precipitationInequalitySign:hover, #precipitationInequalitySign:active {
   background-color: #b3b3ff;
   cursor: pointer;
 }
 
-#inequalitySign2:hover, #inequalitySign2:active {
+#nitrateInequalitySign:hover, #nitrateInequalitySign:active {
   background-color: #b3b3ff;
   cursor: pointer;
 }
-#inequalitySign3:hover, #inequalitySign3:active {
+#phosphateInequalitySign:hover, #phosphateInequalitySign:active {
   background-color: #b3b3ff;
   cursor: pointer;
 }

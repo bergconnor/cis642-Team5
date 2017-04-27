@@ -14,9 +14,6 @@ session_start();
   </head>
   <body>
     <div class="page-header">
-      <!-- <div class="pull-right">
-        <button type="button" class="btn btn-primary">Press me!</button>
-      </div> -->
       <h1>Water Quality</h1>
     </div>
     <nav class="navbar navbar-default" role="navigation">
@@ -47,7 +44,7 @@ session_start();
 			</div> 
 			<div class = "row">
 				<label  for="precipitationLevel"> Precipitation Level </label>
-				<a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>
+				<a id="precipitationInequalitySign" onclick="changeSign('precipitationInequalitySign')"><</a>
 				<input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">
 				<a id="button2" onclick="clearBox('precipitationLevel')">Clear</a>
 			</div> 
@@ -81,7 +78,7 @@ session_start();
 					<label id = "nitrate_color_box4" >4</label>
 					<label id = "nitrate_color_box5" >5</label>
 					<label  for="concentrationLevel">Nitrate Concentration level </label>
-					<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
+					<a id="nitrateInequalitySign" onclick="changeSign('nitrateInequalitySign')"><</a>
 					<input id="nitrateConcentrationLevel" type="text" name="fname" size="7" placeholder="0">
 					<a id="button2" onclick="clearBox('nitrateConcentrationLevel')">Clear</a>
 					<label>above recommended</label><input type="checkbox" id="useRecommendedConcentrationNitrate" onclick = "useRecommendedConcentration('nitrate')"> 
@@ -99,7 +96,7 @@ session_start();
 					<label id = "phosphate_color_box4">4</label>
 					<label id = "phosphate_color_box5">5</label>
 					<label  for="phosphateConcentrationLevel">Phosphate Concentration level </label>
-					<a id="inequalitySign3" onclick="changeSign('inequalitySign3')"><</a>
+					<a id="phosphateInequalitySign" onclick="changeSign('phosphateInequalitySign')"><</a>
 					<input id="phosphateConcentrationLevel" type="text" name="fname" size="7" placeholder="0">
 					<a id="button2" onclick="clearBox('phosphateConcentrationLevel')">Clear</a>
 					<label>above recommended</label><input type="checkbox" id="useRecommendedConcentrationPhosphate" onclick = "useRecommendedConcentration('phosphate')"> 

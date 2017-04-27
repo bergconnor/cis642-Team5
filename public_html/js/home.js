@@ -271,6 +271,7 @@ function highlightTest(test)
 		break;
 	}
 }
+//when a recommended concentration checkbox is highlighted set numbers and lock control 
 function useRecommendedConcentration(test)
 {
 	switch (test)
@@ -285,7 +286,8 @@ function useRecommendedConcentration(test)
 		{
 			document.getElementById("phosphateConcentrationLevel").value = 50;
 			document.getElementById("phosphateConcentrationLevel").disabled = true;
-			document.getElementById('inequalitySign3').textContent = ">";
+			document.getElementById('phosphateInequalitySign').textContent = ">";
+			
 		}
 		
 		break;
@@ -301,7 +303,7 @@ function useRecommendedConcentration(test)
 		{
 			document.getElementById("nitrateConcentrationLevel").value = 85;
 			document.getElementById("nitrateConcentrationLevel").disabled = true;
-			document.getElementById('inequalitySign2').textContent = ">";
+			document.getElementById('nitrateInequalitySign').textContent = ">";
 		}
 		
 		break;
@@ -333,7 +335,7 @@ function createQuery() {
   }
   //if precipitation level is not empty filter the query using the input 
   if(precipitationLevel!='') {
-    if(document.getElementById('inequalitySign1').textContent == '<')
+    if(document.getElementById('precipitationInequalitySign').textContent == '<')
       precipitation = ' and precipitation < ' +   document.getElementById('precipitationLevel').value;
     else
       precipitation = ' and precipitation > ' +   document.getElementById('precipitationLevel').value;
@@ -347,7 +349,7 @@ function createQuery() {
   }
   //if Phosphate concentration level is not empty filter the query using the input 
   if(phosphateConcentrationLevel!='') {
-    if(document.getElementById('inequalitySign3').textContent == '<')
+    if(document.getElementById('phosphateInequalitySign').textContent == '<')
       phosphateConcentration = ' and concentration < ' +  phosphateConcentrationLevel;
     else
       phosphateConcentration = ' and concentration > ' +   phosphateConcentrationLevel;
@@ -361,7 +363,7 @@ function createQuery() {
   }
   //if Nitrate concentration level is not empty filter the query using the input 
   if(nitrateConcentrationLevel!='') {
-    if(document.getElementById('inequalitySign2').textContent == '<')
+    if(document.getElementById('nitrateInequalitySign').textContent == '<')
       nitrateConcentration = ' and concentration < ' +  nitrateConcentrationLevel;
     else
       nitrateConcentration = ' and concentration > ' +   nitrateConcentrationLevel;
