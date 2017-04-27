@@ -249,6 +249,64 @@ function changeDate(){
 	}
 }
 
+function highlightTest(test)
+{
+	switch (test)
+	{
+		case 'all':
+		if (!document.getElementById("useRecommendedConcentrationPhosphate").checked)
+			document.getElementById("phosphateConcentrationLevel").disabled = false;
+		if (!document.getElementById("useRecommendedConcentrationNitrate").checked)
+			document.getElementById("nitrateConcentrationLevel").disabled = false;
+		break;
+		case 'phosphate':
+		if (!document.getElementById("useRecommendedConcentrationPhosphate").checked)
+			document.getElementById("phosphateConcentrationLevel").disabled = false;
+		document.getElementById("nitrateConcentrationLevel").disabled = true;
+		break;
+		case 'nitrate':
+		document.getElementById("phosphateConcentrationLevel").disabled = true;
+		if (!document.getElementById("useRecommendedConcentrationNitrate").checked)
+			document.getElementById("nitrateConcentrationLevel").disabled = false;
+		break;
+	}
+}
+function useRecommendedConcentration(test)
+{
+	switch (test)
+	{
+		case 'phosphate':
+		if (!document.getElementById("useRecommendedConcentrationPhosphate").checked && 
+			(document.getElementById("showPhosphateTests").checked||document.getElementById("showAllTests").checked))
+		{
+			document.getElementById("phosphateConcentrationLevel").disabled = false;
+		}
+		else
+		{
+			document.getElementById("phosphateConcentrationLevel").value = 50;
+			document.getElementById("phosphateConcentrationLevel").disabled = true;
+			document.getElementById('inequalitySign3').textContent = ">";
+		}
+		
+		break;
+		
+		case 'nitrate':
+		if (!document.getElementById("useRecommendedConcentrationNitrate").checked&& 
+			(document.getElementById("showNitrateTests").checked||document.getElementById("showAllTests").checked))
+		{
+			document.getElementById("nitrateConcentrationLevel").disabled = false;
+		}
+		
+		else
+		{
+			document.getElementById("nitrateConcentrationLevel").value = 85;
+			document.getElementById("nitrateConcentrationLevel").disabled = true;
+			document.getElementById('inequalitySign2').textContent = ">";
+		}
+		
+		break;
+	}
+}
 //Create the query which will be passed to create_xml
 //it will be used to filter the markers that will show up in the map
 function createQuery() {

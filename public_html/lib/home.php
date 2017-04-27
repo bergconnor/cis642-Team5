@@ -62,19 +62,19 @@ session_start();
 			</div>
 			
 		</div>
-		<div class ="col-md-6">
+		<div class ="col-md-8">
 			<div class = "row">	
 				<div class ="col-md-2">
-					<input type="radio" name="shownTest" value="all" id = "showAllTests" onclick = " "> <label>All</label>
+					<input type="radio" name="shownTest" value="all" id = "showAllTests" onclick = "highlightTest('all')"> <label>All</label>
 				</div>
 			</div>
 			
 			<div class = "row">
 				<div class ="col-md-2">
-					<input type="radio" name="shownTest" value="nitrate" id = "showNitrateTests" onclick = " "> <label> Nitrate</label>
+					<input type="radio" name="shownTest" value="nitrate" id = "showNitrateTests" onclick = "highlightTest('nitrate')"> <label> Nitrate</label>
 				</div>
 				
-				<div class ="col-md-9">
+				<div class ="col-md-10">
 					<label id = "nitrate_color_box1" >1</label>
 					<label id = "nitrate_color_box2" >2</label>
 					<label id = "nitrate_color_box3" >3</label>
@@ -84,11 +84,12 @@ session_start();
 					<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
 					<input id="nitrateConcentrationLevel" type="text" name="fname" size="7" placeholder="0">
 					<a id="button2" onclick="clearBox('nitrateConcentrationLevel')">Clear</a>
+					<label>above recommended</label><input type="checkbox" id="useRecommendedConcentrationNitrate" onclick = "useRecommendedConcentration('nitrate')"> 
 				</div>
 			</div>
 			<div class = "row">
 				<div class ="col-md-2">
-					<input type="radio" name="shownTest" value="phosphate" id = "showPhosphateTests" onclick = " "> <label>Phosphate</label>
+					<input type="radio" name="shownTest" value="phosphate" id = "showPhosphateTests" onclick = "highlightTest('phosphate')"> <label>Phosphate</label>
 				</div>
 				
 				<div class ="col-md-9">
@@ -101,6 +102,7 @@ session_start();
 					<a id="inequalitySign3" onclick="changeSign('inequalitySign3')"><</a>
 					<input id="phosphateConcentrationLevel" type="text" name="fname" size="7" placeholder="0">
 					<a id="button2" onclick="clearBox('phosphateConcentrationLevel')">Clear</a>
+					<label>above recommended</label><input type="checkbox" id="useRecommendedConcentrationPhosphate" onclick = "useRecommendedConcentration('phosphate')"> 
 				</div>
 			</div>
 			
