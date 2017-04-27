@@ -7,10 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -30,20 +27,26 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * History page to display the data from past samples taken from the phone. Each item
- * will show the type of test and date. The user will be able to select multiple items
- * and view more data about each item, or delete the item(s).
+ * Activity to allow users to manage data that has not been uploaded
+ * due to lack of internet connection or login status.
  */
 public class HistoryActivity extends AppCompatActivity {
 
-    // CONNECTION_TIMEOUT and READ_TIMEOUT are in milliseconds
+    /** HTTP connection timeout in milliseconds */
     public static final int CONNECTION_TIMEOUT = 10000;
+
+    /** HTTP read timeout in milliseconds */
     public static final int READ_TIMEOUT = 15000;
 
+
+    /** A session manager */
     private SessionManager _session;
+
+    /**
+     * A session manager.
+     */
     private FileManager _fileManager;
     private JSONArray _markers;
     private List<HistoryRow> _rows;
