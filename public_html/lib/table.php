@@ -105,7 +105,7 @@ session_start();
 			<div class = "row">
 				<form action="">
 					  <input type="radio" name="degree" value="celsius" id = "celsius" onclick = "changeDegree('c')"> Celsius<br>
-					  <input type="radio" name="degree" value="fahrenheit" id = "fahrenheit" onclick = "changeDegree('f')"> Fahrenheit<br>
+					  <input type="radio" name="degree" value="fahrenheit" id = "fahrenheit" onclick = "changeDegree('f')"  checked> Fahrenheit<br>
 				</form>
 			</div>
 			

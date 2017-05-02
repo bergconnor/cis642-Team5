@@ -226,7 +226,8 @@ function changeSign(inequalitySign) {
 }
 
 function clearBox(numberBox) {
-  document.getElementById(numberBox).value = '';
+	if (!document.getElementById(numberBox).disabled)
+		document.getElementById(numberBox).value = '';
 }
 
 function changeDate(){
