@@ -117,7 +117,7 @@ session_start();
       <table class="samples-table">
         <thead>
           <tr id= columns_headers>
-            <th id ="date" onclick = changeOrder(1)>Date<span id = order_arrow class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span></th>
+            <th id ="date" onclick = changeOrder(1)>Date<span id = order_arrow class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span></th>
             <th id ="name" onclick = changeOrder(2)>Name</th>
             <th id ="orgnization" onclick = changeOrder(3)>Orgnization</th>
             <th id ="email" onclick = changeOrder(4)>Email</th>

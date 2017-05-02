@@ -18,7 +18,7 @@ var comment       = "none";
 
 var scrollHere = 0;
 var orderBy = 1;
-var orderType = "desc";
+var orderType = "asc";
 var degree = "f";
 
 function createTable()
@@ -227,7 +227,7 @@ function createQuery()
 	switch(orderBy)
 	{
 		case 1:
-		ord = "DATE(date)";
+		ord = "DATE";
 		break;
 		
 		case 2:
@@ -503,13 +503,7 @@ function changeOrder(ord)
 				document.getElementById("comment").appendChild(ordElm);
 				break;
 			}
-			if (orderBy == 1)
-			{
-				ordElm.setAttribute("class","glyphicon glyphicon-triangle-bottom")
-				orderType = "desc";
-			}
-				
-			else
+			
 			{
 				ordElm.setAttribute("class","glyphicon glyphicon-triangle-top")
 				orderType = "asc";
