@@ -38,39 +38,78 @@ session_start();
         </ul>
       </div>
     </nav>
-	<div class="left-label">
-		<div>
-			
+	
+	
+	<div class = "row">
+		<div class ="col-md-1">
+		 
+		</div>
+		<div class ="col-md-3">
+		
+			<div class = "row">
 				<label  for="pendingSamples">Show pending samples</label>
 				<input id="pendingSamples" type="checkbox" name="pend" value="pending">
+			</div> 
 			
-			<br>
-			
-			
-				<label  for="concentrationLevel"> Concentration level </label>
-				<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
-				<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
-				<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
-			
-			
+			<div class = "row">
 				<label  for="precipitationLevel"> Precipitation Level </label>
-				<a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>
+				<a id="precipitationInequalitySign" onclick="changeSign('precipitationInequalitySign')"><</a>
 				<input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">
 				<a id="button2" onclick="clearBox('precipitationLevel')">Clear</a>
-				<form action="">
-				  <input type="radio" name="degree" value="celsius" id = "celsius" onclick = "changeDegree('c')"> Celsius<br>
-				  <input type="radio" name="degree" value="fahrenheit" id = "fahrenheit" onclick = "changeDegree('f')"> Fahrenheit<br>
-				</form>
-				
-			<div class="input-group date" data-provide="datepicker" data-date-format="mm/dd/yyyy">
-				<input type="text" class="form-control">
-				<div class="input-group-addon">
-					<span class="glyphicon glyphicon-th"></span>
+			</div> 
+			
+			<div class = "row">
+				<label  for="testDate1">Test Date </label> <a id="dateButton" onclick="changeDate()">After</a><input id = "testDate1" type="date">
+			</div>
+			<div class = "row">
+				<label  for="testDate2" id= "testDate2Label" style = "visibility:hidden" >and   </label><input id = "testDate2" type="date" style = "visibility:hidden">
+			</div>
+			<div class = "row">
+				<a  type="button" id = "button"   onclick="createTable()()">Create Table</a>
+			</div>
+			
+		</div>
+		<div class ="col-md-8">
+			<div class = "row">	
+				<div class ="col-md-2">
+					<input type="radio" name="shownTest" value="all" id = "showAllTests" onclick = "highlightTest('all')" checked> <label>All</label>
 				</div>
 			</div>
-		</div>
-		<div>
-			<a  type="button" id = "button"   onclick="createTable()">Create Table</a>
+			
+			<div class = "row">
+				<div class ="col-md-2">
+					<input type="radio" name="shownTest" value="nitrate" id = "showNitrateTests" onclick = "highlightTest('nitrate')"> <label> Nitrate</label>
+				</div>
+				
+				<div class ="col-md-10">
+					<label  for="concentrationLevel">Nitrate Concentration level </label>
+					<a id="nitrateInequalitySign" onclick="changeSign('nitrateInequalitySign')"><</a>
+					<input id="nitrateConcentrationLevel" type="text" name="fname" size="7" placeholder="0">
+					<a id="button2" onclick="clearBox('nitrateConcentrationLevel')">Clear</a>
+					<label>above recommended</label><input type="checkbox" id="useRecommendedConcentrationNitrate" onclick = "useRecommendedConcentration('nitrate')"> 
+				</div>
+			</div>
+			<div class = "row">
+				<div class ="col-md-2">
+					<input type="radio" name="shownTest" value="phosphate" id = "showPhosphateTests" onclick = "highlightTest('phosphate')"> <label>Phosphate</label>
+				</div>
+				
+				<div class ="col-md-9">
+					<label  for="phosphateConcentrationLevel">Phosphate Concentration level </label>
+					<a id="phosphateInequalitySign" onclick="changeSign('phosphateInequalitySign')"><</a>
+					<input id="phosphateConcentrationLevel" type="text" name="fname" size="7" placeholder="0">
+					<a id="button2" onclick="clearBox('phosphateConcentrationLevel')">Clear</a>
+					<label>above recommended</label><input type="checkbox" id="useRecommendedConcentrationPhosphate" onclick = "useRecommendedConcentration('phosphate')"> 
+				</div>
+			</div>
+			<div class = "row">
+				<form action="">
+					  <input type="radio" name="degree" value="celsius" id = "celsius" onclick = "changeDegree('c')"> Celsius<br>
+					  <input type="radio" name="degree" value="fahrenheit" id = "fahrenheit" onclick = "changeDegree('f')"  checked> Fahrenheit<br>
+				</form>
+			</div>
+			
+			
 		</div>
 	</div>
 	

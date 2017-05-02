@@ -14,9 +14,6 @@ session_start();
   </head>
   <body>
     <div class="page-header">
-      <!-- <div class="pull-right">
-        <button type="button" class="btn btn-primary">Press me!</button>
-      </div> -->
       <h1>Water Quality</h1>
     </div>
     <nav class="navbar navbar-default" role="navigation">
@@ -34,26 +31,82 @@ session_start();
         </ul>
       </div>
     </nav>
-	<div class="left-label">
-		<div>
-			<label  for="pendingSamples">Show pending samples</label>
-			<input id="pendingSamples" type="checkbox" name="pend" value="pending">
-			<br>
-			<label  for="concentrationLevel"> Concentration level </label>
-			<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
-			<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
-			<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
-
-			<label  for="precipitationLevel"> Precipitation Level </label>
-			<a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>
-			<input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">
-			<a id="button2" onclick="clearBox('precipitationLevel')">Clear</a>
+	
+	<div class = "row">
+		<div class ="col-md-1">
+		 
 		</div>
-		<div>
-			<a  type="button" id = "button"   onclick="initMap()">Create Map</a>
+		<div class ="col-md-3">
+		
+			<div class = "row">
+				<label  for="pendingSamples">Show pending samples</label>
+				<input id="pendingSamples" type="checkbox" name="pend" value="pending">
+			</div> 
+			<div class = "row">
+				<label  for="precipitationLevel"> Precipitation Level </label>
+				<a id="precipitationInequalitySign" onclick="changeSign('precipitationInequalitySign')"><</a>
+				<input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">
+				<a id="button2" onclick="clearBox('precipitationLevel')">Clear</a>
+			</div> 
+			<div class = "row">
+				<label  for="testDate1">Test Date </label> <a id="dateButton" onclick="changeDate()">After</a><input id = "testDate1" type="date">
+			</div>
+			<div class = "row">
+				<label  for="testDate2" id= "testDate2Label" style = "visibility:hidden" >and   </label><input id = "testDate2" type="date" style = "visibility:hidden">
+			</div>
+			<div class = "row">
+				<a  type="button" id = "button"   onclick="initMap()">Create Map</a>
+			</div>
+			
+		</div>
+		<div class ="col-md-8">
+			<div class = "row">	
+				<div class ="col-md-2">
+					<input type="radio" name="shownTest" value="all" id = "showAllTests" onclick = "highlightTest('all')" checked> <label>All</label>
+				</div>
+			</div>
+			
+			<div class = "row">
+				<div class ="col-md-2">
+					<input type="radio" name="shownTest" value="nitrate" id = "showNitrateTests" onclick = "highlightTest('nitrate')"> <label> Nitrate</label>
+				</div>
+				
+				<div class ="col-md-10">
+					<label id = "nitrate_color_box1" >1</label>
+					<label id = "nitrate_color_box2" >2</label>
+					<label id = "nitrate_color_box3" >3</label>
+					<label id = "nitrate_color_box4" >4</label>
+					<label id = "nitrate_color_box5" >5</label>
+					<label  for="concentrationLevel">Nitrate Concentration level </label>
+					<a id="nitrateInequalitySign" onclick="changeSign('nitrateInequalitySign')"><</a>
+					<input id="nitrateConcentrationLevel" type="text" name="fname" size="7" placeholder="0">
+					<a id="button2" onclick="clearBox('nitrateConcentrationLevel')">Clear</a>
+					<label>above recommended</label><input type="checkbox" id="useRecommendedConcentrationNitrate" onclick = "useRecommendedConcentration('nitrate')"> 
+				</div>
+			</div>
+			<div class = "row">
+				<div class ="col-md-2">
+					<input type="radio" name="shownTest" value="phosphate" id = "showPhosphateTests" onclick = "highlightTest('phosphate')"> <label>Phosphate</label>
+				</div>
+				
+				<div class ="col-md-9">
+					<label id = "phosphate_color_box1">1</label>
+					<label id = "phosphate_color_box2">2</label>
+					<label id = "phosphate_color_box3">3</label>
+					<label id = "phosphate_color_box4">4</label>
+					<label id = "phosphate_color_box5">5</label>
+					<label  for="phosphateConcentrationLevel">Phosphate Concentration level </label>
+					<a id="phosphateInequalitySign" onclick="changeSign('phosphateInequalitySign')"><</a>
+					<input id="phosphateConcentrationLevel" type="text" name="fname" size="7" placeholder="0">
+					<a id="button2" onclick="clearBox('phosphateConcentrationLevel')">Clear</a>
+					<label>above recommended</label><input type="checkbox" id="useRecommendedConcentrationPhosphate" onclick = "useRecommendedConcentration('phosphate')"> 
+				</div>
+			</div>
+			
+			
 		</div>
 	</div>
-
+	
     <div id="map"></div>
 
     <!-- jQuery library -->

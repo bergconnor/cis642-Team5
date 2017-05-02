@@ -1,3 +1,5 @@
+//set default values
+document.getElementById('showAllTests').checked = true;
 // these variables will be used to keep the view consistent each time a new map is created
 var zoom = 4;
 var center = {lat: 39.8333333, lng: -98.585522}; // center is where the user is looking at in the map now
@@ -7,7 +9,8 @@ var center = {lat: 39.8333333, lng: -98.585522}; // center is where the user is 
 function initMap() {
   var map = new google.maps.Map(document.getElementById('map'), {
     center: center,
-    zoom: zoom
+    zoom: zoom,
+	streetViewControl: false
   });
 
 //event handler to remember the new zoom every time the zoom gets changed
@@ -25,7 +28,7 @@ center = map.center;
   downloadUrl('../lib/create_xml.php', function(data) {
     var xml = data.responseXML;
     var markers = xml.documentElement.getElementsByTagName('marker');
-    console.log(markers);
+    //console.log(markers);
     Array.prototype.forEach.call(markers, function(markerElem) {
       var name = markerElem.getAttribute('name');
       var organization = markerElem.getAttribute('organization');
@@ -205,7 +208,8 @@ function downloadUrl(url, callback) {
     };
   // create a query based on configurations
   var query =  createQuery();
-  console.log(query);
+  console.log(query);// this important to have the query in the console to debug the sql query
+					//  because if there is a problem with the sql 
 
   // pass the query to create_xml page in a request
   request.open("GET", url+"?q=" + query, true);
@@ -222,61 +226,212 @@ function changeSign(inequalitySign) {
 }
 
 function clearBox(numberBox) {
-  document.getElementById(numberBox).value = '';
+	if (!document.getElementById(numberBox).disabled)
+		document.getElementById(numberBox).value = '';
 }
 
+function changeDate(){
+	if (document.getElementById("dateButton").textContent == "After")
+	{
+		document.getElementById("dateButton").textContent = "Before";
+	}
+	else if (document.getElementById("dateButton").textContent == "Before")
+	{
+		document.getElementById("dateButton").textContent = "Between";
+		document.getElementById("testDate2").style.visibility = 'visible';
+		document.getElementById("testDate2Label").style.visibility = 'visible';
+	}
+	
+	else 
+	{
+		document.getElementById("dateButton").textContent = "After";
+		document.getElementById("testDate2").style.visibility = 'hidden';
+		document.getElementById("testDate2Label").style.visibility = 'hidden';
+	}
+}
+
+
+function highlightTest(test)
+{
+	switch (test)
+	{
+		case 'all':
+		if (!document.getElementById("useRecommendedConcentrationPhosphate").checked)
+			document.getElementById("phosphateConcentrationLevel").disabled = false;
+		if (!document.getElementById("useRecommendedConcentrationNitrate").checked)
+			document.getElementById("nitrateConcentrationLevel").disabled = false;
+		break;
+		case 'phosphate':
+		if (!document.getElementById("useRecommendedConcentrationPhosphate").checked)
+			document.getElementById("phosphateConcentrationLevel").disabled = false;
+		document.getElementById("nitrateConcentrationLevel").disabled = true;
+		break;
+		case 'nitrate':
+		document.getElementById("phosphateConcentrationLevel").disabled = true;
+		if (!document.getElementById("useRecommendedConcentrationNitrate").checked)
+			document.getElementById("nitrateConcentrationLevel").disabled = false;
+		break;
+	}
+}
+//when a recommended concentration checkbox is highlighted set numbers and lock control 
+function useRecommendedConcentration(test)
+{
+	switch (test)
+	{
+		case 'phosphate':
+		if (!document.getElementById("useRecommendedConcentrationPhosphate").checked && 
+			(document.getElementById("showPhosphateTests").checked||document.getElementById("showAllTests").checked))
+		{
+			document.getElementById("phosphateConcentrationLevel").disabled = false;
+		}
+		else
+		{
+			document.getElementById("phosphateConcentrationLevel").value = 50;
+			document.getElementById("phosphateConcentrationLevel").disabled = true;
+			document.getElementById('phosphateInequalitySign').textContent = ">";
+			
+		}
+		
+		break;
+		
+		case 'nitrate':
+		if (!document.getElementById("useRecommendedConcentrationNitrate").checked&& 
+			(document.getElementById("showNitrateTests").checked||document.getElementById("showAllTests").checked))
+		{
+			document.getElementById("nitrateConcentrationLevel").disabled = false;
+		}
+		
+		else
+		{
+			document.getElementById("nitrateConcentrationLevel").value = 85;
+			document.getElementById("nitrateConcentrationLevel").disabled = true;
+			document.getElementById('nitrateInequalitySign').textContent = ">";
+		}
+		
+		break;
+	}
+}
 //Create the query which will be passed to create_xml
 //it will be used to filter the markers that will show up in the map
 function createQuery() {
+  //Take info from the configuration inputs in the webpage 
   var pendingSamples = document.getElementById('pendingSamples').checked;
   var precipitationLevel = document.getElementById('precipitationLevel').value;
-  var concentrationLevel = document.getElementById('concentrationLevel').value;
+  var phosphateConcentrationLevel = document.getElementById('phosphateConcentrationLevel').value;
+  var nitrateConcentrationLevel = document.getElementById('nitrateConcentrationLevel').value;
+  var dateType = document.getElementById("dateButton").textContent;
+  
+  //set up variables to be used to create the query(some of them will remain empty if no data is inserted)
   var precipitation = '';
-  var concentration = '';
+  var phosphateConcentration = '';
+  var nitrateConcentration = '';
   var verified = " and verified = 1 ";
   var id = '';
   if(pendingSamples)
     verified = " and verified > -1 ";
-  console.log(isNaN(precipitationLevel));
-  console.log(0>(precipitationLevel));
+
   //data validation for precipitation
   if(isNaN(precipitationLevel) || precipitationLevel < 0 ) {
     precipitationLevel = '';
     document.getElementById('precipitationLevel').value = '';
   }
-
+  //if precipitation level is not empty filter the query using the input 
   if(precipitationLevel!='') {
-    if(document.getElementById('inequalitySign1').textContent == '<')
+    if(document.getElementById('precipitationInequalitySign').textContent == '<')
       precipitation = ' and precipitation < ' +   document.getElementById('precipitationLevel').value;
     else
       precipitation = ' and precipitation > ' +   document.getElementById('precipitationLevel').value;
   }
   
-  //data validation for concentration
-  if(isNaN(concentrationLevel) || concentrationLevel < 0 ) {
-    concentrationLevel = '';
-    document.getElementById('concentrationLevel').value = '';
+  //data validation for Phosphate concentration
+  if(isNaN(phosphateConcentrationLevel) || phosphateConcentrationLevel < 0 ) {
+    phosphateConcentration = '';
+    document.getElementById('phosphateConcentrationLevel').value = '';
+	phosphateConcentrationLevel = '';
   }
-  if(concentrationLevel!='') {
-    if(document.getElementById('inequalitySign2').textContent == '<')
-      concentration = ' and concentration < ' +   document.getElementById('concentrationLevel').value;
+  //if Phosphate concentration level is not empty filter the query using the input 
+  if(phosphateConcentrationLevel!='') {
+    if(document.getElementById('phosphateInequalitySign').textContent == '<')
+      phosphateConcentration = ' and concentration < ' +  phosphateConcentrationLevel;
     else
-      concentration = ' and concentration > ' +   document.getElementById('concentrationLevel').value;
+      phosphateConcentration = ' and concentration > ' +   phosphateConcentrationLevel;
   }
-
+  
+  //data validation for Nitrate concentration
+  if(isNaN(nitrateConcentrationLevel) || nitrateConcentrationLevel < 0 ) {
+    nitrateConcentration = '';
+    document.getElementById('nitrateConcentrationLevel').value = '';
+	nitrateConcentrationLevel ='';
+  }
+  //if Nitrate concentration level is not empty filter the query using the input 
+  if(nitrateConcentrationLevel!='') {
+    if(document.getElementById('nitrateInequalitySign').textContent == '<')
+      nitrateConcentration = ' and concentration < ' +  nitrateConcentrationLevel;
+    else
+      nitrateConcentration = ' and concentration > ' +   nitrateConcentrationLevel;
+  }
+  
+  var date = "";
+  if (document.getElementById("testDate1").value != "")
+  {
+	  switch (dateType){
+	  case "After":
+	  date = " and  date > "+" '"+document.getElementById("testDate1").value+"' ";
+	  break;
+	  
+	  case "Before":
+	  date = " and  date < "+" '"+document.getElementById("testDate1").value+"' ";
+	  break;
+	  
+	  case "Between":
+	  if (document.getElementById("testDate2").value)
+	  {
+		  date = " and  date > "+" '"+document.getElementById("testDate1").value+"' "+
+			 " and  date < "+" '"+document.getElementById("testDate2").value+"' ";
+	  }
+	  break;
+	}
+  }
+  //this part will be shared by any query
   var querySetUp = "SELECT " +
-    " m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
-    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
-    " m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
-    " u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
+		" m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
+		" m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
+		" m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
+		" u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
 
-    " FROM markers m "+
-      " JOIN users u ON m.user_id = u.id"+
-      " JOIN tests t ON m.test_id = t.id "+
-
-    " WHERE true " + precipitation + concentration+ verified;
-  var query = querySetUp;
-
+		" FROM markers m "+
+		  " JOIN users u ON m.user_id = u.id"+
+		  " JOIN tests t ON m.test_id = t.id ";
+		  
+  var temp = "all";
+  var radios  =  document.getElementsByName("shownTest");
+  for (var i = 0, length = radios.length; i < length; i++) {
+    if (radios[i].checked) {
+        temp = radios[i].value;
+        // only one radio can be logically checked, don't check the rest
+        break;
+	}
+  }
+    var query;
+	switch (temp)
+	{
+		case 'all':
+		query = querySetUp + 
+		" WHERE true " +"and type = 'phosphate' "+ precipitation + phosphateConcentration+date+verified
+		+ " union " +
+		querySetUp + 
+		" WHERE true " +"and type = 'nitrate' "+ precipitation + nitrateConcentration+date+ verified;
+		break;
+		case 'phosphate':
+		query = querySetUp +
+		" WHERE true " +"and type = 'phosphate' "+ precipitation + phosphateConcentration+date+ verified;
+		break;
+		case 'nitrate':
+		query = querySetUp +
+		" WHERE true " +"and type = 'nitrate' "+ precipitation + nitrateConcentration+date+ verified;
+		break;
+	}
+	
   return query;
 }
 
@@ -285,3 +440,4 @@ function createQuery() {
 function setId(id) {
   sessionStorage.setItem('marker', id);
 }
+
