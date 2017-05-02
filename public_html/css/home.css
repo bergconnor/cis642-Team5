@@ -78,50 +78,7 @@ body {
 .table-margin {
     margin-top: 20px;
 }
-/*
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #8080FF;
-}
 
-#home {
-  margin-left: 11%;
-}
-
-li {
-  float: left;
-  display: inline;
-}
-
-li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-li a:hover {
-  background-color: #B3B3FF;
-  cursor: pointer;
-}
-
-li.home {
-  margin-left: 7%;
-}
-
-.label {
-  margin-left: 7%;
-}
-
-li.marker {
-  float: right;
-  margin-right: 7.5%;
-}
-*/
 #text
 {
   background-color: #9aafd1;
@@ -164,7 +121,9 @@ li.marker {
   background-color: #b3b3ff;
   cursor: pointer;
 }
-
+#columns_headers{
+	cursor: pointer;
+}
 #dateButton  {
   background-color: #8080ff;
   color: white;
