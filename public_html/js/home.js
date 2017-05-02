@@ -249,6 +249,7 @@ function changeDate(){
 	}
 }
 
+
 function highlightTest(test)
 {
 	switch (test)

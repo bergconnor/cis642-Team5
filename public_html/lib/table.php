@@ -72,7 +72,7 @@ session_start();
 		<div class ="col-md-8">
 			<div class = "row">	
 				<div class ="col-md-2">
-					<input type="radio" name="shownTest" value="all" id = "showAllTests" onclick = "highlightTest('all')"> <label>All</label>
+					<input type="radio" name="shownTest" value="all" id = "showAllTests" onclick = "highlightTest('all')" checked> <label>All</label>
 				</div>
 			</div>
 			
