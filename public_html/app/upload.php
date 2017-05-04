@@ -5,8 +5,8 @@
  * The upload is initiated from the
  * android app.
  */
-require_once '../lib/config.php';   // database connection
-require_once '../lib/modules.php';  // modules for database queries
+require_once './../lib/config.php';   // database connection
+require_once './../lib/modules.php';  // modules for database queries
 
 $data = array("user_id", "date", "test", "serial", "concentration", "latitude",
          "longitude", "city", "state", "temperature", "precipitation", "comment");

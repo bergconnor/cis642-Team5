@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once './../lib/config.php';
 
 if(isset($_GET['email']) && !empty($_GET['email']) AND isset($_GET['hash']) && !empty($_GET['hash'])){
     // verify data
@@ -27,11 +27,11 @@ if(isset($_GET['email']) && !empty($_GET['email']) AND isset($_GET['hash']) && !
 <html>
 <head>
     <title>Water Quality</title>
-    <link href="../css/style.css" type="text/css" rel="stylesheet" />
+    <link href="./../css/style.css" type="text/css" rel="stylesheet" />
 </head>
 <body>
   <div class="login-help">
-    <p><a class="reset" href="index.php">Click here to return to the login page</a>.</p>
+    <p><a class="reset" href="./login.php">Click here to return to the login page</a>.</p>
   </div>
 </body>
 </html>

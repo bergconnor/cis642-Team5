@@ -6,7 +6,7 @@
  * name, last name, email address, and a
  * password.
  */
-require_once '../lib/config.php';   // database connection
+require_once './../lib/config.php';   // database connection
 
 /**
  * Handle event when the app calls

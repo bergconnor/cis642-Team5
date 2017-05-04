@@ -22,10 +22,9 @@ center = map.center;
 
 
   // Change this depending on the name of your PHP or XML file
-  downloadUrl('../lib/create_xml.php', function(data) {
+  downloadUrl('./public/create_xml.php', function(data) {
     var xml = data.responseXML;
     var markers = xml.documentElement.getElementsByTagName('marker');
-    console.log(markers);
     Array.prototype.forEach.call(markers, function(markerElem) {
       var name = markerElem.getAttribute('name');
       var organization = markerElem.getAttribute('organization');
@@ -37,41 +36,41 @@ center = map.center;
         parseFloat(markerElem.getAttribute('latitude')),
         parseFloat(markerElem.getAttribute('longitude'))
       );
-	  
+
 	  //create info window when a marker gets clicked
 	  var infowincontent = document.createElement('div');
-	  
+
 	  // create bolded text for name
       var strong = document.createElement('strong');
       strong.textContent = name
-	  
+
       infowincontent.appendChild(strong);
       infowincontent.appendChild(document.createElement('br'));
-	  
+
 	  //create text for organization
       var text = document.createElement('text');
       text.textContent = organization;
       infowincontent.appendChild(text);
       infowincontent.appendChild(document.createElement('br'));
 
-	  //create text for which kind of test this marker represents 
+	  //create text for which kind of test this marker represents
       var text3 = document.createElement('text');
       text3.textContent = type + " test";
-	  
+
       infowincontent.appendChild(text3);
       infowincontent.appendChild(document.createElement('br'));
-	  
+
 	  //create text for the concentration of the test this marker represents
       var text5 = document.createElement('text');
       text5.textContent = concentration;
-	  
+
       infowincontent.appendChild(text5);
       infowincontent.appendChild(document.createElement('br'));
 
 	  //create text for comments written by the android app user
       var text4 = document.createElement('text');
       text4.textContent = comment;
-	  
+
       infowincontent.appendChild(text4);
       infowincontent.appendChild(document.createElement('br'));
 
@@ -79,25 +78,25 @@ center = map.center;
 	  //(it is just a coloring for entry in the "table" page in the website)
       var text2 = document.createElement('text');
       text2.textContent = "More Info";
-	  
+
 	  //create a link for "More Info"
       var ul =  document.createElement('a');
-      ul.setAttribute('href', "table.php");
-	  
-	  //create and event handler that will call the 
-	  //setID function 
+      ul.setAttribute('href', "./public/table.php");
+
+	  //create and event handler that will call the
+	  //setID function
       var d = markerElem.getAttribute('id');
       ul.setAttribute('onclick', "setId('"+d+"')");
       ul.setAttribute('id_number', markerElem.getAttribute('id'));
-	  
+
       ul.appendChild(text2);
       infowincontent.appendChild(ul);
 
-      // change the color of the marker based on the kind of test 
+      // change the color of the marker based on the kind of test
 	  //(now just Nitrate and Phosphate)
       var pinColor;
       var type = markerElem.getAttribute('type');
-	 
+
       var colorRange = type;
 	  //note: this assumes 5 color levels
       switch (colorRange) {
@@ -116,10 +115,10 @@ center = map.center;
 			  pinColor = 0x4d4dff;
 		  if (start+jump*3<concentration)
 			  pinColor = 0x3939ac;
-          
+
           break;
         case 'Nitrate':
-		  
+
 		  var start = 80
 		  var end = 88
 		  var jump = (end-start)/4// 4 because we want 5 colors
@@ -136,7 +135,7 @@ center = map.center;
 			  pinColor = 0xb30000;
           break;
       }
-		
+
       //create the pin marker image from a list of google images for pins
       //toString(16) is used because pinColor is in hexdecimal
 	  //Note: not all colors in color pickers have images
@@ -152,7 +151,7 @@ center = map.center;
 			console.log( err.message);
 			pinImage = google.maps.SymbolPath.BACKWARD_CLOSED_ARROW
 		}
-       
+
         var pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",
         new google.maps.Size(40, 37),
         new google.maps.Point(0, 0),
@@ -166,7 +165,7 @@ center = map.center;
         shadow: pinShadow,
         position: point,
       });
-	  
+
 	  //Label unverified pins with P (for Pending)
       if (markerElem.getAttribute('verified')== 0) {
         marker = new google.maps.Marker( {
@@ -177,7 +176,7 @@ center = map.center;
           strokeColor: 'green',
           label: {text: 'P', color: 'white'},
         });
-		
+
 		// color of the label
         marker.label.color = 'white';
         marker.icon.labelOrigin = {x: 11, y: 11};
@@ -205,7 +204,6 @@ function downloadUrl(url, callback) {
     };
   // create a query based on configurations
   var query =  createQuery();
-  console.log(query);
 
   // pass the query to create_xml page in a request
   request.open("GET", url+"?q=" + query, true);
@@ -237,8 +235,6 @@ function createQuery() {
   var id = '';
   if(pendingSamples)
     verified = " and verified > -1 ";
-  console.log(isNaN(precipitationLevel));
-  console.log(0>(precipitationLevel));
   //data validation for precipitation
   if(isNaN(precipitationLevel) || precipitationLevel < 0 ) {
     precipitationLevel = '';
@@ -251,7 +247,7 @@ function createQuery() {
     else
       precipitation = ' and precipitation > ' +   document.getElementById('precipitationLevel').value;
   }
-  
+
   //data validation for concentration
   if(isNaN(concentrationLevel) || concentrationLevel < 0 ) {
     concentrationLevel = '';
@@ -281,7 +277,7 @@ function createQuery() {
 }
 
 //used in "More Info" when it is clicked
-//to send id of the marker to the "table" page 
+//to send id of the marker to the "table" page
 function setId(id) {
   sessionStorage.setItem('marker', id);
 }

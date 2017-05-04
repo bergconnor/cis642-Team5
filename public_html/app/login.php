@@ -4,8 +4,8 @@
  * from the android app and allow access based on
  * information stored in the database.
  */
-require_once '../lib/config.php';  // database connection
-require_once '../lib/modules.php'; // modules for database queries
+require_once './../lib/config.php';  // database connection
+require_once './../lib/modules.php'; // modules for database queries
 
 /**
  * Handle event when the login button

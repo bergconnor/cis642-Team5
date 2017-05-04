@@ -3,15 +3,15 @@ DROP TABLE IF EXISTS `tests`;
 DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
-  `id`            INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-  `first`         VARCHAR( 32 ) NOT NULL ,
-  `last`          VARCHAR( 32 ) NOT NULL ,
-  `organization`  VARCHAR( 64 ) NOT NULL ,
-  `password`      VARCHAR( 32 ) NOT NULL ,
-  `email`         TEXT NOT NULL ,
-  `hash`          VARCHAR( 32 ) NOT NULL ,
-  `active`        BOOLEAN NOT NULL DEFAULT '0' ,
-  `admin`         BOOLEAN NOT NULL DEFAULT '0'
+  `id`              INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+  `first`           VARCHAR( 32 ) NOT NULL ,
+  `last`            VARCHAR( 32 ) NOT NULL ,
+  `organization`    VARCHAR( 64 ) NOT NULL ,
+  `cryptedPassword` VARCHAR( 64 ) NOT NULL ,
+  `email`           TEXT NOT NULL ,
+  `hash`            VARCHAR( 32 ) NOT NULL ,
+  `active`          BOOLEAN NOT NULL DEFAULT '0' ,
+  `admin`           BOOLEAN NOT NULL DEFAULT '0'
   ) ENGINE = InnoDB ;
 
 CREATE TABLE `tests` (

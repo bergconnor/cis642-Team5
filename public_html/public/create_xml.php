@@ -1,5 +1,5 @@
 <?php
-require_once("config.php");
+require_once("./../lib/config.php");
 
 // Start XML file, create parent node
 header("Content-type: text/xml");

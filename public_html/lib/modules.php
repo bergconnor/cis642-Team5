@@ -9,22 +9,24 @@ require_once('config.php');
 function login($email, $pass) {
   global $pdo;
 
-  $stmt = $pdo->prepare('SELECT email, password, active FROM users
-                         WHERE email=? AND password=?');
-  $stmt->execute([$email, $pass]);
+  $stmt = $pdo->prepare('SELECT email, cryptedPassword, active FROM users
+                         WHERE email=?');
+  $stmt->execute([$email]);
 
   if($stmt->rowCount() > 0) {
     $user = $stmt->fetch();
-    if($user['active'] == 1) {
-      // valid account
-      return 0;
+    if(password_verify($pass, $user['cryptedPassword'])) {
+      if($user['active'] == 1) {
+        // valid account
+        return 0;
+      } else {
+        // account not activated
+        return 1;
+      }
     } else {
-      // account not activated
-      return 1;
+      // invalid account
+      return 2;
     }
-  } else {
-    // invalid account
-    return 2;
   }
 }
 
@@ -61,8 +63,9 @@ function check_email($email) {
 function sign_up($first, $last, $org, $email, $pass) {
   global $pdo;
 
-  $stmt = $pdo->prepare('INSERT INTO users (first, last, organization, email, password, hash)
+  $stmt = $pdo->prepare('INSERT INTO users (first, last, organization, email, cryptedPassword, hash)
                          VALUES (?, ?, ?, ?, ?, ?)');
+  $pass = password_hash($pass, PASSWORD_DEFAULT);
   $hash = md5(rand(0, 1000)); // account verification hash
 
   if($stmt->execute([$first, $last, $org, $email, $pass, $hash])) {
@@ -91,7 +94,7 @@ function send_email($email, $hash) {
   activated your account by pressing the url below.
 
   Please click this link to activate your account:
-  http://people.cs.ksu.edu/~cberg1/lib/verify.php?email='.$email.'&hash='.$hash.'
+  http://people.cs.ksu.edu/~cberg1/public/verify.php?email='.$email.'&hash='.$hash.'
 
   ';
 

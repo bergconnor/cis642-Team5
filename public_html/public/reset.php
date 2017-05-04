@@ -4,19 +4,10 @@
  * their password.
  */
 session_start();
-require_once 'config.php';
+require_once './../lib/config.php';
 
 /**
- * Direct user to the login page if
- * the user presses the return button.
- */
-if(isset($_POST['return'])) {
-  header('location: index.php');
-  exit();
-}
-
-/**
- * 
+ *
  */
 if(isset($_POST['submit'])) {
   if($_SESSION['email_sent']) {
@@ -66,25 +57,19 @@ function update_pass($conn, $email, $password) {
 }
 
 function reset_pass($conn) {
-  // prepare sql variables
-  $email = mysqli_real_escape_string($conn, $_POST['email']);
+  global $pdo;
 
-  $stmt = $conn->stmt_init();
+  $stmt = $pdo->prepare('SELECT count(*) as count FROM users
+                         WHERE email=?'));
+  $stmt->execute([$_POST['email']]);
   if($stmt->prepare('SELECT count(*) AS count FROM users
                      WHERE email=?')) {
-    // bind parameters and execute
-    $stmt->bind_param('s', $pass);
-    $stmt->execute();
 
-    // bind result variable
-    $stmt->bind_result($count);
-
-    if($stmt->fetch() > 0) {
+    if($stmt->rowCount() > 0) {
       // email address found, send email
-      $stmt->close();
 
-      $password = mysqli_real_escape_string($conn,rand(100000,999999));
-      $stmt = $conn->stmt_init();
+      $password = rand(100000,999999);
+      $stmt = $pdo->prepare('UPDATE users SET password=? WHERE email=?');
 
       if($stmt->prepare('UPDATE users SET password=? WHERE email=?')) {
         $stmt->bind_param('ss', $password, $email);
@@ -120,7 +105,11 @@ function send_email($email, $password) {
 <html>
   <head>
     <title>Water Quality</title>
-    <link href="css/style.css" type="text/css" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="./../css/login.css" type="text/css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
   </head>
   <body>
     <div class="container ">
@@ -135,11 +124,14 @@ function send_email($email, $password) {
             <p><input type="password" name="pass2" placeholder="Verify new password"></p>
           <?php endif; ?>
           <p class="submit">
-            <input type="submit" name="return" value="Return" align="left">
-            <input type="submit" name="submit" value="Submit" align="left">
+            <input class="btn btn-default" type="submit" name="submit" value="Submit" align="left">
           </p>
         </form>
       </div>
     </div>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </body>
 </html>

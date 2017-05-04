@@ -19,6 +19,7 @@ h1 {
 }
 
 body {
+  font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
   background-color: #BCD2F4;
 }
 
@@ -26,9 +27,12 @@ body {
   background-color: #8080FF;
 }
 
-.navbar-default .navbar-nav > li > a,
 .navbar-default .navbar-nav > li > a {
   color: white;
+}
+
+.navbar-default .pull-rght {
+  float: right;
 }
 
 .navbar-default .navbar-nav > li > a:hover,
@@ -48,6 +52,10 @@ body {
 
 .navbar-nav {
   margin-left: 6%;
+}
+
+.navbar-nav.pull-right {
+  margin-right: 6%;
 }
 
 .navbar > div > ul > li > a {
@@ -187,4 +195,30 @@ li.marker {
 
 .left-label {
   margin-left: 7.5%;
+}
+
+.container {
+  margin: 50px auto;
+  width: 640px;
+}
+
+.form {
+  position: relative;
+  margin: 0 auto;
+  padding: 20px 20px 20px;
+  width: 310px;
+  background-color: #8080ff;
+  border: 1px;
+  border-radius: 15px;
+}
+
+.label {
+  display: inline-block;
+  width: 100px;
+  color: white;
+  background-color: #4B479A;
+}
+
+.text {
+  color: white;
 }

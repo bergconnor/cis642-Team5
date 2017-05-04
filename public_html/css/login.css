@@ -24,7 +24,7 @@
 }
 
 .login-help a {
-  color: #cce7fa;
+  color: #BCD2F4;
   text-decoration: none;
 }
 
@@ -112,7 +112,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus {
   outline-offset: 0;
 }
 
-input[type=submit] {
+/*input[type=submit] {
   padding: 0 18px;
   height: 29px;
   width: 75px;
@@ -134,6 +134,11 @@ input[type=submit] {
   background-image: linear-gradient(to bottom, #edf5f8, #cde5ef);
   -webkit-box-shadow: inset 0 1px white, 0 1px 2px rgba(0, 0, 0, 0.15);
   box-shadow: inset 0 1px white, 0 1px 2px rgba(0, 0, 0, 0.15);
+}*/
+
+.btn-default {
+  background-color: #8080FF;
+  color: white;
 }
 
 input[name=login], input[name=return] {
@@ -164,7 +169,7 @@ select {
 body {
   font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
   color: #404040;
-  background: #0ca3d2;
+  background: #8080FF;
 }
 
 .statusmsg {

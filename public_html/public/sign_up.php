@@ -6,17 +6,8 @@
  * name, last name, email address, and a
  * password.
  */
-require_once 'config.php';
-require_once 'modules.php';
-
-/**
- * Direct user to the login page if
- * the user presses the return button.
- */
-if(isset($_POST['return'])) {
-  header('location: ../index.php');
-  exit();
-}
+require_once './../lib/config.php';
+require_once './../lib/modules.php';
 
 /**
  * Handle event when sign up button
@@ -76,6 +67,11 @@ if(isset($_POST['sign_up'])) {
   <head>
     <title>Water Quality</title>
     <link href="../css/login.css" type="text/css" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="./../css/login.css" type="text/css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
   </head>
   <body>
     <div class="container">
@@ -89,11 +85,14 @@ if(isset($_POST['sign_up'])) {
           <p><input type="password" name="pass1" placeholder="Password"></p>
           <p><input type="password" name="pass2" placeholder="Verify Password"></p>
           <p class="submit">
-            <input type="submit" name="return" value="Return" align="left">
-            <input type="submit" name="sign_up" value="Sign Up" align="left">
+            <input class="btn btn-default" type="submit" name="sign_up" value="Sign Up" align="right">
           </p>
         </form>
       </div>
     </div>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </body>
 </html>

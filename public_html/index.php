@@ -1,91 +1,97 @@
 <?php
-/**
- * Login page to process user's login information
- * from the web server and allow access based on
- * information stored in the database.
- */
-
+// Start the session
 session_start();
-require_once('lib/modules.php'); // query modules
 
-$_SESSION['email_sent'] = false;  // password reset flag
-
-/**
- * Direct user to the sign up page
- * if the sign up button is pressed.
- */
-if(isset($_POST["sign_up"])) {
-  /* sign up button pressed */
-  header('location: lib/sign_up.php');
-  exit();
+// Check the login and acitivty status
+if(isset($_SESSION['user'])) {
+  if(isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
+      // last request was more than 30 minutes ago
+      // redirect to login screen
+      session_unset();
+      session_destroy();
+      header('location: ./public/login.php');
+  }
+} else {
+  // user not logged in
+  // redirect to login screen
+  session_unset();
+  session_destroy();
+  header('location: ./public/login.php');
 }
 
-/**
- * Handle event when the login button
- * is pressed.
- */
-if(isset($_POST['login'])) {
-  if(empty($_POST['email']) || empty($_POST['pass'])) {
-    // empty field
-    $msg = 'Please provide your email address and password.';
-  } elseif(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-    // invalid email format
-    $msg = 'Invalid email format.';
-  } else {
-    // verify account information
-    $email  = $_POST['email'];
-    $pass   = $_POST['pass'];
-    $result = login( $email, $pass);
-
-    switch($result) {
-      case 0:
-        $msg = 'You successfully logged in.';
-        // header('location: webpage backup/index.php');
-        header('location: lib/home.php');
-        exit();
-      case 1:
-        $msg = 'You need to activate your account.';
-        break;
-      case 2:
-        $msg = 'Invalid account information.';
-        break;
-      default:
-        $msg = 'An unknown error has occured.';
-        break;
-    }
-  }
-
-  if(isset($msg)) {
-    // show error message if set
-    echo '<div class="statusmsg">'.$msg.'</div>';
-  }
+if(isset($_GET['logout'])) {
+  session_unset();
+  session_destroy();
+  header('location: ./public/login.php');
 }
 
 ?>
 
-<!DOCTYPE html>
 <html>
   <head>
     <title>Water Quality</title>
-    <link href="css/login.css" type="text/css" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/home.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
   </head>
   <body>
-    <div class="container">
-      <div class="form">
-        <h1>Login</h1>
-        <form action="" method="post">
-          <p><input type="email" name="email" placeholder="Email"></p>
-          <p><input type="password" name="pass" placeholder="Password"></p>
-          <p class="submit">
-            <input type="submit" name="login" value="Login" align="left">
-            <input type="submit" name="sign_up" value="Sign Up" align="left">
-          </p>
-        </form>
-      </div>
-
-      <div class="login-help">
-        <p>Forgot your password? <a class="reset" href="reset.php">Click here to reset it</a>.</p>
-      </div>
+    <div class="page-header">
+      <!-- <div class="pull-right">
+        <button type="button" class="btn btn-primary">Press me!</button>
+      </div> -->
+      <h1>Water Quality</h1>
     </div>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+        <ul class="nav navbar-nav">
+          <li class="active" id="home-nav">
+            <a href="home.php">Home</a>
+          </li>
+          <li>
+            <a href="./public/table.php">Table</a>
+          </li>
+          <li>
+            <a href="./public/account.php">Account</a>
+          </li>
+
+        </ul>
+        <ul class="nav navbar-nav pull-right">
+          <li>
+            <a href="./index.php?logout=true">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+	<div class="left-label">
+		<div>
+			<label  for="pendingSamples">Show pending samples</label>
+			<input id="pendingSamples" type="checkbox" name="pend" value="pending">
+			<br>
+			<label  for="concentrationLevel"> Concentration level </label>
+			<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
+			<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
+			<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
+
+			<label  for="precipitationLevel"> Precipitation Level </label>
+			<a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>
+			<input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">
+			<a id="button2" onclick="clearBox('precipitationLevel')">Clear</a>
+		</div>
+		<div>
+			<a  type="button" id = "button"   onclick="initMap()">Create Map</a>
+		</div>
+	</div>
+
+    <div id="map"></div>
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEK7qksAR1dzc8HD6EdqIZL8rEogRRv-0&callback=initMap"></script>
+    <script src="./public/home.js" type="text/javascript"></script>
+    <script src="./public/details.js" type="text/javascript"></script>
   </body>
 </html>

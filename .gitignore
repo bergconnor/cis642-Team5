@@ -1,3 +1,6 @@
+$ Config file
+config.json
+
 #built application files
 *.apk
 *.ap_

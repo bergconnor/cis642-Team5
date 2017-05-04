@@ -1,8 +1,32 @@
 <?php
 
+require_once('./../lib/config.php');
+
 // Start the session
 session_start();
 
+global $pdo;
+
+ if(isset($_POST["Export"])) {
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename=water_quality_data.csv');
+    $output = fopen("php://output", "w");
+
+    $stmt = $pdo->prepare('SELECT m.date, u.first, u.last, u.organization, u.email, t.type, m.latitude,
+                           m.longitude, m.temperature, m.precipitation, m.concentration,
+                           m.comment from markers m
+                             JOIN users u ON u.id = m.user_id
+                             JOIN tests t ON t.id = m.test_id
+                           ORDER BY date');
+    if($stmt->execute()) {
+      fputcsv($output, array('Date', 'First', 'Last', 'Organization', 'Email', 'Type', 'Latitude',
+                              'Longitude', 'Temperature', 'Precipitation', 'Concentration', 'Comment'));
+      while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        fputcsv($output, $row);
+      }
+      fclose($output);
+    }
+ }
 ?>
 
 <!DOCTYPE HTML>
@@ -40,19 +64,19 @@ session_start();
     </nav>
 	<div class="left-label">
 		<div>
-			
+
 				<label  for="pendingSamples">Show pending samples</label>
 				<input id="pendingSamples" type="checkbox" name="pend" value="pending">
-			
+
 			<br>
-			
-			
+
+
 				<label  for="concentrationLevel"> Concentration level </label>
 				<a id="inequalitySign2" onclick="changeSign('inequalitySign2')"><</a>
 				<input id="concentrationLevel" type="text" name="fname" size="7" placeholder="0">
 				<a id="button2" onclick="clearBox('concentrationLevel')">Clear</a>
-			
-			
+
+
 				<label  for="precipitationLevel"> Precipitation Level </label>
 				<a id="inequalitySign1" onclick="changeSign('inequalitySign1')"><</a>
 				<input id="precipitationLevel" type="text" name="fname" size="7" placeholder="0">
@@ -61,7 +85,7 @@ session_start();
 				  <input type="radio" name="degree" value="celsius" id = "celsius" onclick = "changeDegree('c')"> Celsius<br>
 				  <input type="radio" name="degree" value="fahrenheit" id = "fahrenheit" onclick = "changeDegree('f')"> Fahrenheit<br>
 				</form>
-				
+
 			<div class="input-group date" data-provide="datepicker" data-date-format="mm/dd/yyyy">
 				<input type="text" class="form-control">
 				<div class="input-group-addon">
@@ -73,7 +97,18 @@ session_start();
 			<a  type="button" id = "button"   onclick="createTable()">Create Table</a>
 		</div>
 	</div>
-	
+
+   <div>
+    <form class="form-horizontal" action="home.php" method="post" name="upload_excel"
+              enctype="multipart/form-data">
+      <div class="form-group">
+        <div class="col-md-4 col-md-offset-4">
+            <input type="submit" name="Export" class="btn btn-success" value="export to excel"/>
+        </div>
+       </div>
+    </form>
+   </div>
+
     <div class="table-margin">
       <table class="samples-table">
         <thead>
