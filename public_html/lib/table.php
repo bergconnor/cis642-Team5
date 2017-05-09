@@ -65,7 +65,7 @@ session_start();
 				<label  for="testDate2" id= "testDate2Label" style = "visibility:hidden" >and   </label><input id = "testDate2" type="date" style = "visibility:hidden">
 			</div>
 			<div class = "row">
-				<a  type="button" id = "button"   onclick="createTable()()">Create Table</a>
+				<a  type="button" id = "button"   onclick="createTable()">Create Table</a>
 			</div>
 			
 		</div>
