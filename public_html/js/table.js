@@ -1,8 +1,12 @@
+//This page will have a table with all the values stored in the database.
+
 //store the marker that was passed by home
 //Note: it will only be used if the "more info" was clicked to highlight the clicked marker  
 var markerid = sessionStorage.getItem('marker');
 sessionStorage.removeItem('marker');
 
+//data that will be viewed 
+//note: when adding a new data you will also need to modifi the table.php file. 
 var date          = "none";
 var name          = "none";
 var orgnization   = "none";
@@ -15,12 +19,18 @@ var precipitation = "none";
 var concentration = "none";
 var comment       = "none";
 
-
+//used to scroll the page when a marker's more info button was clicked in the home.php page
 var scrollHere = 0;
+//used to change what is being used to order the data.
+//Could be removed later
+//Note: this is being changed through onclick events in table.php (using changeOrder() fucntion)
 var orderBy = 1;
+//used to choose if the order is ascending or descending
 var orderType = "asc";
+// used to choose to show the temperature in celsius or fahrenheit
 var degree = "f";
 
+//Create a new table and fill the data into the page 
 function createTable()
 {
 	
@@ -119,8 +129,9 @@ downloadUrl('../lib/create_xml.php', function(data) {
   });
 });
 
-	
 }
+
+// create a query to be used on the database 
 function createQuery()
 {
 	
@@ -295,25 +306,7 @@ function createQuery()
 	}
 	console.log(query);
   return query;
-  
-  
-  
-	/*
-	console.log("version 1");
-	var query = "SELECT " +
-    " m.id 'id', m.user_id 'userid', DATE_FORMAT(m.date, '%m-%d-%Y') 'date', m.latitude 'latitude' , m.longitude 'longitude'," +
-    " m.city 'city', m.state 'state', m.temperature 'temperature', m.precipitation 'precipitation', m.concentration 'concentration', " +
-    " m.comment 'comment', m.verified 'verified', u.first 'first', u.last 'last', u.organization 'organization'," +
-    " u.email 'email', u.active 'activeUser', u.admin 'admin', t.type 'type'" +
-	" FROM markers m "+
-	    
-	" JOIN users u ON m.user_id = u.id" +
-	" JOIN tests t ON m.test_id = t.id " +
-	
-	" WHERE true " + precipitation + concentration+ verified +
-    " ORDER BY "+ord+" "+orderType;
-	return query
-	*/
+
 }
 createTable();
 
@@ -343,6 +336,7 @@ function downloadUrl(url, callback) {
   request.send(null);
 }
 
+//change the kind temperature dgrees between celsius or fahrenheit
 function changeDegree(d)
 {
 	degree = d;
@@ -361,6 +355,7 @@ function changeDegree(d)
 	createTable();
 }
 
+// when a test radio is highlighted lock the others 
 function highlightTest(test)
 {
 	switch (test)
@@ -422,6 +417,8 @@ function useRecommendedConcentration(test)
 		break;
 	}
 }
+
+// change the way the data is order in the table 
 function changeOrder(ord)
 {
 	console.log(document.getElementById("columns_headers").childNodes)
@@ -515,7 +512,7 @@ function changeOrder(ord)
 	createTable();
 }
 
-
+// hide or show input box and label  
 function changeDate(){
 	if (document.getElementById("dateButton").textContent == "After")
 	{

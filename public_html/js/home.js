@@ -1,3 +1,6 @@
+//This page will have a map for each location that a test was taken
+//it will have modifiable settings to veiw tests taken  
+
 //set default values
 document.getElementById('showAllTests').checked = true;
 // these variables will be used to keep the view consistent each time a new map is created
