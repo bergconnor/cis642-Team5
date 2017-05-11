@@ -9,6 +9,12 @@ session_start();
 require_once('./../lib/modules.php'); // query modules
 
 $_SESSION['email_sent'] = false;  // password reset flag
+$msg = '';
+
+if(isset($_SESSION['message'])) {
+  // show error message if set
+  echo '<div class="statusmsg">'.$_SESSION['message'].'</div>';
+}
 
 /**
  * Direct user to the sign up page
@@ -25,41 +31,41 @@ if(isset($_POST["sign_up"])) {
  * is pressed.
  */
 if(isset($_POST['login'])) {
-  if(empty($_POST['email']) || empty($_POST['pass'])) {
+  ChromePhp::log("BLAH");
+  $email = $_POST['email'];
+  $pass = $_POST['pass'];
+  if(!isset($email) || !isset($pass)) {
     // empty field
-    $msg = 'Please provide your email address and password.';
-  } elseif(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+    $_SESSION['message'] = 'Please provide your email address and password.';
+  } elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     // invalid email format
-    $msg = 'Invalid email format.';
+    $_SESSION['message'] = 'Invalid email format.';
   } else {
     // verify account information
-    $email  = $_POST['email'];
-    $pass   = $_POST['pass'];
-    $result = login( $email, $pass);
+    $result = login($email, $pass);
 
     switch($result) {
       case 0:
-        $msg = 'You successfully logged in.';
+        $_SESSION['message'] = 'You successfully logged in.';
         $_SESSION['user'] = $email;
         $_SESSION['last_activity'] = time();
         header('location: ./../index.php');
         exit();
       case 1:
-        $msg = 'You need to activate your account.';
+        $_SESSION['message'] = 'You need to activate your account.';
         break;
       case 2:
-        $msg = 'Invalid account information.';
+        $_SESSION['message'] = 'Invalid account information.';
         break;
       default:
-        $msg = 'An unknown error has occured.';
+        $_SESSION['message'] = 'An unknown error has occured.';
         break;
     }
   }
 
-  if(isset($msg)) {
-    // show error message if set
-    echo '<div class="statusmsg">'.$msg.'</div>';
-  }
+  // Redirect to this page.
+  header("Location: " . $_SERVER['REQUEST_URI'], true, 303);
+  exit();
 }
 
 ?>

@@ -197,28 +197,17 @@ li.marker {
   margin-left: 7.5%;
 }
 
-.container {
-  margin: 50px auto;
-  width: 640px;
+.account-info {
+  width: 350px;
+  margin-left: 50px;
+  margin-top: 50px;
 }
 
-.form {
-  position: relative;
-  margin: 0 auto;
-  padding: 20px 20px 20px;
-  width: 310px;
-  background-color: #8080ff;
-  border: 1px;
-  border-radius: 15px;
-}
-
-.label {
-  display: inline-block;
-  width: 100px;
+.table {
   color: white;
-  background-color: #4B479A;
+  background-color: gray;
 }
 
-.text {
-  color: white;
+th {
+  text-align: center;
 }

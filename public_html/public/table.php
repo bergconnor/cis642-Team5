@@ -5,6 +5,30 @@ require_once('./../lib/config.php');
 // Start the session
 session_start();
 
+// Check the login and acitivty status
+if(isset($_SESSION['user'])) {
+  if(isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
+      // last request was more than 30 minutes ago
+      // redirect to login screen
+      session_unset();
+      session_destroy();
+      header('location: ./public/login.php');
+  }
+} else {
+  // user not logged in
+  // redirect to login screen
+  session_unset();
+  session_destroy();
+  header('location: ./public/login.php');
+}
+
+if(isset($_GET['logout'])) {
+  session_unset();
+  session_destroy();
+  header('location: ./public/login.php');
+}
+
+
 global $pdo;
 
  if(isset($_POST["Export"])) {
@@ -51,13 +75,18 @@ global $pdo;
       <div class="container-fluid">
         <ul class="nav navbar-nav">
           <li id="home-nav">
-            <a href="home.php">Home</a>
+            <a href="../index.php">Home</a>
           </li>
           <li class="active">
             <a href="table.php">Table</a>
           </li>
           <li>
             <a href="account.php">Account</a>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav pull-right">
+          <li>
+            <a href="./../index.php?logout=true">Logout</a>
           </li>
         </ul>
       </div>

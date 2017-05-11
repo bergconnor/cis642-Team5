@@ -233,7 +233,7 @@ public class UploadActivity extends AppCompatActivity {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://people.cs.ksu.edu/~cberg1/app/upload.php");
+                url = new URL("http://people.cs.ksu.edu/~moonknight/app/upload.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block

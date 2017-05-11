@@ -1,6 +1,30 @@
 <?php
 // Start the session
 session_start();
+
+// Check the login and acitivty status
+if(isset($_SESSION['user'])) {
+  if(isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
+      // last request was more than 30 minutes ago
+      // redirect to login screen
+      session_unset();
+      session_destroy();
+      header('location: ./login.php');
+  }
+} else {
+  // user not logged in
+  // redirect to login screen
+  session_unset();
+  session_destroy();
+  header('location: ./public/login.php');
+}
+
+if(isset($_GET['logout'])) {
+  session_unset();
+  session_destroy();
+  header('location: ./public/login.php');
+}
+
 ?>
 
 <html>

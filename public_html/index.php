@@ -1,7 +1,7 @@
 <?php
 // Start the session
 session_start();
-
+include('./lib/ChromePhp.php');
 // Check the login and acitivty status
 if(isset($_SESSION['user'])) {
   if(isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {

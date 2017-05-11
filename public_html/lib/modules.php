@@ -1,6 +1,7 @@
 <?php
 
 require_once('config.php');
+include 'ChromePhp.php';
 
 /**
  * Verify user's login information with the database.
@@ -8,7 +9,6 @@ require_once('config.php');
  */
 function login($email, $pass) {
   global $pdo;
-
   $stmt = $pdo->prepare('SELECT email, cryptedPassword, active FROM users
                          WHERE email=?');
   $stmt->execute([$email]);
@@ -27,6 +27,8 @@ function login($email, $pass) {
       // invalid account
       return 2;
     }
+  } else {
+    return 2;
   }
 }
 
@@ -40,8 +42,7 @@ function check_email($email) {
 
   $stmt = $pdo->prepare('SELECT first, last FROM users WHERE email=?');
   $stmt->execute([$email]);
-  $user = $stmt->fetch();
-
+  $user = $stmt->fetch(PDO::FETCH_ASSOC);
   if ($stmt->rowCount() > 0) {
     // email is in use
     return false;
@@ -74,6 +75,33 @@ function sign_up($first, $last, $org, $email, $pass) {
     return 0;
   } else {
     // insertion error
+    return 1;
+  }
+}
+
+function get_account_info($email) {
+  global $pdo;
+  $stmt = $pdo->prepare('SELECT * FROM users WHERE email=?');
+
+  if($stmt->execute([$email])) {
+    if($stmt->rowCount() > 0) {
+      $user = $stmt->fetch();
+      return $user;
+    }
+  }
+}
+
+function update_account($oldEmail, $email, $organization) {
+  global $pdo;
+
+  $stmt = $pdo->prepare('UPDATE users SET email=?, organization=?
+                         WHERE email=?');
+
+  if($stmt->execute([$email, $organization, $oldEmail])) {
+    // success
+    return 0;
+  } else {
+    // update error
     return 1;
   }
 }

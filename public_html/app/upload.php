@@ -57,10 +57,14 @@ if(!empty($_POST)) {
                            precipitation, comment, verified)
                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
-    $stmt->execute([$date, $user_id, $test_id, $concentration, $latitude, $longitude,
-                    $serial, $city, $state, $temperature, $precipitation, $comment, $verified]);
-    $json['success'] = true;
-    $json['message'] = 'Successfully uploaded data.';
+    if($stmt->execute([$date, $user_id, $test_id, $concentration, $latitude, $longitude,
+                    $serial, $city, $state, $temperature, $precipitation, $comment, $verified])) {
+      $json['success'] = true;
+      $json['message'] = 'Successfully uploaded data.';
+    } else {
+      $json['success'] = false;
+      $json['message'] = 'Something went wrong.';
+    }
   }
   // send back data as a json string
   echo json_encode($json);
