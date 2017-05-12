@@ -1,9 +1,12 @@
 <?php
 
-$host     = 'mysql.cis.ksu.edu';
-$db       = 'cberg1';
-$user     = 'cberg1';
-$pass     = '3c340d';
+$json_str = file_get_contents('./../config.json');
+$json = json_decode($json_str, true);
+
+$host     = $json['host'];
+$db       = $json['db'];
+$user     = $json['user'];
+$pass     = $json['pass'];
 $charset  = 'utf8';
 
 try {
